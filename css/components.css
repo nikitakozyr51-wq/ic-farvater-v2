@@ -141,7 +141,25 @@
 .footer__top {
   display: flex;
   flex-direction: column;
-  gap: var(--s-7); /* 48 mobile, gap between blocks */
+  gap: 40px; /* Pencil YsYD7 mobile gap */
+}
+
+.footer__navs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+/* Mobile order (Pencil YsYD7): logo+tagline → newsletter → 2-col navs → contact → bottom */
+@media (max-width: 1023.98px) {
+  .footer__info { order: 1; gap: 0; }
+  .footer__info .footer__contact { order: 99; }  /* contact moves to its own visual block after navs */
+  .footer__newsletter { order: 2; }
+  .footer__navs { order: 3; }
+  /* Pull contact out of info block: move via order on grandchild requires display:contents on info */
+  .footer__info { display: contents; }
+  .footer__logo-block { order: 1; }
+  .footer__contact { order: 4; }
 }
 
 .footer__info { display: flex; flex-direction: column; gap: var(--s-5); }
@@ -203,7 +221,7 @@
   font-size: var(--t-paragraph);
   color: var(--c-muted-on-dark);
   line-height: var(--lh-row);
-  display: none; /* mobile: hidden per Pencil YsYD7 */
+  /* Visible on both mobile AND desktop per Pencil */
 }
 .footer__email-form {
   display: flex;
@@ -256,7 +274,7 @@
 .footer__legal {
   display: flex;
   flex-direction: column;
-  gap: var(--s-1);
+  gap: 6px;
   padding-top: var(--s-2);
 }
 .footer__legal a {
@@ -269,10 +287,13 @@
   .footer { padding-block: 76px 32px; }
   .footer__top {
     display: grid;
-    grid-template-columns: 280px 1fr 1fr 1fr;
+    grid-template-columns: 312px 312px 312px 312px;
     gap: var(--s-5);
     padding-bottom: 76px;
+    justify-content: space-between;
   }
+  .footer__info { display: flex; }  /* reset display:contents from mobile */
+  .footer__navs { display: contents; }  /* unwrap to direct grid children */
   .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; }
   .footer__logo-block { gap: var(--s-3); }
   .footer__tagline { display: none; /* desktop replaces tagline with phone+email in info col */ }
@@ -360,6 +381,11 @@
   }
   .services-grid__head {
     gap: var(--s-6); /* 32 desktop */
+  }
+  /* Services CTA — Pencil C8qK0k padding [12,24] font 14 (medium pill, NOT small) */
+  .services-grid__cta {
+    font-size: var(--t-cta-md); /* 14 */
+    padding: var(--pill-py-md) var(--pill-px-md); /* 12 24 */
   }
   .services-list {
     margin-top: 280px; /* Pencil rW5Ex padding-top:280 — aligns list with bottom of left col */
@@ -548,18 +574,28 @@
     row-gap: 22px;
     align-items: start;
   }
-  .uy-grid__head,
-  .uy-grid__body,
-  .uy-grid .btn-pill {
-    grid-column: 1;
-    padding-inline-start: var(--s-7); /* 40 inset for UY text col padding */
-  }
+  /* Default: image LEFT (Pencil About J8otlu — image @ x=60) */
   .uy-grid__image {
-    grid-column: 2;
-    grid-row: 1 / span 3; /* spans head + body + btn */
+    grid-column: 1;
+    grid-row: 1 / span 3;
     aspect-ratio: 600 / 480;
     align-self: center;
   }
+  .uy-grid__head,
+  .uy-grid__body {
+    grid-column: 2;
+    padding-inline: 40px; /* Pencil text col padding [0,40] — symmetric */
+  }
+  .uy-grid .btn-pill {
+    grid-column: 2;
+    margin-inline: 40px; /* btn aligned with text via margin, NOT padding (so own pill padding intact) */
+    padding: var(--pill-py-sm) 20px; /* Pencil [10,20] (not [10,18]) */
+  }
+  /* Modifier: image RIGHT (Pencil Cables xT0gh — image @ x=760) */
+  .uy-grid--image-right .uy-grid__image { grid-column: 2; }
+  .uy-grid--image-right .uy-grid__head,
+  .uy-grid--image-right .uy-grid__body,
+  .uy-grid--image-right .uy-grid .btn-pill { grid-column: 1; }
   .uy-grid__head { gap: 22px; }
 }
 
