@@ -128,6 +128,316 @@
 }
 
 /* ============================================================
+   10. FOOTER Custo-style (dark blue, 4-col desktop / vertical mobile)
+   Pencil: UGNxO desktop / YsYD7 mobile
+   ============================================================ */
+
+.footer {
+  background: var(--c-bg-dark);
+  color: var(--c-text-on-dark);
+  padding-block: 56px 32px;
+}
+
+.footer__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-7); /* 48 mobile, gap between blocks */
+}
+
+.footer__info { display: flex; flex-direction: column; gap: var(--s-5); }
+.footer__logo-block { display: flex; flex-direction: column; gap: var(--s-4); }
+.footer__logo {
+  font-family: var(--font-primary);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  color: var(--c-text-on-dark);
+}
+.footer__tagline {
+  font-size: var(--t-paragraph);
+  color: var(--c-muted-on-dark);
+  line-height: var(--lh-body);
+}
+
+.footer__contact { display: flex; flex-direction: column; gap: var(--s-3); }
+.footer__label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-label-on-dark);
+  line-height: 1.4;
+}
+.footer__address {
+  font-style: normal;
+  font-size: 14px;
+  color: var(--c-muted-on-dark);
+  line-height: var(--lh-body);
+}
+.footer__phone {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: var(--ls-sub);
+  color: var(--c-text-on-dark);
+}
+.footer__email { font-size: 14px; color: var(--c-text-on-dark); }
+
+.footer__nav { display: flex; flex-direction: column; gap: var(--s-3); }
+.footer__nav a {
+  font-size: 14px;
+  color: var(--c-text-on-dark);
+  line-height: 1.43;
+  transition: opacity 0.2s ease;
+}
+.footer__nav a:hover { opacity: 0.7; }
+
+.footer__newsletter { display: flex; flex-direction: column; gap: var(--s-4); }
+.footer__newsletter-title {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: var(--ls-sub);
+  color: var(--c-text-on-dark);
+  line-height: 1.3;
+}
+.footer__newsletter-desc {
+  font-size: var(--t-paragraph);
+  color: var(--c-muted-on-dark);
+  line-height: var(--lh-row);
+  display: none; /* mobile: hidden per Pencil YsYD7 */
+}
+.footer__email-form {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 20px;
+  background: var(--c-bg);
+  border-radius: 100px;
+}
+.footer__email-form input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--c-text-muted);
+  font-family: var(--font-primary);
+}
+.footer__email-form button {
+  background: transparent;
+  color: var(--c-text);
+  font-size: 16px;
+  font-weight: 500;
+}
+.footer__disclaimer {
+  font-size: 11px;
+  color: var(--c-tertiary-on-dark);
+  line-height: 1.5;
+}
+
+.footer__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--c-border-on-dark);
+}
+.footer__copyright {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+.footer__copyright p {
+  font-size: 13px;
+  color: var(--c-tertiary-on-dark);
+  line-height: 1.5;
+}
+.footer__copyright--tertiary { font-size: 12px !important; }
+.footer__legal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding-top: var(--s-2);
+}
+.footer__legal a {
+  font-size: 12px;
+  color: var(--c-tertiary-on-dark);
+  line-height: 1.5;
+}
+
+@media (min-width: 1024px) {
+  .footer { padding-block: 76px 32px; }
+  .footer__top {
+    display: grid;
+    grid-template-columns: 280px 1fr 1fr 1fr;
+    gap: var(--s-5);
+    padding-bottom: 76px;
+  }
+  .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; }
+  .footer__logo-block { gap: var(--s-3); }
+  .footer__tagline { display: none; /* desktop replaces tagline with phone+email in info col */ }
+  .footer__contact { gap: var(--s-5); }
+  .footer__address { font-size: 15px; line-height: 1.62; max-width: 280px; }
+  .footer__phone { font-size: 19px; font-weight: 400; letter-spacing: 0; }
+  .footer__email { font-size: 15px; }
+  .footer__label { display: none; /* desktop: no "контакты" label, items directly in info col */ }
+  .footer__newsletter-desc { display: block; }
+  .footer__email-form { height: 40px; padding: 0 16px; max-width: 312px; }
+  .footer__bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: 0;
+    padding-top: 28px;
+    gap: var(--s-5);
+  }
+  .footer__copyright p { font-size: 15px; }
+  .footer__legal { flex-direction: row; gap: var(--s-5); padding-top: 0; }
+  .footer__legal a { font-size: 15px; }
+}
+
+/* ============================================================
+   9. SERVICES (single DOM flex-flip)
+   Desktop (lzD1I): horizontal split — left col head (title+desc+btn), right col list with padding-top 280 for alignment
+   Mobile (P3ABWo): vertical stack — head → list
+   ============================================================ */
+
+.section--services .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-6); /* 32 mobile */
+}
+
+.services-grid__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4); /* 16 mobile */
+}
+
+.services-grid__desc {
+  font-size: var(--t-body); /* 16 */
+  color: var(--c-text-muted);
+  line-height: var(--lh-body);
+}
+
+.services-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.services-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--row-height);
+  border-bottom: var(--border-thin);
+  font-size: var(--t-list-row); /* clamp 18→20 */
+  font-weight: 500;
+  letter-spacing: var(--ls-sub);
+  color: var(--c-text);
+}
+
+.services-list__item:first-child {
+  border-top: var(--border-thin);
+}
+
+.services-list__icon {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+@media (min-width: 1024px) {
+  .services-grid {
+    grid-template-columns: 536px 1fr;
+    column-gap: var(--s-5);
+    align-items: start;
+  }
+  .services-grid__head {
+    gap: var(--s-6); /* 32 desktop */
+  }
+  .services-list {
+    margin-top: 280px; /* Pencil rW5Ex padding-top:280 — aligns list with bottom of left col */
+  }
+}
+
+/* ============================================================
+   8. PROMISE / IMPORT (3-col cards desktop / 1-col stack mobile)
+   Pencil: bwNZI desktop / GYHok mobile. Mobile card3 has no image per Pencil.
+   ============================================================ */
+
+.section--promise .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.promise-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-5);
+}
+
+.promise-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3); /* 12 mobile */
+}
+
+.promise-card__img {
+  background: var(--c-bg-alt);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.promise-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mobile: card3 image hidden per Pencil (empty grey placeholder) */
+@media (max-width: 1023.98px) {
+  .promise-card--no-img-mobile .promise-card__img img {
+    display: none;
+  }
+}
+
+.promise-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--info-gap-m); /* 8 mobile */
+  padding-top: var(--s-1); /* 4 */
+}
+
+.promise-card__name {
+  font-size: var(--t-card-name);
+  font-weight: 500;
+  color: var(--c-text);
+  line-height: 1.4;
+}
+
+.promise-card__desc {
+  font-size: var(--t-card-desc);
+  color: var(--c-text-muted);
+  line-height: 1.5;
+}
+
+@media (min-width: 1024px) {
+  .promise-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .promise-card { gap: var(--s-4); /* 16 desktop */ }
+  .promise-card__img { aspect-ratio: 424 / 400; }
+  .promise-card__info { gap: var(--info-gap-d); padding-top: var(--s-2); }
+}
+
+/* ============================================================
    5. SECTION EYEBROW (caption-line "name · (NN)" — used by UY-stack sections)
    Pencil pattern for about/cables (NOT same as section-head superscript).
    ============================================================ */
@@ -186,32 +496,32 @@
    Desktop order (Pencil J8otlu): image RIGHT (spans all rows), head+body+btn LEFT.
    All children are direct grid items — grid-column + grid-row for desktop placement. */
 
-.about-grid {
+.uy-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--s-5); /* 24 mobile */
 }
 
-.about-grid__head {
+.uy-grid__head {
   display: flex;
   flex-direction: column;
   gap: var(--s-2); /* 8 mobile (eyebrow → h2) */
 }
 
-.about-grid__image {
+.uy-grid__image {
   background: var(--c-bg-alt);
   aspect-ratio: 1 / 1;  /* mobile 342×342 (Pencil shows about-anim.webp) */
   overflow: hidden;
   display: block;
 }
-.about-grid__image img {
+.uy-grid__image img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.about-grid__title {
+.uy-grid__title {
   font-size: var(--t-section);
   font-weight: 500;
   letter-spacing: var(--ls-section);
@@ -219,38 +529,38 @@
   color: var(--c-text);
 }
 
-.about-grid__body {
+.uy-grid__body {
   display: flex;
   flex-direction: column;
   gap: var(--s-4); /* 16 — between paragraphs */
 }
 
-.about-grid__body p {
+.uy-grid__body p {
   font-size: var(--t-paragraph); /* 15 */
   line-height: var(--lh-body);
   color: var(--c-text-muted);
 }
 
 @media (min-width: 1024px) {
-  .about-grid {
+  .uy-grid {
     grid-template-columns: 1fr 1fr;
     column-gap: var(--s-9); /* 80 */
     row-gap: 22px;
     align-items: start;
   }
-  .about-grid__head,
-  .about-grid__body,
-  .about-grid .btn-pill {
+  .uy-grid__head,
+  .uy-grid__body,
+  .uy-grid .btn-pill {
     grid-column: 1;
     padding-inline-start: var(--s-7); /* 40 inset for UY text col padding */
   }
-  .about-grid__image {
+  .uy-grid__image {
     grid-column: 2;
     grid-row: 1 / span 3; /* spans head + body + btn */
     aspect-ratio: 600 / 480;
     align-self: center;
   }
-  .about-grid__head { gap: 22px; }
+  .uy-grid__head { gap: 22px; }
 }
 
 /* ============================================================
