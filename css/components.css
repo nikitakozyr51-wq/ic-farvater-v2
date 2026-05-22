@@ -183,14 +183,19 @@
   font-weight: 500;
   letter-spacing: var(--ls-sub);
   color: var(--c-text-on-dark);
+  line-height: 19px;  /* Pencil eFt4U h=19 at 16px (was line-height 1.55 → 24.8) */
 }
-.footer__email { font-size: 14px; color: var(--c-text-on-dark); }
+.footer__email {
+  font-size: 14px;
+  color: var(--c-text-on-dark);
+  line-height: 17px;  /* Pencil n5FlEI h=17 at 14px */
+}
 
-.footer__nav { display: flex; flex-direction: column; gap: var(--s-3); }
+.footer__nav { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a {
   font-size: 14px;
   color: var(--c-text-on-dark);
-  line-height: 1.43;
+  line-height: 20px;  /* Pencil mobile li step = 32 (font 20h + gap 12). Was 24.8 → step 36.8 (off) */
   transition: opacity 0.2s ease;
 }
 .footer__nav a:hover { opacity: 0.7; }
@@ -207,7 +212,7 @@
   font-size: var(--t-paragraph);
   color: var(--c-muted-on-dark);
   line-height: var(--lh-row);
-  /* Visible on both mobile AND desktop per Pencil */
+  display: none; /* mobile: Pencil tqbXr has NO desc — only title + email-pill + disclaimer */
 }
 .footer__email-form {
   display: flex;
@@ -241,27 +246,27 @@
 .footer__bottom {
   display: flex;
   flex-direction: column;
-  gap: var(--s-2);
-  margin-top: 0;          /* mobile: no extra top margin (Pencil padding-top 24 is enough) */
+  gap: 0;                 /* siblings get exact spacing via padding-top */
+  margin-top: 0;
   padding-top: 24px;      /* Pencil JUKlU padding-top 24 */
   border-top: 1px solid var(--c-border-on-dark);
 }
 .footer__copyright {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* Pencil: no gap between © and ИНН — only line-height spacing */
-}
-.footer__copyright p {
   font-size: 13px;
   color: var(--c-tertiary-on-dark);
   line-height: 1.5;
+  margin: 0;
 }
-.footer__copyright--tertiary { font-size: 12px; }
+.footer__copyright--tertiary {
+  font-size: 12px;
+  margin-top: 8px;        /* Pencil bottom gap=8 between © and ИНН */
+}
 .footer__legal {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: var(--s-2);
+  gap: 6px;               /* Pencil jcK4O gap=6 */
+  padding-top: 8px;       /* Pencil legal-row padding-top=8 */
+  margin-top: 8px;        /* Pencil bottom gap=8 to prev (ИНН) */
 }
 .footer__legal a {
   font-size: 12px;
@@ -587,11 +592,13 @@
   /* Default: image LEFT (Pencil About J8otlu) */
   .uy-grid__image {
     grid-column: 1;
+    grid-row: 1;     /* EXPLICIT row to prevent sparse auto-flow stacking on modifier (Cables) */
     aspect-ratio: 600 / 480;
     align-self: center;
   }
   .uy-grid__col {
     grid-column: 2;
+    grid-row: 1;     /* EXPLICIT row — fixes Cables col stacking below image */
     padding-inline: 40px; /* Pencil FbYhd padding [0,40] symmetric */
     gap: 22px; /* Pencil verified vertical gap */
     align-self: center;

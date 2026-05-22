@@ -63,12 +63,27 @@ p {
   margin-inline: auto;
 }
 
-/* === Section — единственный паттерн для вертикальных отступов === */
-.section {
-  padding-block: var(--section-y);
-  border-top: var(--border-thin);
-}
+/* === Section — paddings per-section, exact Pencil values ===
+   - Pencil bBLRC/IDw1v (Razemy/СВЧ): [100, 60] → 100 desktop, 48 mobile
+   - Pencil J8otlu/xT0gh (About/Cables): [60, ...] → 60 desktop, 56 mobile
+   - Pencil bwNZI (Promise): [110, 60] → 110 desktop, 56 mobile
+   - Pencil lzD1I (Services): [80, 60] → 80 desktop, 48 mobile
+*/
+.section { border-top: var(--border-thin); }
 .section--no-border { border-top: none; }
+
+/* Mobile defaults (Pencil verified) */
+.section--products { padding-block: 48px; }
+.section--about    { padding-block: 56px; }
+.section--promise  { padding-block: 56px; }
+.section--services { padding-block: 48px; }
+
+@media (min-width: 1024px) {
+  .section--products { padding-block: 100px; }
+  .section--about    { padding-block: 60px; }
+  .section--promise  { padding-block: 110px; }
+  .section--services { padding-block: 80px; }
+}
 
 /* === Visibility utilities (для mobile-only / desktop-only elements) === */
 .is-mobile-only { display: none; }
