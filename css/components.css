@@ -21,6 +21,111 @@
  */
 
 /* ============================================================
+   2. HERO Seed-style (verified hTqZQ desktop, pt5JK mobile)
+
+   Mobile (default): 480px min-height, text col 24px x 140px y, h1 36/-0.8, sub 14, CTA full-width 48h
+   Desktop (≥1024): 720px min-height, text col 60px x 200px y, max-width 648, h1 56/-1.5, sub 16, CTA pill auto
+   ============================================================ */
+
+.hero {
+  position: relative;
+  min-height: var(--hero-h-mobile);
+  background: var(--c-bg-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  min-height: inherit;
+  padding-top: 140px;
+  padding-bottom: var(--s-7);
+  display: flex;
+  flex-direction: column;
+}
+
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.hero__title {
+  font-size: var(--t-hero);
+  font-weight: 500;
+  letter-spacing: var(--ls-hero);
+  line-height: var(--lh-hero);
+  color: var(--c-text-on-dark);
+}
+
+/* h1 has 2 spans — different content desktop vs mobile (Pencil pixel-perfect) */
+.hero__title--desktop { display: none; }
+.hero__title--mobile  { display: inline; }
+
+.hero__sub {
+  font-size: var(--t-hero-sub);
+  color: var(--c-muted-on-dark);
+  line-height: var(--lh-body);
+}
+
+.hero__cta {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: var(--t-cta-sm);
+  font-weight: 500;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 100%;
+  margin-top: var(--s-2);
+  transition: opacity 0.2s ease;
+}
+.hero__cta:hover { opacity: 0.92; }
+
+/* Desktop overrides */
+@media (min-width: 1024px) {
+  .hero {
+    min-height: var(--hero-h-desktop);
+  }
+  .hero__inner {
+    padding-top: 200px;
+    padding-bottom: var(--s-9);
+  }
+  .hero__text {
+    max-width: 648px;
+  }
+  .hero__title--desktop { display: inline; }
+  .hero__title--mobile  { display: none; }
+  .hero__sub {
+    max-width: 627px;
+    line-height: var(--lh-body);
+  }
+  .hero__cta {
+    width: auto;
+    height: auto;
+    padding: var(--pill-py-md) var(--pill-px-md);
+    font-size: var(--t-cta-md);
+    align-self: flex-start;
+    margin-top: var(--s-4);
+  }
+}
+
+/* ============================================================
    1. HEADER (verified ISnHK desktop, xAjS9 mobile)
 
    Mobile (default): logo + burger, 60h, border-bottom, padding [0,24] (container)
@@ -115,7 +220,7 @@
   .header__cta {
     background: var(--c-text);
     color: var(--c-bg);
-    font-size: var(--t-cta);
+    font-size: var(--t-cta-sm);
     font-weight: 500;
     padding: var(--pill-py-sm) var(--pill-px-sm);
     border-radius: 100px;

@@ -43,8 +43,9 @@
   --t-disclaimer: 11px;                       /* mobile form privacy disclaimer */
   --t-logo:       18px;                       /* header logo (verified MbsMu/EIVlV) */
   --t-nav:        14px;                       /* header nav links (verified gPVWd) */
-  --t-cta:        13px;                       /* header CTA / btn-inverted (verified YiYoV) */
-  --t-cta-mobile: 14px;                       /* fullwidth CTA on mobile sections */
+  --t-cta-sm:     13px;                       /* small pill — header КП (YiYoV), section "подробнее"/"запросить расчёт" (gvIPy/rncMU), mobile hero CTA (Csidu) */
+  --t-cta-md:     14px;                       /* medium pill — hero CTA desktop (b6sGw), section "связаться" (dqzMl), submit "отправить" (XfKzv) */
+  --t-hero-sub:   clamp(14px, 1.4vw, 16px);   /* hero subtitle, 14 mobile (nqDtc) → 16 desktop (TPMrY) */
 
   /* Letter-spacing (verified from Pencil) */
   --ls-hero:    -1.5px;
