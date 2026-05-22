@@ -1,0 +1,92 @@
+/* IC Фарватер v2 — Base
+ * ⚠ HARDCODE PX BANNED. Use var(--s-*) / --t-* / --c-* only.
+ * html/body, @font-face, .container, .section, типографика по умолчанию.
+ */
+
+/* === @font-face — Inter local woff2 (4 weights) === */
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* === Body / typography defaults === */
+body {
+  font-family: var(--font-primary);
+  font-size: var(--t-body);
+  color: var(--c-text);
+  background: var(--c-bg);
+  font-weight: 400;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: var(--lh-section);
+  color: var(--c-text);
+}
+
+h1 {
+  font-size: var(--t-hero);
+  letter-spacing: var(--ls-hero);
+  line-height: var(--lh-hero);
+}
+
+h2 {
+  font-size: var(--t-section);
+}
+
+h3 {
+  font-size: var(--t-sub);
+  letter-spacing: var(--ls-sub);
+}
+
+p {
+  line-height: var(--lh-body);
+  color: var(--c-text-muted);
+}
+
+/* === Container — единственный паттерн для горизонтальных отступов === */
+.container {
+  width: min(100% - 2 * var(--container-x), var(--container-max));
+  margin-inline: auto;
+}
+
+/* === Section — единственный паттерн для вертикальных отступов === */
+.section {
+  padding-block: var(--section-y);
+  border-top: var(--border-thin);
+}
+.section--no-border { border-top: none; }
+
+/* === Visibility utilities (для mobile-only / desktop-only elements) === */
+.is-mobile-only { display: none; }
+.is-desktop-only { display: initial; }
+
+@media (max-width: 767.98px) {
+  .is-mobile-only { display: initial; }
+  .is-desktop-only { display: none; }
+}

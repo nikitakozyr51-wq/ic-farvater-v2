@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F5F3EF">
+  <title>IC Фарватер — поставки электронных компонентов</title>
+  <meta name="description" content="ООО «Айси Фарватер» — поставщик электронной компонентной базы в Санкт-Петербурге. Микросхемы, разъёмы, СВЧ-компоненты, преобразователи напряжения.">
+
+  <!-- Font preload (only 500, used in headings — most visible) -->
+  <link rel="preload" href="assets/fonts/Inter-500.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- CSS — order matters: reset → tokens → base → layout → components → animations -->
+  <link rel="stylesheet" href="css/reset.css?v=1">
+  <link rel="stylesheet" href="css/tokens.css?v=1">
+  <link rel="stylesheet" href="css/base.css?v=1">
+  <link rel="stylesheet" href="css/layout.css?v=1">
+  <link rel="stylesheet" href="css/components.css?v=1">
+  <link rel="stylesheet" href="css/animations.css?v=1">
+</head>
+<body>
+
+  <!-- Header (verified: ISnHK desktop, xAjS9 mobile) -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="header__logo">ic farvater</a>
+
+      <nav class="header__nav" aria-label="Главная навигация">
+        <a href="pages/products.html" class="header__nav-link">каталог</a>
+        <a href="#uslugi" class="header__nav-link">услуги</a>
+        <a href="pages/about.html" class="header__nav-link">о компании</a>
+        <a href="pages/contacts.html" class="header__nav-link">контакты</a>
+      </nav>
+
+      <div class="header__right">
+        <button class="header__search" type="button" aria-label="Поиск по каталогу">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+      </div>
+
+      <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero — TBD (step 5) -->
+    <section class="hero"></section>
+
+    <!-- Разъёмы (01) — TBD (step 6) -->
+    <section class="section section--products" id="razemy"></section>
+
+    <!-- О компании (02) — TBD (step 7) -->
+    <section class="section section--about" id="o-kompanii"></section>
+
+    <!-- СВЧ-компоненты — TBD (step 8) -->
+    <section class="section section--products" id="svch"></section>
+
+    <!-- Кабельные сборки — TBD (step 9) -->
+    <section class="section section--about" id="kabelnye"></section>
+
+    <!-- Импортозамещение — TBD (step 10) -->
+    <section class="section section--promise" id="importozameshchenie"></section>
+
+    <!-- Услуги — TBD (step 11) -->
+    <section class="section section--services" id="uslugi"></section>
+  </main>
+
+  <!-- Footer — TBD (step 12) -->
+  <footer class="footer"></footer>
+
+  <!-- JS — vendor first, then app, then animations -->
+  <script src="js/vendor/lenis.min.js" defer></script>
+  <script src="js/vendor/gsap.min.js" defer></script>
+  <script src="js/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="js/main.js?v=1" defer></script>
+  <script src="js/animations.js?v=1" defer></script>
+  <script src="js/nbsp.js?v=1" defer></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+/* IC Фарватер v2 — Components
+ * ⚠ HARDCODE PX BANNED. Use var(--s-*) / --t-* / --c-* only.
+ *
+ * Mobile-first. Внутри каждого компонента:
+ *   base = mobile (390px) → @media (min-width: 768px) = tablet → @media (min-width: 1280px) = desktop.
+ *
+ * Order:
+ *   1. Header
+ *   2. Hero
+ *   3. Section header (title + counter)
+ *   4. Product cards (cards-4-to-2 grid items)
+ *   5. About / Cables (UY split)
+ *   6. Promise / Импортозамещение (3-to-1 cards)
+ *   7. Services (split → accordion via flex-flip)
+ *   8. Footer
+ *   9. Buttons (pill primary / outline / full-width)
+ *  10. Forms (Contacts page)
+ *  11. Mobile-only (menu drawer, drawer КП, toolbar)
+ *
+ * Каждый раздел: section-header comment, mobile base, потом @media min-width up.
+ */
+
+/* ============================================================
+   1. HEADER (verified ISnHK desktop, xAjS9 mobile)
+
+   Mobile (default): logo + burger, 60h, border-bottom, padding [0,24] (container)
+   Desktop (≥1024): logo + nav + search + КП, 96h, no border, padding [24,60] (container)
+   ============================================================ */
+
+.header {
+  background: var(--c-bg);
+  border-bottom: var(--border-thin);
+  position: relative;
+  z-index: 50;
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-h-mobile);
+}
+
+.header__logo {
+  font-family: var(--font-primary);
+  font-size: var(--t-logo);
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  color: var(--c-text);
+}
+
+/* Mobile (default): nav + right hidden, burger visible */
+.header__nav,
+.header__right {
+  display: none;
+}
+
+.header__burger {
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+.header__burger svg {
+  display: block;
+}
+
+/* Desktop overrides */
+@media (min-width: 1024px) {
+  .header {
+    border-bottom: none;
+  }
+  .header__inner {
+    height: var(--header-h-desktop);
+    gap: var(--s-6);
+  }
+  .header__burger {
+    display: none;
+  }
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--header-nav-gap);
+    flex: 1;
+    justify-content: center;
+  }
+  .header__nav-link {
+    font-size: var(--t-nav);
+    font-weight: 500;
+    color: var(--c-text);
+    transition: opacity 0.2s ease;
+  }
+  .header__nav-link:hover {
+    opacity: 0.6;
+  }
+  .header__right {
+    display: flex;
+    align-items: center;
+    gap: var(--header-right-gap);
+  }
+  .header__search {
+    color: var(--c-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    transition: opacity 0.2s ease;
+  }
+  .header__search:hover {
+    opacity: 0.6;
+  }
+  .header__cta {
+    background: var(--c-text);
+    color: var(--c-bg);
+    font-size: var(--t-cta);
+    font-weight: 500;
+    padding: var(--pill-py-sm) var(--pill-px-sm);
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.2s ease;
+  }
+  .header__cta:hover {
+    opacity: 0.85;
+  }
+}
+

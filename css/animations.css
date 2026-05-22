@@ -1,0 +1,55 @@
+/* IC Фарватер v2 — Animations
+ * Копия v1 1:1 — JS animations.js завязан на [data-animate=*] hooks.
+ * GPU-friendly: only transform + opacity.
+ */
+
+/* ─── Fade-up ─── */
+[data-animate="fade-up"],
+[data-animate="fade-up-stagger"] > * {
+  opacity: 0;
+  transform: translateY(30px) translateZ(0);
+}
+
+/* ─── Split text ─── */
+.word {
+  display: inline-block;
+  clip-path: inset(0 0 -0.15em 0);
+}
+.word-inner {
+  display: inline-block;
+  transform: translateY(130%);
+}
+
+/* ─── Scale reveal ─── */
+[data-animate="scale-reveal"] {
+  overflow: hidden;
+}
+[data-animate="scale-reveal"] > img,
+[data-animate="scale-reveal"] > video,
+[data-animate="scale-reveal"] > div {
+  opacity: 0;
+  transform: scale(1.05) translateZ(0);
+}
+
+/* ─── Line draw ─── */
+[data-animate="line-draw"] {
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate="fade-up"],
+  [data-animate="fade-up-stagger"] > *,
+  [data-animate="scale-reveal"] > img,
+  [data-animate="scale-reveal"] > video,
+  [data-animate="scale-reveal"] > div,
+  [data-animate="line-draw"] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .word-inner {
+    transform: none !important;
+  }
+}

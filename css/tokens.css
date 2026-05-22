@@ -1,0 +1,105 @@
+/* IC Фарватер v2 — Design Tokens
+ * ⚠ HARDCODE PX BANNED. Use var(--s-*) / --t-* / --c-* only.
+ * Source: Pencil frame "Drawer V4 (grid+tokens)" + IC Main v4 desktop/mobile.
+ *
+ * Grid (verified from CwcPP/CIIyG):
+ *   Desktop: 12 cols × 88px + 11 gutter × 24px = 1320 content, margin 60 → viewport 1440
+ *   Mobile:  4 cols × 76.5px + 3 gutter × 12px = 342 content, margin 24 → viewport 390
+ */
+
+:root {
+  /* === Colors (бежево-синие, IC v4 палитра) === */
+  --c-bg:         #F5F3EF;
+  --c-bg-alt:     #E9E8EB;
+  --c-text:       #112F6E;
+  --c-text-muted: #6B7A94;
+  --c-border:     #D7D3CB;
+
+  /* Inverted theme (для footer + privacy/consent mobile + drawer КП) — verified VtHuL */
+  --c-bg-dark:           #112F6E;
+  --c-text-on-dark:      #F5F3EF;
+  --c-muted-on-dark:     #F5F3EFCC;  /* 80% — sub в hero на dark image */
+  --c-label-on-dark:     #F5F3EFB3;  /* 70% — labels в drawer КП */
+  --c-tertiary-on-dark:  #F5F3EF99;  /* 60% — hints, ghost text */
+  --c-border-on-dark:    #F5F3EF26;  /* 15% — dividers */
+  --c-input-on-dark:     #F5F3EF40;  /* 25% — input border-bottom */
+
+  /* === Single accent — ОДИН для всего IC (errors_log #1) === */
+  --c-accent: var(--c-text);
+
+  /* === Typography === */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Fluid type scale — clamp() instead of @media-jumps (verified from Pencil) */
+  --t-hero:       clamp(36px, 4.7vw, 56px);   /* mobile 36, desktop 56 (verified hTqZQ vs pt5JK) */
+  --t-section:    clamp(24px, 2.5vw, 30px);   /* mobile 24, desktop 30 (verified bBLRC vs m5SGn4) */
+  --t-sub:        clamp(18px, 1.5vw, 24px);   /* product-detail h3 */
+  --t-list-row:   clamp(18px, 1.7vw, 20px);   /* services items: 18 mobile, 20 desktop */
+  --t-body:       16px;                       /* desktop body */
+  --t-body-mob:   15px;                       /* mobile body — verified contacts/about mobile */
+  --t-card-name:  15px;
+  --t-card-desc:  13px;
+  --t-label:      13px;                       /* counters, eyebrows */
+  --t-disclaimer: 11px;                       /* mobile form privacy disclaimer */
+  --t-logo:       18px;                       /* header logo (verified MbsMu/EIVlV) */
+  --t-nav:        14px;                       /* header nav links (verified gPVWd) */
+  --t-cta:        13px;                       /* header CTA / btn-inverted (verified YiYoV) */
+  --t-cta-mobile: 14px;                       /* fullwidth CTA on mobile sections */
+
+  /* Letter-spacing (verified from Pencil) */
+  --ls-hero:    -1.5px;
+  --ls-section: -0.5px;
+  --ls-sub:     -0.3px;
+  --ls-label:   0.45px;
+
+  /* Line-height */
+  --lh-hero:    1.1;
+  --lh-section: 1.15;
+  --lh-body:    1.55;
+  --lh-row:     1.62;
+
+  /* === Spacing — 8px scale === */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --s-9: 80px; --s-10: 96px; --s-11: 120px; --s-12: 160px;
+
+  /* === Section / Container === */
+  --section-y:     clamp(48px, 7.5vw, 100px);  /* vertical section padding, fluid */
+  --container-x:   clamp(24px, 4.2vw, 60px);   /* horizontal container padding */
+  --container-max: 1440px;                     /* СТРОГИЙ кэп — на 1920 поля по бокам */
+
+  /* === Hierarchy of gaps (Müller, errors_log #24) === */
+  --gap-internal: var(--s-2);   /* 8 — внутри text-pair */
+  --gap-intra:    var(--s-6);   /* 32 — между группами в секции */
+  --gap-section:  var(--s-9);   /* 80 — между секциями (desktop) */
+
+  /* === Утверждённые константы (НЕ менять) === */
+  --row-height: 75px;          /* list rows + accordion items + alignItems:center + padding:0 */
+  --row-height-spec: 52px;     /* spec rows on product detail (verified jSrAr) */
+  --badge-min:  36px;          /* filter counters / badges (errors #no_shrinking_badge) */
+  --header-h-desktop: 96px;
+  --header-h-mobile:  60px;
+  --hero-h-desktop:   720px;
+  --hero-h-mobile:    480px;
+
+  /* === Breakpoints (для JS / документации) === */
+  --bp-mobile-max:  767.98px;
+  --bp-tablet:      768px;
+  --bp-desktop:     1280px;
+  --bp-wide:        1440px;
+
+  /* Border (consistent thin hairline) */
+  --border-thin: 1px solid var(--c-border);
+
+  /* === Pill button (Pencil-verified non-grid values) === */
+  --pill-py-sm: 10px;   /* small inline pill (header КП, "подробнее", btn-inverted) — Pencil [10,18]/[10,20] */
+  --pill-px-sm: 18px;
+  --pill-py-md: 12px;   /* medium pill (hero CTA, section CTA) — Pencil [12,24] */
+  --pill-px-md: 24px;
+  --pill-py-lg: 14px;   /* large pill (drawer submit) — Pencil [14,28] */
+  --pill-px-lg: 28px;
+
+  /* === Header heights (verified ISnHK/xAjS9) === */
+  --header-nav-gap:   30px;  /* gap между nav items desktop (verified uwM5S gap:30) */
+  --header-right-gap: 16px;  /* gap между icon + cta desktop (verified DbHL7 gap:16) */
+}
