@@ -103,4 +103,13 @@
   /* === Header heights (verified ISnHK/xAjS9) === */
   --header-nav-gap:   30px;  /* gap между nav items desktop (verified uwM5S gap:30) */
   --header-right-gap: 16px;  /* gap между icon + cta desktop (verified DbHL7 gap:16) */
+
+  /* === Section inner gap (header → grid) === */
+  --section-gap: clamp(24px, 4.5vw, 60px);  /* mobile 24 → desktop 60 (verified bBLRC gap:60, m5SGn4 gap:24) */
+
+  /* === Card grid gaps === */
+  --grid-gap:    clamp(16px, 1.8vw, 24px);  /* between cards: mobile 16, desktop 24 */
+  --card-gap:    clamp(12px, 1.2vw, 16px);  /* img → info inside card: mobile 12, desktop 16 */
+  --info-gap-d:  6px;                       /* name → desc desktop (verified qXA0D gap:6, Pencil edge-case non-grid) */
+  --info-gap-m:  8px;                       /* name → desc mobile (verified VlBHR gap:8) */
 }

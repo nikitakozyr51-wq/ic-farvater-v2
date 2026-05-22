@@ -126,6 +126,114 @@
 }
 
 /* ============================================================
+   3. SECTION HEAD (h2 + counter) — used by all .section-* blocks
+   Mobile: no border-bottom, inline horizontal (Q6Kfit)
+   Desktop: border-bottom 1px, inline horizontal (oHsCs)
+   ============================================================ */
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding-bottom: 0;
+}
+
+.section-head__title {
+  font-size: var(--t-section);
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: var(--lh-section);
+  color: var(--c-text);
+}
+
+.section-head__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .section-head {
+    padding-bottom: var(--s-5);
+    border-bottom: var(--border-thin);
+  }
+}
+
+/* ============================================================
+   4. CARD GRID (products: разъёмы / свч)
+   Mobile: 2-col, gap 16, img 163h, internal gap 12, info-gap 8, padding-top 4 (m5SGn4)
+   Desktop: 4-col, gap 24, img 280h, internal gap 16, info-gap 6, padding-top 8 (rS787)
+   ============================================================ */
+
+.section--products .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+}
+
+.card__img {
+  background: var(--c-bg-alt);
+  aspect-ratio: 1 / 1;    /* mobile 163:163 = 1:1 (verified m5SGn4) */
+  overflow: hidden;
+}
+.card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (min-width: 1024px) {
+  .card__img {
+    aspect-ratio: 312 / 280; /* desktop card 312w × 280h (verified bBLRC) */
+  }
+}
+
+.card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--info-gap-m);
+  padding-top: var(--s-1);
+}
+
+.card__name {
+  font-size: var(--t-card-name);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--c-text);
+}
+
+.card__desc {
+  font-size: var(--t-card-desc);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--c-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .card__info {
+    gap: var(--info-gap-d);
+    padding-top: var(--s-2);
+  }
+}
+
+/* ============================================================
    1. HEADER (verified ISnHK desktop, xAjS9 mobile)
 
    Mobile (default): logo + burger, 60h, border-bottom, padding [0,24] (container)
