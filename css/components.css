@@ -128,6 +128,132 @@
 }
 
 /* ============================================================
+   5. SECTION EYEBROW (caption-line "name · (NN)" — used by UY-stack sections)
+   Pencil pattern for about/cables (NOT same as section-head superscript).
+   ============================================================ */
+
+.section-eyebrow {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  line-height: var(--lh-row);
+  color: var(--c-text-muted);
+}
+
+/* ============================================================
+   6. PILL BUTTONS (reusable, sizes from Pencil)
+   --solid: dark blue bg + cream text (about/cables CTA)
+   ============================================================ */
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;        /* don't stretch in flex column */
+  width: fit-content;            /* hard-cap width to content */
+  border-radius: 100px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.btn-pill:hover { opacity: 0.88; }
+
+.btn-pill--solid {
+  background: var(--c-text);
+  color: var(--c-bg);
+  font-size: var(--t-cta-sm);
+  padding: var(--pill-py-sm) var(--pill-px-sm);
+}
+
+/* Mobile: section CTAs are full-width 48h pills (override desktop fit-content) */
+@media (max-width: 1023.98px) {
+  .section--about .btn-pill,
+  .section--services .btn-pill {
+    width: 100%;
+    height: 48px;
+    padding: 0;
+    align-self: stretch;
+  }
+}
+
+/* ============================================================
+   7. ABOUT (UY 2-col image right desktop / UY-stack mobile)
+   Pencil: J8otlu desktop (gap 80, padding [60,80,60,60]) / wj9r3 mobile (gap 24, padding [56,24])
+   ============================================================ */
+
+/* Mobile order (Pencil wj9r3): head → image → body → btn.
+   Desktop order (Pencil J8otlu): image RIGHT (spans all rows), head+body+btn LEFT.
+   All children are direct grid items — grid-column + grid-row for desktop placement. */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-5); /* 24 mobile */
+}
+
+.about-grid__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2); /* 8 mobile (eyebrow → h2) */
+}
+
+.about-grid__image {
+  background: var(--c-bg-alt);
+  aspect-ratio: 1 / 1;  /* mobile 342×342 (Pencil shows about-anim.webp) */
+  overflow: hidden;
+  display: block;
+}
+.about-grid__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-grid__title {
+  font-size: var(--t-section);
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: var(--lh-section);
+  color: var(--c-text);
+}
+
+.about-grid__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4); /* 16 — between paragraphs */
+}
+
+.about-grid__body p {
+  font-size: var(--t-paragraph); /* 15 */
+  line-height: var(--lh-body);
+  color: var(--c-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--s-9); /* 80 */
+    row-gap: 22px;
+    align-items: start;
+  }
+  .about-grid__head,
+  .about-grid__body,
+  .about-grid .btn-pill {
+    grid-column: 1;
+    padding-inline-start: var(--s-7); /* 40 inset for UY text col padding */
+  }
+  .about-grid__image {
+    grid-column: 2;
+    grid-row: 1 / span 3; /* spans head + body + btn */
+    aspect-ratio: 600 / 480;
+    align-self: center;
+  }
+  .about-grid__head { gap: 22px; }
+}
+
+/* ============================================================
    3. SECTION HEAD (h2 + inline-superscript counter)
    Pencil pattern: counter sits IMMEDIATELY after title (zero gap),
    top-aligned (y=0), so visually appears as superscript.
