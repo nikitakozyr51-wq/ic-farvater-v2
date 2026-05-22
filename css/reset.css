@@ -26,12 +26,13 @@ html::-webkit-scrollbar {
 body {
   min-height: 100vh;
   line-height: 1.55;
-  /* Font rendering tuned to closer match Pencil canvas output */
+  /* Font rendering — official Inter (rsms.me) + Figma/Pencil match recommendations */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
-  font-optical-sizing: auto;
+  font-feature-settings: 'liga' 1, 'calt' 1;  /* Rasmus's official — kerning is on by default */
+  font-optical-sizing: auto;                    /* enables opsz axis for variable Inter */
+  font-synthesis: none;                         /* prevent faux-bold on missing weights */
 }
 
 img, picture, video, canvas, svg {

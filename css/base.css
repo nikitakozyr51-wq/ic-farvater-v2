@@ -4,32 +4,20 @@
  */
 
 /* === @font-face — Inter local woff2 (4 weights) === */
+/* Inter Variable — has wght (100-900) + opsz (14-32) axes.
+   Pencil uses opsz-aware rendering — without this Inter looks "different weight" in browser. */
 @font-face {
   font-family: 'Inter';
-  src: url('../assets/fonts/Inter-400.woff2') format('woff2');
-  font-weight: 400;
+  src: url('../assets/fonts/InterVariable.woff2') format('woff2-variations');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('../assets/fonts/Inter-500.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('../assets/fonts/Inter-600.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('../assets/fonts/Inter-700.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
+  src: url('../assets/fonts/InterVariable-Italic.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }
 
