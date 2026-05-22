@@ -60,7 +60,7 @@
 .hero__text {
   display: flex;
   flex-direction: column;
-  gap: var(--s-5);
+  /* NO flex gap — per-child margin-top для pixel-perfect Pencil match */
 }
 
 .hero__title {
@@ -79,6 +79,7 @@
   font-size: var(--t-hero-sub);
   color: var(--c-muted-on-dark);
   line-height: var(--lh-body);
+  margin-top: var(--s-5); /* 24 — Pencil gap h2 → sub */
 }
 
 .hero__cta {
@@ -92,7 +93,7 @@
   justify-content: center;
   height: 48px;
   width: 100%;
-  margin-top: var(--s-2);
+  margin-top: var(--s-2); /* 8 — Pencil cta-row padding-top mobile */
   transition: opacity 0.2s ease;
 }
 .hero__cta:hover { opacity: 0.92; }
@@ -121,20 +122,18 @@
     padding: var(--pill-py-md) var(--pill-px-md);
     font-size: var(--t-cta-md);
     align-self: flex-start;
-    margin-top: var(--s-4);
+    margin-top: var(--s-4); /* 16 — Pencil cta-row padding-top desktop */
   }
 }
 
 /* ============================================================
-   3. SECTION HEAD (h2 + counter) — used by all .section-* blocks
-   Mobile: no border-bottom, inline horizontal (Q6Kfit)
-   Desktop: border-bottom 1px, inline horizontal (oHsCs)
+   3. SECTION HEAD (h2 + inline-superscript counter)
+   Pencil pattern: counter sits IMMEDIATELY after title (zero gap),
+   top-aligned (y=0), so visually appears as superscript.
+   Mobile: no border-bottom (Q6Kfit). Desktop: border-bottom 1px (oHsCs).
    ============================================================ */
 
 .section-head {
-  display: flex;
-  align-items: baseline;
-  gap: var(--s-3);
   padding-bottom: 0;
 }
 
@@ -144,12 +143,16 @@
   letter-spacing: var(--ls-section);
   line-height: var(--lh-section);
   color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0;
 }
 
 .section-head__counter {
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
+  line-height: 1;
   color: var(--c-text-muted);
 }
 
