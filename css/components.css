@@ -138,32 +138,18 @@
   padding-block: 56px 32px;
 }
 
+/* Mobile: HTML order = logo-block → newsletter → navs → contact (Pencil YsYD7) */
 .footer__top {
   display: flex;
   flex-direction: column;
-  gap: 40px; /* Pencil YsYD7 mobile gap */
+  gap: 40px;
 }
-
+.footer__logo-block { display: flex; flex-direction: column; gap: var(--s-4); }
 .footer__navs {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--s-4);
 }
-
-/* Mobile order (Pencil YsYD7): logo+tagline → newsletter → 2-col navs → contact → bottom */
-@media (max-width: 1023.98px) {
-  .footer__info { order: 1; gap: 0; }
-  .footer__info .footer__contact { order: 99; }  /* contact moves to its own visual block after navs */
-  .footer__newsletter { order: 2; }
-  .footer__navs { order: 3; }
-  /* Pull contact out of info block: move via order on grandchild requires display:contents on info */
-  .footer__info { display: contents; }
-  .footer__logo-block { order: 1; }
-  .footer__contact { order: 4; }
-}
-
-.footer__info { display: flex; flex-direction: column; gap: var(--s-5); }
-.footer__logo-block { display: flex; flex-direction: column; gap: var(--s-4); }
 .footer__logo {
   font-family: var(--font-primary);
   font-size: 32px;
@@ -183,7 +169,7 @@
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
-  color: var(--c-label-on-dark);
+  color: var(--c-tertiary-on-dark); /* Pencil 40% white (#F5F3EF66), not 70% */
   line-height: 1.4;
 }
 .footer__address {
@@ -256,21 +242,21 @@
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
-  margin-top: var(--s-5);
-  padding-top: var(--s-5);
+  margin-top: 0;          /* mobile: no extra top margin (Pencil padding-top 24 is enough) */
+  padding-top: 24px;      /* Pencil JUKlU padding-top 24 */
   border-top: 1px solid var(--c-border-on-dark);
 }
 .footer__copyright {
   display: flex;
   flex-direction: column;
-  gap: var(--s-1);
+  gap: 0; /* Pencil: no gap between © and ИНН — only line-height spacing */
 }
 .footer__copyright p {
   font-size: 13px;
   color: var(--c-tertiary-on-dark);
   line-height: 1.5;
 }
-.footer__copyright--tertiary { font-size: 12px !important; }
+.footer__copyright--tertiary { font-size: 12px; }
 .footer__legal {
   display: flex;
   flex-direction: column;
@@ -288,22 +274,33 @@
   .footer__top {
     display: grid;
     grid-template-columns: 312px 312px 312px 312px;
+    grid-template-rows: auto auto;
     gap: var(--s-5);
     padding-bottom: 76px;
     justify-content: space-between;
   }
-  .footer__info { display: flex; }  /* reset display:contents from mobile */
-  .footer__navs { display: contents; }  /* unwrap to direct grid children */
+  .footer__navs { display: contents; }
+  /* Explicit grid placement: col1 logo+contact stacked, col2 products, col3 site, col4 newsletter */
+  .footer__logo-block { grid-column: 1; grid-row: 1; }
+  .footer__contact    { grid-column: 1; grid-row: 2; }
+  .footer__nav--products { grid-column: 2; grid-row: 1 / span 2; }
+  .footer__nav--site     { grid-column: 3; grid-row: 1 / span 2; }
+  .footer__newsletter    { grid-column: 4; grid-row: 1 / span 2; }
+  /* Desktop: site/products nav prefix with "( ) " per Pencil */
+  .footer__nav a::before { content: "( ) "; }
   .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; }
   .footer__logo-block { gap: var(--s-3); }
-  .footer__tagline { display: none; /* desktop replaces tagline with phone+email in info col */ }
-  .footer__contact { gap: var(--s-5); }
+  .footer__tagline { display: none; }
+  .footer__contact { gap: var(--s-3); margin-top: var(--s-5); }
   .footer__address { font-size: 15px; line-height: 1.62; max-width: 280px; }
   .footer__phone { font-size: 19px; font-weight: 400; letter-spacing: 0; }
   .footer__email { font-size: 15px; }
-  .footer__label { display: none; /* desktop: no "контакты" label, items directly in info col */ }
-  .footer__newsletter-desc { display: block; }
+  .footer__label { display: none; }
+  .footer__nav { gap: var(--s-5); }
+  .footer__nav a { font-size: 16px; }
+  .footer__newsletter-title { font-size: 19px; font-weight: 400; letter-spacing: 0; }
   .footer__email-form { height: 40px; padding: 0 16px; max-width: 312px; }
+  .footer__disclaimer { font-size: 12px; }
   .footer__bottom {
     flex-direction: row;
     justify-content: space-between;
@@ -383,7 +380,8 @@
     gap: var(--s-6); /* 32 desktop */
   }
   /* Services CTA — Pencil C8qK0k padding [12,24] font 14 (medium pill, NOT small) */
-  .services-grid__cta {
+  /* Specificity bump so .btn-pill--solid (declared later) doesn't override */
+  .btn-pill.services-grid__cta {
     font-size: var(--t-cta-md); /* 14 */
     padding: var(--pill-py-md) var(--pill-px-md); /* 12 24 */
   }
@@ -518,25 +516,21 @@
    Pencil: J8otlu desktop (gap 80, padding [60,80,60,60]) / wj9r3 mobile (gap 24, padding [56,24])
    ============================================================ */
 
-/* Mobile order (Pencil wj9r3): head → image → body → btn.
-   Desktop order (Pencil J8otlu): image RIGHT (spans all rows), head+body+btn LEFT.
-   All children are direct grid items — grid-column + grid-row for desktop placement. */
+/* New flat structure (Pencil J8otlu / wj9r3):
+   DOM: <uy-grid> [picture image] [div col with eyebrow + h2 + 3p + btn]
+   Mobile: image on top (default flow), col below
+   Desktop: 2-col grid, image one side (image-right modifier flips), col other side
+   Single flat .uy-grid__col with gap:22 matches Pencil text col rhythm exactly. */
 
 .uy-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--s-5); /* 24 mobile */
-}
-
-.uy-grid__head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2); /* 8 mobile (eyebrow → h2) */
+  gap: var(--s-5); /* 24 mobile between picture and col */
 }
 
 .uy-grid__image {
   background: var(--c-bg-alt);
-  aspect-ratio: 1 / 1;  /* mobile 342×342 (Pencil shows about-anim.webp) */
+  aspect-ratio: 1 / 1;  /* mobile 342×342 */
   overflow: hidden;
   display: block;
 }
@@ -547,6 +541,20 @@
   object-fit: cover;
 }
 
+/* About mobile: NO image (Pencil IZs99 enabled:false → only grey rectangle) */
+@media (max-width: 1023.98px) {
+  .uy-grid__image--no-mobile img {
+    display: none;
+  }
+}
+
+/* Single flat column for text content — Pencil gap=22 throughout */
+.uy-grid__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5); /* mobile 24 */
+}
+
 .uy-grid__title {
   font-size: var(--t-section);
   font-weight: 500;
@@ -555,48 +563,44 @@
   color: var(--c-text);
 }
 
-.uy-grid__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-4); /* 16 — between paragraphs */
-}
-
-.uy-grid__body p {
+.uy-grid__col p {
   font-size: var(--t-paragraph); /* 15 */
   line-height: var(--lh-body);
   color: var(--c-text-muted);
 }
+.uy-grid__col p.section-eyebrow { /* eyebrow keeps own style */
+  font-size: var(--t-label);
+  color: var(--c-text-muted);
+}
+
+/* Specificity bump: .btn-pill.uy-grid__btn (2 classes) wins over .btn-pill--solid (1 class) declared later */
+.btn-pill.uy-grid__btn {
+  padding: var(--pill-py-sm) 20px; /* Pencil [10,20] verified sdDBg/Y5D2oT */
+}
 
 @media (min-width: 1024px) {
   .uy-grid {
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--s-9); /* 80 */
-    row-gap: 22px;
-    align-items: start;
+    grid-template-columns: 600px 600px;
+    column-gap: 60px;
+    align-items: center;
   }
-  /* Default: image LEFT (Pencil About J8otlu — image @ x=60) */
+  /* Default: image LEFT (Pencil About J8otlu) */
   .uy-grid__image {
     grid-column: 1;
-    grid-row: 1 / span 3;
     aspect-ratio: 600 / 480;
     align-self: center;
   }
-  .uy-grid__head,
-  .uy-grid__body {
+  .uy-grid__col {
     grid-column: 2;
-    padding-inline: 40px; /* Pencil text col padding [0,40] — symmetric */
+    padding-inline: 40px; /* Pencil FbYhd padding [0,40] symmetric */
+    gap: 22px; /* Pencil verified vertical gap */
+    align-self: center;
   }
-  .uy-grid .btn-pill {
-    grid-column: 2;
-    margin-inline: 40px; /* btn aligned with text via margin, NOT padding (so own pill padding intact) */
-    padding: var(--pill-py-sm) 20px; /* Pencil [10,20] (not [10,18]) */
-  }
-  /* Modifier: image RIGHT (Pencil Cables xT0gh — image @ x=760) */
+  /* Modifier: image RIGHT (Pencil Cables xT0gh) */
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
-  .uy-grid--image-right .uy-grid__head,
-  .uy-grid--image-right .uy-grid__body,
-  .uy-grid--image-right .uy-grid .btn-pill { grid-column: 1; }
-  .uy-grid__head { gap: 22px; }
+  .uy-grid--image-right .uy-grid__col   { grid-column: 1; }
+  /* Center the grid since it's fixed 600+60+600 = 1260 inside 1320 container */
+  .section--about > .container { display: flex; justify-content: center; }
 }
 
 /* ============================================================
