@@ -13,15 +13,25 @@ html {
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
   scroll-behavior: smooth;
-  /* Reserve scrollbar space → content width stable, pixel-perfect overlays work */
-  scrollbar-gutter: stable;
+  /* Always scroll → no layout jumping. Scrollbar hidden so body width === viewport (matches Pencil canvas).
+     User scrolls via wheel/keyboard/touch — page is obviously scrollable from content extending below fold. */
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  width: 0;
+  display: none;
 }
 
 body {
   min-height: 100vh;
   line-height: 1.55;
+  /* Font rendering tuned to closer match Pencil canvas output */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  font-optical-sizing: auto;
 }
 
 img, picture, video, canvas, svg {
