@@ -94,7 +94,8 @@
   height: 48px;
   width: 100%;
   line-height: 1;
-  margin-top: var(--s-2); /* 8 — Pencil cta-row padding-top mobile */
+  /* Pencil mobile: tqaZH gap 24 between children + ZZ8ma padding-top 8 = visual 32 */
+  margin-top: 32px;
   transition: opacity 0.2s ease;
 }
 .hero__cta:hover { opacity: 0.92; }
@@ -246,9 +247,9 @@
 .footer__bottom {
   display: flex;
   flex-direction: column;
-  gap: 0;                 /* siblings get exact spacing via padding-top */
-  margin-top: 0;
-  padding-top: 24px;      /* Pencil JUKlU padding-top 24 */
+  gap: 0;
+  margin-top: 40px;       /* Pencil YsYD7 gap=40 between footer__top last child and bottom block */
+  padding-top: 24px;      /* Pencil JUKlU padding-top 24 (inside bottom, below border) */
   border-top: 1px solid var(--c-border-on-dark);
 }
 .footer__copyright {
@@ -553,11 +554,11 @@
   }
 }
 
-/* Single flat column for text content — Pencil gap=22 throughout */
-.uy-grid__col {
+/* New mobile DOM order (Pencil wj9r3/g1I2K): head → image → body → btn */
+.uy-grid__head {
   display: flex;
   flex-direction: column;
-  gap: var(--s-5); /* mobile 24 */
+  gap: var(--s-2); /* 8 between eyebrow and h2 */
 }
 
 .uy-grid__title {
@@ -568,13 +569,14 @@
   color: var(--c-text);
 }
 
-.uy-grid__col p {
+.uy-grid__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4); /* 16 between paragraphs */
+}
+.uy-grid__body p {
   font-size: var(--t-paragraph); /* 15 */
   line-height: var(--lh-body);
-  color: var(--c-text-muted);
-}
-.uy-grid__col p.section-eyebrow { /* eyebrow keeps own style */
-  font-size: var(--t-label);
   color: var(--c-text-muted);
 }
 
@@ -586,26 +588,26 @@
 @media (min-width: 1024px) {
   .uy-grid {
     grid-template-columns: 600px 600px;
+    grid-template-rows: auto auto auto;
     column-gap: 60px;
+    row-gap: 22px;
     align-items: center;
   }
-  /* Default: image LEFT (Pencil About J8otlu) */
+  /* Default: image LEFT spans 3 rows, head/body/btn stack in col 2 */
   .uy-grid__image {
     grid-column: 1;
-    grid-row: 1;     /* EXPLICIT row to prevent sparse auto-flow stacking on modifier (Cables) */
+    grid-row: 1 / span 3;
     aspect-ratio: 600 / 480;
     align-self: center;
   }
-  .uy-grid__col {
-    grid-column: 2;
-    grid-row: 1;     /* EXPLICIT row — fixes Cables col stacking below image */
-    padding-inline: 40px; /* Pencil FbYhd padding [0,40] symmetric */
-    gap: 22px; /* Pencil verified vertical gap */
-    align-self: center;
-  }
-  /* Modifier: image RIGHT (Pencil Cables xT0gh) */
+  .uy-grid__head { grid-column: 2; grid-row: 1; padding-inline: 40px; gap: 22px; }
+  .uy-grid__body { grid-column: 2; grid-row: 2; padding-inline: 40px; }
+  .uy-grid__btn  { grid-column: 2; grid-row: 3; margin-inline: 40px; }
+  /* Modifier: image RIGHT (Cables) — flip columns */
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
-  .uy-grid--image-right .uy-grid__col   { grid-column: 1; }
+  .uy-grid--image-right .uy-grid__head  { grid-column: 1; }
+  .uy-grid--image-right .uy-grid__body  { grid-column: 1; }
+  .uy-grid--image-right .uy-grid__btn   { grid-column: 1; }
   /* Center the grid since it's fixed 600+60+600 = 1260 inside 1320 container */
   .section--about > .container { display: flex; justify-content: center; }
 }
