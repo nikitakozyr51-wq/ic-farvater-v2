@@ -1,0 +1,279 @@
+/* IC Фарватер v2 — Inner Page Styles (About / Products / Contacts / Privacy / Consent)
+ * ⚠ HARDCODE PX BANNED. Use var(--s-*) / --t-* / --c-* only.
+ *
+ * Inner pages have:
+ *   1. Header 64h with border-bottom (vs main 96h no border)
+ *   2. Active nav link styling (current page = bold, others muted)
+ *   3. Page Top section with h1 + desc + image
+ *   4. Various content sections (mission, cert, faq, etc.)
+ *   5. Footer with big "ic farvater" wordmark (120px)
+ */
+
+/* ============================================================
+   1. HEADER --inner (Pencil B05Nb9 desktop 64h)
+   ============================================================ */
+
+.header--inner {
+  background: var(--c-bg);
+  border-bottom: var(--border-thin);
+}
+
+.header--inner .header__inner {
+  height: 60px; /* mobile */
+}
+
+@media (min-width: 1024px) {
+  .header--inner .header__inner {
+    height: 64px;
+  }
+}
+
+.header__nav--inner {
+  display: none; /* mobile: hidden, burger shown instead */
+  align-items: center;
+  gap: 40px; /* Pencil TsZKk gap:40 */
+}
+@media (min-width: 1024px) {
+  .header__nav--inner { display: flex; }
+}
+
+.header__search-icon {
+  font-size: 18px;
+  color: var(--c-text);
+  line-height: 1;
+}
+
+.header__nav-link--muted {
+  color: var(--c-text-muted) !important;
+  font-weight: 400 !important;
+}
+
+.header__nav-link--active {
+  color: var(--c-text) !important;
+  font-weight: 500 !important;
+}
+
+/* ============================================================
+   2. PAGE TOP (Pencil J949F1 desktop 60/60/80/60, mEZAN mobile 32/24/48/24)
+   Desktop: title-wrap left + image right, justify space-between
+   Mobile: vertical stack (head only, no image on mobile by default)
+   ============================================================ */
+
+.page-top {
+  padding-block: 32px 48px; /* mobile */
+}
+
+.page-top__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5); /* 24 mobile */
+}
+
+.page-top__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4); /* 16 mobile */
+}
+
+.page-top__title {
+  font-size: var(--t-hero); /* clamp 36→56 */
+  font-weight: 500;
+  letter-spacing: var(--ls-hero);
+  line-height: var(--lh-hero);
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.page-top__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  line-height: 1;
+  color: var(--c-text-muted);
+}
+
+.page-top__desc {
+  font-size: var(--t-body); /* 16 */
+  line-height: var(--lh-body);
+  color: var(--c-text-muted);
+}
+
+.page-top__image {
+  background: var(--c-bg-alt);
+  aspect-ratio: 1 / 1;  /* mobile: full-width 342×342 (Pencil mEZAN djlfM h:342) */
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  display: block;
+}
+.page-top__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .page-top { padding-block: 60px 80px; }
+  .page-top__inner {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+  .page-top__head {
+    flex: 1;
+    max-width: 862px;
+    gap: var(--s-6); /* 32 desktop */
+  }
+  .page-top__desc {
+    max-width: 760px; /* Pencil MxytO width:760 */
+  }
+  .page-top__image {
+    display: block;
+    width: 419px;
+    aspect-ratio: 419 / 460;
+    flex-shrink: 0;
+  }
+}
+
+/* ============================================================
+   3. MISSION (3-col body text desktop / vertical stack mobile)
+   Pencil juPlU desktop padding [80,60] gap 24 / HFuZm mobile padding [48,24] gap 16
+   ============================================================ */
+
+.section--mission { padding-block: 48px; }
+
+.mission-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4); /* 16 mobile */
+}
+
+.mission-grid p {
+  font-size: var(--t-body); /* 16 */
+  line-height: var(--lh-body);
+  color: var(--c-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .section--mission { padding-block: 80px; }
+  .mission-grid {
+    flex-direction: row;
+    gap: var(--s-5); /* 24 */
+  }
+  .mission-grid p {
+    flex: 1;
+    max-width: 419px; /* Pencil cols width:419 each */
+  }
+}
+
+/* ============================================================
+   4. SPLIT-GRID (Cert + FAQ) — title left / list right
+   Pencil L6VpI / gGzCe desktop padding [80,60] gap 104 / fX9Qh / aKz84 mobile padding [48,24] gap 24
+   ============================================================ */
+
+.section--cert,
+.section--faq { padding-block: 48px; }
+
+.split-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5); /* 24 mobile */
+}
+
+.split-grid__head { padding-bottom: 0; }
+
+.split-grid__title {
+  font-size: var(--t-section); /* clamp 24→30 */
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: var(--lh-section);
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.split-grid__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  line-height: 1;
+  color: var(--c-text-muted);
+}
+
+.split-grid__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--row-height); /* 75 */
+  border-bottom: var(--border-thin);
+  font-size: 16px; /* mobile FAQ default (Pencil a85ePq 16px) */
+  font-weight: 500;
+  letter-spacing: var(--ls-sub);
+  color: var(--c-text);
+}
+
+/* Cert accordion (single iso item) is 18px on mobile per Pencil jUtkY */
+.section--cert .accordion-item { font-size: 18px; }
+
+@media (min-width: 1024px) {
+  .accordion-item { font-size: 20px; } /* desktop: cert/faq = 20px */
+}
+
+.accordion-item:first-child {
+  border-top: var(--border-thin);
+}
+
+.accordion-item__icon {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .section--cert,
+  .section--faq { padding-block: 80px; }
+  .split-grid {
+    flex-direction: row;
+    gap: 104px; /* Pencil L6VpI/gGzCe gap:104 */
+    align-items: flex-start;
+  }
+  .split-grid__head {
+    width: 347px; /* Pencil split-left width:347 */
+    flex-shrink: 0;
+  }
+  .split-grid__list { flex: 1; }
+}
+
+/* ============================================================
+   5. FOOTER --inner (override of main .footer with desktop big wordmark)
+   Mobile: identical to main page footer (Pencil FP3U7 == YsYD7 structure).
+   Desktop: same DOM as main but adds .footer__brand (big "ic farvater" 120px) between top and bottom.
+   ============================================================ */
+
+.footer__brand {
+  display: none; /* mobile: hidden (Pencil FP3U7 has no big wordmark) */
+  font-family: var(--font-primary);
+  font-size: 120px;
+  font-weight: 500;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: var(--c-text-on-dark);
+}
+
+@media (min-width: 1024px) {
+  .footer--inner .footer__brand {
+    display: block;
+    margin-block: 64px 0; /* Pencil ltqxT gap:64 between footer-top and brand */
+  }
+  .footer--inner .footer__bottom {
+    margin-top: 64px; /* Pencil ltqxT gap:64 between brand and footer-bottom */
+  }
+}
