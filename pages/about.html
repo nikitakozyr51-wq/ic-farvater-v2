@@ -18,18 +18,27 @@
 </head>
 <body>
 
-  <!-- Header inner-page (Pencil B05Nb9 desktop 64h, kaKtq mobile 60h border-bottom) -->
-  <header class="header header--inner">
+  <!-- Header — same as main page (Pencil el7NC == ISnHK, unified across all pages) -->
+  <header class="header">
     <div class="container header__inner">
       <a href="../index.html" class="header__logo">ic farvater</a>
 
-      <nav class="header__nav header__nav--inner" aria-label="Главная навигация">
-        <button class="header__search-icon" type="button" aria-label="Поиск">⌕</button>
-        <a href="products.html" class="header__nav-link header__nav-link--muted">каталог</a>
-        <a href="about.html" class="header__nav-link header__nav-link--active" aria-current="page">о&nbsp;компании</a>
-        <a href="../index.html#uslugi" class="header__nav-link header__nav-link--muted">услуги</a>
-        <a href="contacts.html" class="header__nav-link header__nav-link--muted">контакты</a>
+      <nav class="header__nav" aria-label="Главная навигация">
+        <a href="products.html" class="header__nav-link">каталог</a>
+        <a href="../index.html#uslugi" class="header__nav-link">услуги</a>
+        <a href="about.html" class="header__nav-link" aria-current="page">о&nbsp;компании</a>
+        <a href="contacts.html" class="header__nav-link">контакты</a>
       </nav>
+
+      <div class="header__right">
+        <button class="header__search" type="button" aria-label="Поиск по каталогу">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+      </div>
 
       <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
@@ -113,8 +122,8 @@
     </section>
   </main>
 
-  <!-- Footer (same DOM as main page; .footer--inner adds desktop big wordmark) -->
-  <footer class="footer footer--inner">
+  <!-- Footer — unified main page footer (Pencil reuses Sk0bR component, no big wordmark) -->
+  <footer class="footer">
     <div class="container">
       <div class="footer__top">
         <div class="footer__logo-block">
@@ -153,8 +162,6 @@
           <a href="mailto:info@ic-farvater.ru" class="footer__email">info@ic-farvater.ru</a>
         </div>
       </div>
-      <!-- Desktop only: big wordmark (Pencil ltqxT o7VI7v 120px) -->
-      <div class="footer__brand">ic farvater</div>
       <div class="footer__bottom">
         <p class="footer__copyright">© 2026 ооо «айси фарватер»</p>
         <p class="footer__copyright footer__copyright--tertiary">ИНН 7801709112 · ОГРН 1227800016993</p>
