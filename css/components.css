@@ -606,12 +606,14 @@
     padding-inline: 40px;
     align-self: center;
     grid-column: 2;
+    grid-row: 1;                    /* EXPLICIT — prevents sparse auto-flow stacking when image is col 2 (Cables) */
     order: initial;
   }
   /* Reset mobile order overrides for desktop */
   .uy-grid__head, .uy-grid__body, .uy-grid__btn { order: initial; }
   .uy-grid__image {
     grid-column: 1;
+    grid-row: 1;                    /* EXPLICIT — pair with text grid-row:1 to keep both in same row */
     aspect-ratio: 600 / 480;
     align-self: center;
     order: initial;
