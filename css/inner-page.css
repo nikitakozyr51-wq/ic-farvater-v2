@@ -148,6 +148,7 @@
   display: inline-flex;
   align-items: flex-start;
   gap: 0;
+  white-space: nowrap; /* prevent 2-line wrap that pushes (NN) counter to separate line */
 }
 
 .split-grid__counter {
@@ -176,10 +177,7 @@
   letter-spacing: var(--ls-sub);
   color: var(--c-text);
 }
-
-.accordion-item:first-child {
-  border-top: var(--border-thin);
-}
+/* NO border-top on first item — Pencil items only have border-bottom (Mm62R/B3NRV stroke {bottom:1}) */
 
 .accordion-item__icon {
   font-size: 20px;
