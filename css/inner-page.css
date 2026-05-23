@@ -252,8 +252,9 @@
   font-weight: 500;
   letter-spacing: var(--ls-label);
   color: var(--c-text-muted);
-  padding-top: 12px;
-  padding-bottom: 12px;
+  height: 43px;  /* Pencil xSBHi h=43 — line aligns with search bottom at y=43 */
+  display: flex;
+  align-items: center;
   border-bottom: var(--border-thin);
 }
 
@@ -266,7 +267,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-block: 16px;
+  height: 49px;  /* Pencil j5RwMi/QbR5B/KCADY h=49 */
+  padding-block: 0;
 }
 .filter-group__label {
   font-size: var(--t-label);
@@ -472,7 +474,7 @@
   .catalog__grid-wrap {
     flex: 0 0 984px;  /* Pencil lqezi width:fit_content(984) — exact 984w enforces card 312px */
     border-top: none;
-    padding-block: 12px 80px;
+    padding-block: 0 80px;  /* Pencil: lqezi y=0 same as J1dha sidebar — search bottom aligns with filter-header bottom at y=43 */
     gap: 48px;
   }
   .catalog__search--desktop { display: flex; height: 43px; }
