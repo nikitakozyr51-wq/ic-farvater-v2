@@ -472,17 +472,23 @@
   }
   .catalog__toolbar { display: none; }
   .catalog__grid-wrap {
-    flex: 0 0 984px;  /* Pencil lqezi width:fit_content(984) — exact 984w enforces card 312px */
+    /* Pencil lqezi 984w at 1440 viewport. Below 1440 → flex shrinks proportionally,
+       no horizontal overflow. min-width:0 lets flex item shrink below its content size. */
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 984px;
     border-top: none;
     padding-block: 0 80px;  /* Pencil: lqezi y=0 same as J1dha sidebar — search bottom aligns with filter-header bottom at y=43 */
     gap: 48px;
   }
   .catalog__search--desktop { display: flex; height: 43px; }
   .catalog__grid {
-    grid-template-columns: repeat(3, 312px); /* Pencil card width 312 (984-48)/3 */
+    /* 1fr × 3 = each card (gridWrap-gaps)/3. At 1440 viewport: (984-48)/3 = 312 (Pencil exact).
+       Below: cards shrink proportionally. minmax(0,1fr) prevents content-size overflow. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 24px; /* Pencil row1/row2 gap:24 between cards */
     row-gap: 32px;    /* Pencil ztuw2 gap:32 between row1 and row2 */
   }
-  .cat-card__img { aspect-ratio: 312 / 280; } /* Pencil verified VsLzM height:280 width:312 */
+  .cat-card__img { aspect-ratio: 312 / 280; } /* Pencil verified VsLzM height:280 width:312 — fluid via aspect-ratio */
 }
 

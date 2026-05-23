@@ -279,7 +279,9 @@
   .footer { padding-block: 76px 32px; }
   .footer__top {
     display: grid;
-    grid-template-columns: 312px 312px 312px 312px;
+    /* Pencil dLwWj 4×312 cols at 1440 viewport (1320 container = 1248 + 3*24 gap = 1320 exact).
+       Below 1440 → fluid 1fr columns prevent overflow. minmax(0,312px) caps each at Pencil width. */
+    grid-template-columns: repeat(4, minmax(0, 312px));
     grid-template-rows: auto auto;
     gap: var(--s-5);
     padding-bottom: 76px;
