@@ -595,7 +595,7 @@
   .uy-grid {
     display: grid;
     grid-template-columns: 600px 600px;
-    column-gap: 60px;
+    column-gap: 80px;  /* Pencil J8otlu/xT0gh gap:80 verified (was 60, made content end at x=1320 instead of 1340) */
     align-items: center;
   }
   /* Desktop: text wrapper is real flex column (NOT display:contents) — gives Pencil single gap:22 throughout */
