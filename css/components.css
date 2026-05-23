@@ -529,10 +529,16 @@
    Single flat .uy-grid__col with gap:22 matches Pencil text col rhythm exactly. */
 
 .uy-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--s-5); /* 24 mobile between picture and col */
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5); /* 24 mobile between blocks */
 }
+/* Mobile: text wrapper transparent so head/body/btn become direct flex items → reorderable via `order` */
+.uy-grid__text { display: contents; }
+.uy-grid__head  { order: 1; }
+.uy-grid__image { order: 2; }
+.uy-grid__body  { order: 3; }
+.uy-grid__btn   { order: 4; }
 
 .uy-grid__image {
   background: var(--c-bg-alt);
@@ -587,29 +593,35 @@
 
 @media (min-width: 1024px) {
   .uy-grid {
+    display: grid;
     grid-template-columns: 600px 600px;
-    grid-template-rows: auto auto auto;
     column-gap: 60px;
-    row-gap: 22px;
     align-items: center;
   }
-  /* Default: image LEFT spans 3 rows, head/body/btn stack in col 2 */
+  /* Desktop: text wrapper is real flex column (NOT display:contents) — gives Pencil single gap:22 throughout */
+  .uy-grid__text {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-inline: 40px;
+    align-self: center;
+    grid-column: 2;
+    order: initial;
+  }
+  /* Reset mobile order overrides for desktop */
+  .uy-grid__head, .uy-grid__body, .uy-grid__btn { order: initial; }
   .uy-grid__image {
     grid-column: 1;
-    grid-row: 1 / span 3;
     aspect-ratio: 600 / 480;
     align-self: center;
+    order: initial;
   }
-  .uy-grid__head { grid-column: 2; grid-row: 1; padding-inline: 40px; gap: 22px; }
-  .uy-grid__body { grid-column: 2; grid-row: 2; padding-inline: 40px; }
-  .uy-grid__btn  { grid-column: 2; grid-row: 3; margin-inline: 40px; }
+  .uy-grid__head { gap: 22px; }  /* eyebrow → h2 = 22 (Pencil FbYhd) */
+  .uy-grid__body { gap: 22px; }  /* p → p → p = 22 (Pencil rhythm) */
+  .uy-grid__btn { padding-inline: 0; margin-inline: 0; }  /* no extra inset, padding from .btn-pill itself */
   /* Modifier: image RIGHT (Cables) — flip columns */
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
-  .uy-grid--image-right .uy-grid__head  { grid-column: 1; }
-  .uy-grid--image-right .uy-grid__body  { grid-column: 1; }
-  .uy-grid--image-right .uy-grid__btn   { grid-column: 1; }
-  /* Center the grid since it's fixed 600+60+600 = 1260 inside 1320 container */
-  .section--about > .container { display: flex; justify-content: center; }
+  .uy-grid--image-right .uy-grid__text  { grid-column: 1; }
 }
 
 /* ============================================================
@@ -646,6 +658,11 @@
   .section-head {
     padding-bottom: var(--s-5);
     border-bottom: var(--border-thin);
+  }
+  /* Services section-header has NO border (Pencil VENSA — distinct from Razemy/СВЧ section headers) */
+  .services-grid__head .section-head {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 }
 
@@ -777,9 +794,13 @@
   }
   .header__inner {
     height: var(--header-h-desktop);
-    gap: var(--s-6);
+    gap: 0;
   }
-  /* Logo: shrink to content; Nav: absolute center via fill+center; Right: shrink to content + align end */
+  /* Pencil ISnHK: 3 children with fill_container each → 3 equal cols. Nav at viewport-center.
+     With flex:1 on each, cols 440w each (1320/3). Logo content left, nav center, right content end. */
+  .header__logo {
+    flex: 1;
+  }
   .header__burger {
     display: none;
   }
@@ -804,6 +825,8 @@
     display: flex;
     align-items: center;
     gap: var(--header-right-gap);
+    flex: 1;
+    justify-content: flex-end;
   }
   .header__search {
     color: var(--c-text);
