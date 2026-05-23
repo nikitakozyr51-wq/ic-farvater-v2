@@ -68,7 +68,7 @@
   /* === Section / Container === */
   --section-y:     clamp(48px, 7.5vw, 100px);  /* vertical section padding, fluid */
   --container-x:   clamp(24px, 4.2vw, 60px);   /* horizontal container padding */
-  --container-max: 1440px;                     /* СТРОГИЙ кэп — на 1920 поля по бокам */
+  --container-max: 1320px;                     /* Pencil content-width @ 1440 viewport = 1440 - 60*2 = 1320. На любом >1440 viewport content стопорится 1320, поля по бокам растут симметрично. */
 
   /* === Hierarchy of gaps (Müller, errors_log #24) === */
   --gap-internal: var(--s-2);   /* 8 — внутри text-pair */
