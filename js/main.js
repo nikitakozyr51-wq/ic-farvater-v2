@@ -366,28 +366,145 @@ function initProductCarousels() {
 }
 
 
-/** Catalog — search + category filter + hash routing.
- *  Only activates on pages with #catalogGrid (i.e. products.html).
- *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic) — matches v1 behavior.
- *  Hash routing: #microchips, #razemy, #converters, #capacitors, #transistors, #pcb, #all, #search. */
+/** Catalog — search + category filter + hash routing + product list rendering.
+ *  Only activates on products.html (#catalogGrid).
+ *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic).
+ *  Hash routing: #microchips, #razemy, #converters, #capacitors, #transistors, #pcb, #all.
+ *  Category filter: hides cat-cards, renders product/series list from PRODUCTS / *_SERIES data. */
 function initCatalog() {
   const grid = document.getElementById('catalogGrid');
   if (!grid) return;
 
   const cards = Array.from(grid.querySelectorAll('.cat-card'));
   const emptyMsg = document.getElementById('catalogEmpty');
+  const listWrap = document.getElementById('catalogList');
+  const listHeader = document.getElementById('catalogListHeader');
+  const listGrid = document.getElementById('catalogListGrid');
+  const listMore = document.getElementById('catalogListMore');
   const searchInputs = document.querySelectorAll('.catalog__search input[type="search"]');
   const sidebarBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-cat]');
   const pillBtns = document.querySelectorAll('.catalog__pill[data-cat]');
   const clearBtn = document.querySelector('.filter-clear__btn');
   const clearBadge = document.querySelector('.filter-clear__badge');
 
-  // Homoglyph map (v1 catalog.js — Latin chars that look like Cyrillic)
   const HOMOGLYPH = {
     'a':'а','c':'с','e':'е','o':'о','p':'р','x':'х','y':'у','b':'в','h':'н','k':'к','m':'м','t':'т'
   };
   function normalize(s) {
     return s.toLowerCase().split('').map(ch => HOMOGLYPH[ch] || ch).join('');
+  }
+  function pluralize(n, one, two, many) {
+    const mod10 = n % 10, mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return two;
+    return many;
+  }
+
+  const CAT_NAMES = {
+    microchips: 'микросхемы',
+    razemy: 'разъёмы',
+    converters: 'преобразователи',
+    capacitors: 'свч-конденсаторы',
+    transistors: 'свч-транзисторы',
+    pcb: 'печатные платы'
+  };
+  const PAGE_SIZE = 12;
+
+  // Get items for a category from globals (defined in products.js / *-data.js)
+  function getItems(cat) {
+    const out = [];
+    if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+      CONNECTOR_SERIES.forEach(s => out.push({
+        type: 'series', kind: 'connector', id: s.slug, name: s.name,
+        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        image: s.image, href: `product-detail.html#s-c-${s.slug}`
+      }));
+    } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
+      CONVERTER_SERIES.forEach(s => out.push({
+        type: 'series', kind: 'converter', id: s.slug, name: s.name,
+        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        image: s.image, href: `product-detail.html#s-v-${s.slug}`
+      }));
+    } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
+      CAPACITOR_SERIES.forEach(s => out.push({
+        type: 'series', kind: 'capacitor', id: s.slug, name: s.name,
+        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        image: s.image, href: `product-detail.html#s-k-${s.slug}`
+      }));
+    } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
+        type: 'product', kind: 'microchip', id: p.id, name: p.name,
+        desc: p.subcategory || p.description || '',
+        image: p.image, href: `product-detail.html#p-${p.id}`
+      }));
+    } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
+        type: 'product', kind: 'transistor', id: p.id, name: p.name,
+        desc: p.subcategory || p.description || '',
+        image: p.image, href: `product-detail.html#p-${p.id}`
+      }));
+    }
+    return out;
+  }
+
+  function renderList(cat, search) {
+    if (!listWrap || !listGrid) return 0;
+    let items = getItems(cat);
+    if (search) {
+      const q = normalize(search.trim());
+      items = items.filter(it => normalize(it.name + ' ' + (it.desc || '')).includes(q));
+    }
+    const count = items.length;
+    const catLabel = CAT_NAMES[cat] || cat;
+    const itemWord = items.length && items[0].type === 'series'
+      ? pluralize(count, 'серия', 'серии', 'серий')
+      : pluralize(count, 'товар', 'товара', 'товаров');
+    listHeader.innerHTML = `<span class="catalog__list-cat">${catLabel}</span><span class="catalog__list-count">${count} ${itemWord}</span>`;
+    listGrid.innerHTML = '';
+    const shown = items.slice(0, PAGE_SIZE);
+    shown.forEach(it => {
+      const a = document.createElement('a');
+      a.className = 'cat-card cat-card--small';
+      a.href = it.href;
+      a.innerHTML = `
+        <div class="cat-card__img">
+          ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
+        </div>
+        <div class="cat-card__info">
+          <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
+          ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
+        </div>
+      `;
+      listGrid.appendChild(a);
+    });
+    // Load more
+    if (items.length > PAGE_SIZE) {
+      listMore.hidden = false;
+      let page = 1;
+      listMore.onclick = () => {
+        page++;
+        const next = items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE);
+        next.forEach(it => {
+          const a = document.createElement('a');
+          a.className = 'cat-card cat-card--small';
+          a.href = it.href;
+          a.innerHTML = `
+            <div class="cat-card__img">
+              ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
+            </div>
+            <div class="cat-card__info">
+              <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
+              ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
+            </div>
+          `;
+          listGrid.appendChild(a);
+        });
+        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
+      };
+    } else {
+      listMore.hidden = true;
+    }
+    return count;
   }
 
   const state = { search: '', cat: 'all' };
@@ -395,73 +512,67 @@ function initCatalog() {
 
   function apply() {
     const q = normalize(state.search.trim());
-    let visibleCount = 0;
-    cards.forEach(card => {
-      const cardCat = card.dataset.cat || '';
-      const cardName = normalize(card.dataset.name || card.textContent || '');
-      const catMatch = state.cat === 'all' || cardCat === state.cat;
-      const searchMatch = !q || cardName.includes(q);
-      const show = catMatch && searchMatch;
-      card.hidden = !show;
-      if (show) visibleCount++;
-    });
-    if (emptyMsg) emptyMsg.hidden = visibleCount > 0;
+    const inListMode = state.cat !== 'all';
+
+    if (inListMode) {
+      // List view: hide cat-cards, render category items
+      grid.hidden = true;
+      listWrap.hidden = false;
+      const count = renderList(state.cat, state.search);
+      if (emptyMsg) emptyMsg.hidden = true;
+    } else {
+      // Default view: 6 cat-cards visible, filtered by search only
+      grid.hidden = false;
+      listWrap.hidden = true;
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const cardName = normalize(card.dataset.name || card.textContent || '');
+        const show = !q || cardName.includes(q);
+        card.hidden = !show;
+        if (show) visibleCount++;
+      });
+      if (emptyMsg) emptyMsg.hidden = visibleCount > 0;
+    }
 
     // Update active state on sidebar + pills
     sidebarBtns.forEach(b => {
       const isActive = b.dataset.cat === state.cat;
       b.classList.toggle('filter-item--active', isActive);
-      b.textContent = (isActive ? '(•) ' : '( ) ') + b.textContent.replace(/^[(•)\s]+/u, '');
+      // Re-render label with (•) or ( )
+      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
+      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
     });
     pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
 
-    // Filter count badge (count active non-default filters)
     const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
 
-    // Sync hash (without scroll jump)
     const hash = state.cat !== 'all' ? `#${state.cat}` : '';
     if (window.location.hash !== hash) {
       history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
     }
   }
 
-  function setSearch(v) {
-    state.search = v;
-    apply();
-  }
-  function setCat(c) {
-    state.cat = c;
-    apply();
-  }
+  function setSearch(v) { state.search = v; apply(); }
+  function setCat(c) { state.cat = c; apply(); }
 
-  // Search inputs (debounced) + sync both desktop and mobile inputs
   searchInputs.forEach(input => {
     input.addEventListener('input', (e) => {
       clearTimeout(searchTimer);
       const val = e.target.value;
       searchTimer = setTimeout(() => {
-        // Sync the other input(s) so they show the same query
         searchInputs.forEach(i => { if (i !== input) i.value = val; });
         setSearch(val);
       }, 250);
     });
   });
-  // Prevent form submission (reload)
   document.querySelectorAll('.catalog__search').forEach(f => {
     f.addEventListener('submit', (e) => e.preventDefault());
   });
 
-  // Sidebar buttons
-  sidebarBtns.forEach(btn => {
-    btn.addEventListener('click', () => setCat(btn.dataset.cat));
-  });
-  // Pills (mobile)
-  pillBtns.forEach(btn => {
-    btn.addEventListener('click', () => setCat(btn.dataset.cat));
-  });
+  sidebarBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
+  pillBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
 
-  // Clear filters
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       state.search = '';
@@ -471,7 +582,6 @@ function initCatalog() {
     });
   }
 
-  // Init from URL hash (e.g. ?#microchips → activate microchips filter)
   const initialHash = window.location.hash.replace('#', '');
   if (initialHash && initialHash !== 'search') {
     const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];

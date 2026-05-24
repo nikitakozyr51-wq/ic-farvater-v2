@@ -420,6 +420,10 @@
   column-gap: 16px;
   row-gap: 24px; /* Pencil f5CcZ category-grid gap:24 between rows (cards in row gap:16) */
 }
+/* JS toggles [hidden] when switching between cat-cards (default) and list view (filter active).
+   Override the display:grid/flex defaults so [hidden] actually hides. */
+.catalog__grid[hidden],
+.catalog__list[hidden] { display: none; }
 
 .cat-card { display: flex; }
 .cat-card__link {
@@ -1206,5 +1210,81 @@
   .pd-card__name { font-size: 13px; line-height: 1.25; }
   .pd-card__desc { font-size: 12px; line-height: 1.3; }
   .pd-card__image-label { font-size: 13px; }
+}
+
+
+/* ============================================================
+   8. CATALOG LIST VIEW — rendered when category filter active
+   Pencil layout TBD — using compact cat-card variant for now
+   ============================================================ */
+
+.catalog__list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 0;
+}
+
+.catalog__list-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: var(--border-thin);
+}
+.catalog__list-cat {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--c-text);
+  letter-spacing: var(--ls-section);
+}
+.catalog__list-count {
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--c-text-muted);
+  letter-spacing: var(--ls-label);
+}
+
+.catalog__list-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 24px;
+}
+
+.catalog__list-more {
+  align-self: center;
+  margin-top: 16px;
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid var(--c-text);
+  border-radius: 100px;
+  color: var(--c-text);
+  font-family: inherit;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.catalog__list-more:hover {
+  background: var(--c-text);
+  color: var(--c-bg);
+}
+
+/* Compact card variant for list view (same .cat-card base, smaller) */
+.cat-card--small .cat-card__name { font-size: 14px; line-height: 1.3; }
+.cat-card--small .cat-card__desc { font-size: 12px; line-height: 1.35; }
+
+@media (min-width: 1024px) {
+  .catalog__list-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 32px;
+  }
+  .catalog__list-cat { font-size: 28px; }
+  .cat-card--small .cat-card__name { font-size: 15px; }
+  .cat-card--small .cat-card__desc { font-size: 13px; }
 }
 
