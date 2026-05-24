@@ -470,13 +470,13 @@ function initCatalog() {
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
         type: 'product', kind: 'microchip', id: p.id, name: p.name,
-        desc: p.subcategory || p.description || '',
+        desc: (p.subcategory || p.description || '').toLowerCase(),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
         type: 'product', kind: 'transistor', id: p.id, name: p.name,
-        desc: p.subcategory || p.description || '',
+        desc: (p.subcategory || p.description || '').toLowerCase(),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     }

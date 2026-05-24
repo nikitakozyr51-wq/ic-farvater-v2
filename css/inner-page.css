@@ -1263,7 +1263,8 @@
 
 /* ============================================================
    8. CATALOG LIST VIEW — rendered when category filter active
-   Pencil layout TBD — using compact cat-card variant for now
+   Pencil jugib desktop: 4-col 234×270 cards (image 234×234 + 36h name)
+   Pencil nOHww mobile: 2-col 165×195 cards (image 163×163 + 24h name)
    ============================================================ */
 
 .catalog__list {
@@ -1282,10 +1283,14 @@
   border-bottom: var(--border-thin);
 }
 .catalog__list-cat {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 500;
   color: var(--c-text);
   letter-spacing: var(--ls-section);
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
 }
 .catalog__list-count {
   font-size: var(--t-label);
@@ -1331,18 +1336,37 @@
   background: var(--c-bg-alt);
 }
 
-/* Compact card variant for list view (same .cat-card base, smaller) */
-.cat-card--small .cat-card__name { font-size: 14px; line-height: 1.3; }
-.cat-card--small .cat-card__desc { font-size: 12px; line-height: 1.35; }
+/* Compact product card variant (Pencil jugib UoFcS card 234×270, mobile 165×195) */
+.cat-card--small .cat-card__img {
+  aspect-ratio: 1 / 1; /* square — image is the full square */
+}
+.cat-card--small .cat-card__info {
+  padding-top: 8px;
+  gap: 2px;
+}
+.cat-card--small .cat-card__name {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: var(--c-text);
+}
+.cat-card--small .cat-card__desc {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--c-text-muted);
+}
 
 @media (min-width: 1024px) {
+  /* Pencil jugib: 4-col grid, cards 234w, 16-gap (250 stride). 4×234 + 3×16 = 984 (grid-wrap) */
   .catalog__list-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: 24px;
-    row-gap: 32px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 16px;
   }
-  .catalog__list-cat { font-size: 28px; }
-  .cat-card--small .cat-card__name { font-size: 15px; }
-  .cat-card--small .cat-card__desc { font-size: 13px; }
+  .catalog__list-cat { font-size: 30px; }
+  .cat-card--small .cat-card__name { font-size: 14px; }
+  .cat-card--small .cat-card__desc { font-size: 12px; }
+  .cat-card--small .cat-card__info { padding-top: 12px; gap: 4px; }
 }
 
