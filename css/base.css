@@ -22,22 +22,33 @@
 }
 
 /* === Body / typography defaults === */
-/* html bg = footer dark blue: any space past document (Lenis momentum, browser bounce, Edge UI)
-   shows footer-extending dark blue instead of jarring white.
-   overscroll-behavior: none — prevents browser-native rubber-band where supported.
-   body bg = cream — that's what user actually sees within the page. */
+/* Sticky footer pattern — body is a flex column that always fills viewport.
+   main grows to absorb extra space → footer sits at viewport bottom even on short pages
+   (products at wide screen, contacts on tall display).
+   Without this, body min-height:100vh leaves a cream gap below footer when content < viewport.
+   html bg = cream (matches body) — fallback for any rare overscroll bounce. */
 html {
-  background: var(--c-text);
+  background: var(--c-bg);
   overscroll-behavior: none;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   font-family: var(--font-primary);
   font-size: var(--t-body);
   color: var(--c-text);
   background: var(--c-bg);
-  overscroll-behavior: none;
   font-weight: 400;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
 }
 
 h1, h2, h3 {
