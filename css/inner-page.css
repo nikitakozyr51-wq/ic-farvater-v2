@@ -1395,6 +1395,19 @@
   background: var(--c-bg-alt);
 }
 
+/* Sub-section divider inside list view ("основные серии" / "в разработке") */
+.catalog__list-subheader {
+  grid-column: 1 / -1;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+  padding: 16px 0 4px;
+  border-bottom: var(--border-thin);
+  margin-bottom: 8px;
+}
+.catalog__list-subheader:first-child { padding-top: 0; }
+
 /* Compact product card variant (Pencil jugib UoFcS card 234×270, mobile 165×195).
    Uses CSS Grid on the card itself for consistent height across rows
    (image + info aligned regardless of description length). */
@@ -1551,6 +1564,10 @@
   transition: background 0.15s ease;
 }
 .pd-variants__row:hover { background: rgba(0, 0, 0, 0.02); }
+/* Static (non-clickable) variant rows — series-internal variants where no individual product page exists */
+.pd-variants__row--static { cursor: default; }
+.pd-variants__row--static:hover { background: transparent; }
+.pd-variants__row--static .pd-variants__arrow { visibility: hidden; }
 .pd-variants__name {
   font-size: 14px;
   font-weight: 500;

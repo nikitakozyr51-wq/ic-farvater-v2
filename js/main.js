@@ -458,26 +458,28 @@ function initCatalog() {
   };
   const PAGE_SIZE = 12;
 
-  // Get items for a single category (used by category-filter view)
+  // Get items for a single category (used by category-filter view).
+  // Series items carry a `group` field (main / additional / dev) so renderList
+  // can emit subsection headers (e.g. "основные серии" / "в разработке").
   function getItems(cat) {
     const out = [];
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, href: `product-detail.html#s-c-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-c-${s.slug}`
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, href: `product-detail.html#s-v-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-v-${s.slug}`
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, href: `product-detail.html#s-k-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-k-${s.slug}`
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
@@ -529,13 +531,32 @@ function initCatalog() {
     const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
     if (existingBanner) existingBanner.remove();
     listGrid.innerHTML = '';
-    items.slice(0, PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
+    // Render items with group sub-headers (series groups: main / additional / dev)
+    const GROUP_LABELS = { main: 'основные серии', additional: 'дополнительные серии', dev: 'в разработке' };
+    function renderSlice(slice) {
+      let lastGroup = null;
+      slice.forEach(it => {
+        if (it.group && it.group !== lastGroup) {
+          // Insert group divider (full-width grid header)
+          const hdr = document.createElement('div');
+          hdr.className = 'catalog__list-subheader';
+          hdr.textContent = GROUP_LABELS[it.group] || it.group;
+          listGrid.appendChild(hdr);
+          lastGroup = it.group;
+        }
+        listGrid.appendChild(buildCard(it));
+      });
+    }
+    // Sort items by group (main → additional → dev)
+    const groupOrder = { main: 0, additional: 1, dev: 2 };
+    items.sort((a, b) => (groupOrder[a.group] ?? 9) - (groupOrder[b.group] ?? 9));
+    renderSlice(items.slice(0, PAGE_SIZE));
     if (items.length > PAGE_SIZE) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
         page++;
-        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
+        renderSlice(items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE));
         if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
       };
     } else {
@@ -587,13 +608,15 @@ function initCatalog() {
     const a = document.createElement('a');
     a.className = 'cat-card cat-card--small';
     a.href = it.href;
+    // Product codes in UPPERCASE (ЕТ-СНЦ23, ЕТ1310РН1У — they're abbreviations/model codes).
+    // Description in lowercase (brand text style).
     a.innerHTML = `
       <div class="cat-card__img">
         ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
       </div>
       <div class="cat-card__info">
-        <h3 class="cat-card__name">${cyrillize(it.name).toLowerCase()}</h3>
-        ${it.desc ? `<p class="cat-card__desc">${cyrillize(it.desc)}</p>` : ''}
+        <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
+        ${it.desc ? `<p class="cat-card__desc">${cyrillize(it.desc).toLowerCase()}</p>` : ''}
       </div>
     `;
     return a;
@@ -790,15 +813,18 @@ const CATEGORY_LANDINGS = {
   pcb: {
     name: 'печатные платы',
     eyebrowCategory: ['pcb', 'печатные платы'],
-    description: 'многослойные печатные платы для ответственных применений: бортовая аппаратура, медтехника, промышленная автоматика. изготовление в полном цикле — от схемы до контроля качества.',
+    description: 'проектируем и изготавливаем печатные платы под задачу заказчика — от односторонних до многослойных на 40 слоёв, включая свч, гибкие, гибко-жёсткие и платы на металлическом основании. всесторонняя технологическая проработка на этапе подготовки выявляет нюансы до запуска в производство и позволяет согласовать необходимые изменения без срыва сроков.',
     image: '../assets/images/products/pcb.webp',
     specs: {
-      'количество слоёв': 'до 24',
-      'минимальная ширина проводника': '0,1 мм',
-      'минимальное отверстие': '0,2 мм',
-      'импеданс-контроль': 'да',
-      'поверхность': 'hasl, immersion gold, osp',
-      'материал': 'fr-4, rogers, политетрафторэтилен'
+      'типы плат': 'опп, дпп, мпп, свч, гибкие',
+      'кол-во слоёв': '1–40',
+      'класс точности': 'до 6 (гост р 53429-2009)',
+      'проводник / зазор': 'от 0,07 мм',
+      'толщина платы': '0,1–6,0 мм',
+      'мин. отверстие': '0,1 мм',
+      'материалы': 'fr-4, high tg, rogers, arlon, taconic, al, cu',
+      'финишные покрытия': 'hasl, lead free, ni-au, enepig, osp',
+      'контроль качества': 'летающий щуп, адаптерный, оптический'
     }
   }
 };
@@ -882,11 +908,13 @@ function initProductDetail() {
 
   if (!data) return;
 
-  // Title (preserve counter span) — cyrillize for отечественные product codes
+  // Title — UPPERCASE for product codes (ЕТ1310РН1У), preserve original case for category landing names (микросхемы/разъёмы — already lowercase).
   const titleEl = document.querySelector('.product-top__title');
   if (titleEl) {
     const counter = titleEl.querySelector('.product-top__counter');
-    titleEl.textContent = cyrillize((data.name || data.displayName || '').toLowerCase());
+    const rawName = data.name || data.displayName || '';
+    // Landings have lowercase Russian names ("микросхемы"); products/series have UPPERCASE codes ("ET1310PN1U" / "ЕТ-2РМГ(Д)")
+    titleEl.textContent = kind === 'landing' ? rawName : cyrillize(rawName);
     if (counter) titleEl.appendChild(counter);
   }
 
@@ -911,11 +939,10 @@ function initProductDetail() {
   // Image
   const imgEl = document.querySelector('.pd-image__placeholder');
   const labelEl = document.querySelector('.pd-image__label');
-  if (labelEl) labelEl.textContent = cyrillize((data.name || '').toLowerCase());
+  if (labelEl) labelEl.textContent = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
   if (imgEl && data.image) {
-    // Replace placeholder with actual image
-    const lcName = cyrillize((data.name || '').toLowerCase());
-    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${lcName}</span>'">`;
+    const labelText = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
+    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
   }
 
   // Description
@@ -987,14 +1014,14 @@ function initProductDetail() {
         const a = document.createElement('a');
         a.className = 'pd-card';
         a.href = it.href;
-        const cyrName = cyrillize(it.name.toLowerCase());
+        const cyrName = cyrillize(it.name);
         a.innerHTML = `
           <div class="pd-card__image" aria-label="${it.name}">
             ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${cyrName}</span>')">` : `<span class="pd-card__image-label">${cyrName}</span>`}
           </div>
           <div class="pd-card__info">
             <span class="pd-card__name">${cyrName}</span>
-            ${it.desc ? `<span class="pd-card__desc">${cyrillize(it.desc)}</span>` : ''}
+            ${it.desc ? `<span class="pd-card__desc">${cyrillize(it.desc).toLowerCase()}</span>` : ''}
           </div>
         `;
         relatedGrid.appendChild(a);
@@ -1045,28 +1072,27 @@ function initProductDetail() {
       variantsTable.innerHTML = '';
       const filtered = filterType === 'все' ? data.items : data.items.filter(i => i.type === filterType);
       filtered.forEach((it, i) => {
-        const row = document.createElement('a');
-        row.className = 'pd-variants__row';
-        // Landing nomenclature: partnumber is a numeric product ID → link to product-detail
-        // Series variants (Вилка/Розетка inside a connector series): no individual page → open KP drawer
+        // Landing nomenclature (microchips/transistors/series in landings) → CLICKABLE row navigates to product page.
+        // Series-internal variants (Вилка/Розетка) → STATIC row (no individual product page exists).
+        let isClickable = false, href = null;
         if (kind === 'landing' && /^\d+$/.test(String(it.partnumber))) {
-          row.href = `product-detail.html#p-${it.partnumber}`;
+          isClickable = true;
+          href = `product-detail.html#p-${it.partnumber}`;
         } else if (kind === 'landing' && it.partnumber && !/^\d+$/.test(String(it.partnumber))) {
-          // Series slug (razemy/converters/capacitors landing)
+          isClickable = true;
           const prefix = catSlug === 'razemy' ? 's-c' : catSlug === 'converters' ? 's-v' : 's-k';
-          row.href = `product-detail.html#${prefix}-${it.partnumber}`;
-        } else {
-          // Series-internal variant — no detail page. Open KP drawer with name pre-filled.
-          row.href = '#';
-          row.setAttribute('data-action', 'open-kp-drawer');
-          row.setAttribute('data-kp-product', it.name);
-          row.setAttribute('data-kp-category', data.name || '');
+          href = `product-detail.html#${prefix}-${it.partnumber}`;
         }
+        const row = document.createElement(isClickable ? 'a' : 'div');
+        row.className = 'pd-variants__row' + (isClickable ? '' : ' pd-variants__row--static');
+        if (isClickable) row.href = href;
+        // Name in UPPERCASE (product code convention — "ET1310PN1U" / "ЕТ-2РМГ14Б4Ш1В2")
+        const cyrName = cyrillize((it.displayName || it.name).toUpperCase());
         row.innerHTML = `
-          <span class="pd-variants__name">${cyrillize((it.displayName || it.name).toLowerCase())}</span>
+          <span class="pd-variants__name">${cyrName}</span>
           ${it.type ? `<span class="pd-variants__type">${cyrillize(it.type.toLowerCase())}</span>` : ''}
-          <span class="pd-variants__tu">${cyrillize((it.tu || '').toLowerCase())}</span>
-          <span class="pd-variants__arrow" aria-hidden="true">→</span>
+          <span class="pd-variants__tu">${cyrillize((it.tu || '').toUpperCase())}</span>
+          ${isClickable ? `<span class="pd-variants__arrow" aria-hidden="true">→</span>` : `<span class="pd-variants__arrow" aria-hidden="true"></span>`}
         `;
         variantsTable.appendChild(row);
       });
