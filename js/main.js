@@ -500,22 +500,10 @@ function initCatalog() {
       <span class="catalog__list-cat">${catLabel}</span>
       <span class="catalog__list-count">${count} ${itemWord}</span>
     `;
-    // Banner block above grid (Variant B) — for all categories with landings
+    // Landing entry block — disabled, pending Pencil design.
+    // Remove any leftover banner from previous renders.
     const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
     if (existingBanner) existingBanner.remove();
-    if (hasLanding) {
-      const banner = document.createElement('a');
-      banner.className = 'catalog__list-banner';
-      banner.href = `product-detail.html#cat-${cat}`;
-      banner.innerHTML = `
-        <div class="catalog__list-banner__text">
-          <span class="catalog__list-banner__title">обзор категории</span>
-          <span class="catalog__list-banner__desc">описание, ключевые параметры и&nbsp;полная номенклатура</span>
-        </div>
-        <span class="catalog__list-banner__arrow" aria-hidden="true">→</span>
-      `;
-      listGrid.parentElement.insertBefore(banner, listGrid);
-    }
     listGrid.innerHTML = '';
     const shown = items.slice(0, PAGE_SIZE);
     shown.forEach(it => {
