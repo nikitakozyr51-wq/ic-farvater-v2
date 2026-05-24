@@ -679,7 +679,7 @@
 .map-section__placeholder {
   aspect-ratio: 342 / 300; /* mobile Pencil sj020 */
   background: var(--c-bg-alt);
-  border: var(--border-thin);
+  /* Pencil WiwNb: solid fill, no border. Border was creating phantom separator line above. */
   display: flex;
   align-items: center;
   justify-content: center;
