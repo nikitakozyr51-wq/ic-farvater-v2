@@ -700,10 +700,13 @@
   }
   .contact-info {
     flex: 0 0 400px;
-    gap: 48px; /* Pencil Ox7QR: each row y=0,90,180,270 etc → 90 stride - 42 row height = 48 gap */
+    gap: 48px; /* Pencil Ox7QR: row stride 90 = 42h row + 48 gap */
   }
   .contact-info__row { gap: 8px; }
-  .contact-info__value { font-size: 16px; }
+  /* Pencil: label 16h, value 18h, row 42h. Tight line-height to hit those exact heights. */
+  .contact-info__label { line-height: 1.15; }
+  .contact-info__value { font-size: 16px; line-height: 1.15; }
+  .contact-info__value--multiline { line-height: 1.4; /* address gets 2 visual lines = 48h Pencil vZnjN */ }
 
   .contact-form-wrap { flex: 1 1 auto; gap: 24px; }
   .contact-form__title { font-size: 28px; }
@@ -719,10 +722,11 @@
     margin-top: 8px;
   }
 
-  /* Desktop Map — Pencil PB0jN: title 199w + placeholder 1320w × 1000h, gap title→map = 59 (y=80→139) */
+  /* Desktop Map — Pencil PB0jN: title Y6Qz0 y=80 h=35, placeholder WiwNb y=139 h=1000.
+     Gap title.bottom→placeholder.top = 139 - (80+35) = 24. */
   .section--map { padding-block: 80px 100px; }
-  .map-section { gap: 59px; }
-  .map-section__title { font-size: 28px; }
+  .map-section { gap: 24px; }
+  .map-section__title { font-size: 28px; line-height: 1.25; /* Pencil 35h ≈ 28×1.25 */ }
   .map-section__placeholder { aspect-ratio: 1320 / 1000; /* Pencil WiwNb */ }
 }
 
