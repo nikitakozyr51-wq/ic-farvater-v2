@@ -639,9 +639,55 @@ function initCatalog() {
 }
 
 
+/** Static landing pages (microchips/transistors/pcb) — Pencil fh0MA/DA6LB/Py4Cq.
+ *  Each: title + description + key specs + nomenclature table + related categories. */
+const CATEGORY_LANDINGS = {
+  microchips: {
+    name: 'микросхемы',
+    eyebrowCategory: ['microchips', 'микросхемы'],
+    description: 'микросхемы серии экб тест — широкий ассортимент цифровых и аналоговых компонентов для управления питанием, обработки сигналов и систем автоматики. отечественные аналоги импортных решений с подтверждённой надёжностью.',
+    image: '../assets/images/products/items/ET1310PN1U.webp',
+    specs: {
+      'категория': 'цифровые и аналоговые',
+      'тип корпуса': 'sot-23, sot-89, sop-8, to-220 и другие',
+      'температурный диапазон': '-40…+85 °C типично, до -55…+125 °C спец-исп.',
+      'количество позиций': '51 и более',
+      'сертификация': 'эКб тест · гост рв 20.39.412'
+    }
+  },
+  transistors: {
+    name: 'свч-транзисторы',
+    eyebrowCategory: ['transistors', 'свч-транзисторы'],
+    description: 'свч-транзисторы ldmos для усилителей мощности в радиолокации, связи и спецтехнике. отечественные решения с рабочей частотой 0,5–4 ггц и выходной мощностью до 200 вт. высокая линейность и стабильность параметров.',
+    image: '../assets/images/products/transistors.webp',
+    specs: {
+      'технология': 'ldmos',
+      'диапазон частот': '0,5–4 ггц',
+      'выходная мощность': 'до 200 вт',
+      'температурный диапазон': '-60…+150 °c',
+      'количество позиций': '37 серий'
+    }
+  },
+  pcb: {
+    name: 'печатные платы',
+    eyebrowCategory: ['pcb', 'печатные платы'],
+    description: 'многослойные печатные платы для ответственных применений: бортовая аппаратура, медтехника, промышленная автоматика. изготовление в полном цикле — от схемы до контроля качества.',
+    image: '../assets/images/products/pcb.webp',
+    specs: {
+      'количество слоёв': 'до 24',
+      'минимальная ширина проводника': '0,1 мм',
+      'минимальное отверстие': '0,2 мм',
+      'импеданс-контроль': 'да',
+      'поверхность': 'honal, hasl, immersion gold, osp',
+      'материал': 'fr-4, rogers, политетрафторэтилен'
+    }
+  }
+};
+
 /** Product Detail — populate fields from data based on URL hash.
  *  Hash formats: #p-<id> (PRODUCTS by id), #s-c-<slug> (connector series),
- *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series).
+ *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series),
+ *  #cat-microchips / #cat-transistors / #cat-pcb (static landings).
  *  No hash → leave default static content (ET-СНЦ23). */
 function initProductDetail() {
   if (!document.querySelector('.product-top__title') || !document.querySelector('.section--pd-content')) return;
@@ -676,6 +722,28 @@ function initProductDetail() {
     data = CAPACITOR_SERIES.find(s => s.slug === hash.slice(5));
     kind = 'capacitor-series';
     catSlug = 'capacitors'; catLabel = 'свч-конденсаторы';
+  } else if (hash.startsWith('#cat-')) {
+    const landingKey = hash.slice(5);
+    const landing = CATEGORY_LANDINGS[landingKey];
+    if (landing) {
+      // Landing data → render with PRODUCTS as items[] for nomenclature
+      data = {
+        name: landing.name,
+        description: landing.description,
+        image: landing.image,
+        specs: landing.specs,
+        items: (typeof PRODUCTS !== 'undefined' && landingKey !== 'pcb')
+          ? PRODUCTS.filter(p => {
+              if (landingKey === 'microchips') return p.category === 'Микросхемы';
+              if (landingKey === 'transistors') return p.category === 'СВЧ-транзисторы';
+              return false;
+            }).map(p => ({ name: p.name, type: p.subcategory || '', partnumber: String(p.id), tu: '' }))
+          : []
+      };
+      kind = 'landing';
+      catSlug = landing.eyebrowCategory[0];
+      catLabel = landing.eyebrowCategory[1];
+    }
   }
 
   if (!data) return;
@@ -758,19 +826,31 @@ function initProductDetail() {
 
   if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
     variantsSection.hidden = false;
-    if (specsBlock) specsBlock.hidden = true; // hide specs for series
+    if (specsBlock) specsBlock.hidden = (kind !== 'landing'); // landings keep specs visible
 
-    // Build unique types (Вилка / Розетка / etc)
+    // Update section title — "номенклатура" for landings, "варианты исполнения" for series
+    const variantsTitleEl = document.querySelector('.pd-variants__title');
+    if (variantsTitleEl) {
+      const titleText = kind === 'landing' ? 'номенклатура' : 'варианты исполнения';
+      const counter = variantsTitleEl.querySelector('.pd-variants__counter');
+      variantsTitleEl.textContent = titleText;
+      if (counter) variantsTitleEl.appendChild(counter);
+    }
+
+    // Build unique types (Вилка / Розетка / etc); for landings the type filter is hidden
     const types = ['все', ...new Set(data.items.map(i => i.type).filter(Boolean))];
     variantsPills.innerHTML = '';
-    types.forEach((t, idx) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'pd-variants__pill' + (idx === 0 ? ' pd-variants__pill--active' : '');
-      btn.dataset.type = t;
-      btn.textContent = t.toLowerCase();
-      variantsPills.appendChild(btn);
-    });
+    // Skip pills for landings (too many subcategory types, not useful as filter)
+    if (kind !== 'landing' && types.length > 1) {
+      types.forEach((t, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pd-variants__pill' + (idx === 0 ? ' pd-variants__pill--active' : '');
+        btn.dataset.type = t;
+        btn.textContent = t.toLowerCase();
+        variantsPills.appendChild(btn);
+      });
+    }
 
     // Render rows
     function renderRows(filterType) {
