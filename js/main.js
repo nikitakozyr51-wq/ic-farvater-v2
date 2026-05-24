@@ -461,25 +461,26 @@ function initCatalog() {
   // Get items for a single category (used by category-filter view).
   // Series items carry a `group` field (main / additional / dev) so renderList
   // can emit subsection headers (e.g. "основные серии" / "в разработке").
+  // Series cards link to in-page sub-hash #cat/slug (stay on catalog, no separate Series Detail).
   function getItems(cat) {
     const out = [];
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-c-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-v-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-k-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
@@ -565,7 +566,7 @@ function initCatalog() {
     return count;
   }
 
-  const state = { search: '', cat: 'all', view: 'grid' };
+  const state = { search: '', cat: 'all', series: null, view: 'grid' };
   let searchTimer = null;
   const viewBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-view]');
 
@@ -622,12 +623,101 @@ function initCatalog() {
     return a;
   }
 
+  // Render variants of a single series in 4-col grid (replaces Series Detail page)
+  function renderSeriesVariants(cat, slug) {
+    let series = null, prefix = '', catLabel = CAT_NAMES[cat] || cat;
+    if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+      series = CONNECTOR_SERIES.find(s => s.slug === slug);
+      prefix = 's-c';
+    } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
+      series = CONVERTER_SERIES.find(s => s.slug === slug);
+      prefix = 's-v';
+    } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
+      series = CAPACITOR_SERIES.find(s => s.slug === slug);
+      prefix = 's-k';
+    }
+    if (!series) return 0;
+    const seriesName = cyrillize(series.name);
+    const items = series.items || [];
+    const count = items.length;
+    // Breadcrumb header
+    listHeader.innerHTML = `
+      <a class="catalog__list-cat catalog__list-back" href="#${cat}">← ${catLabel}</a>
+      <span class="catalog__list-count">${count} ${pluralize(count, 'вариант', 'варианта', 'вариантов')}</span>
+    `;
+    listGrid.innerHTML = '';
+    // Big series title as subheader (matches "ОСНОВНЫЕ СЕРИИ" style)
+    const titleHdr = document.createElement('div');
+    titleHdr.className = 'catalog__list-subheader';
+    titleHdr.textContent = seriesName;
+    listGrid.appendChild(titleHdr);
+    // Variant cards
+    items.slice(0, PAGE_SIZE).forEach(it => {
+      const card = document.createElement('a');
+      card.className = 'cat-card cat-card--small';
+      card.href = '#';
+      card.setAttribute('data-action', 'open-kp-drawer');
+      card.setAttribute('data-kp-product', it.name);
+      card.setAttribute('data-kp-category', series.name);
+      // Variant image: prefer imageByType[type], else series image
+      const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
+      card.innerHTML = `
+        <div class="cat-card__img">
+          ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
+        </div>
+        <div class="cat-card__info">
+          <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
+          ${it.type ? `<p class="cat-card__desc">${cyrillize(it.type).toLowerCase()}</p>` : ''}
+        </div>
+      `;
+      listGrid.appendChild(card);
+    });
+    // Pagination
+    if (items.length > PAGE_SIZE) {
+      listMore.hidden = false;
+      let page = 1;
+      listMore.onclick = () => {
+        page++;
+        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => {
+          const card = document.createElement('a');
+          card.className = 'cat-card cat-card--small';
+          card.href = '#';
+          card.setAttribute('data-action', 'open-kp-drawer');
+          card.setAttribute('data-kp-product', it.name);
+          card.setAttribute('data-kp-category', series.name);
+          const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
+          card.innerHTML = `
+            <div class="cat-card__img">
+              ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
+            </div>
+            <div class="cat-card__info">
+              <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
+              ${it.type ? `<p class="cat-card__desc">${cyrillize(it.type).toLowerCase()}</p>` : ''}
+            </div>
+          `;
+          listGrid.appendChild(card);
+        });
+        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
+      };
+    } else {
+      listMore.hidden = true;
+    }
+    return count;
+  }
+
   function apply() {
     const q = normalize(state.search.trim());
     const inListMode = state.cat !== 'all';
     const inSearchMode = !inListMode && !!state.search.trim();
+    const inSeriesMode = inListMode && !!state.series;
 
-    if (inSearchMode) {
+    if (inSeriesMode) {
+      // Series variant grid (no separate Series Detail page)
+      grid.hidden = true;
+      listWrap.hidden = false;
+      renderSeriesVariants(state.cat, state.series);
+      if (emptyMsg) emptyMsg.hidden = true;
+    } else if (inSearchMode) {
       // Global search mode: hide cat-cards, render matches across ALL data
       grid.hidden = true;
       listWrap.hidden = false;
@@ -646,7 +736,7 @@ function initCatalog() {
         const empty = document.createElement('div');
         empty.className = 'catalog__list-empty';
         empty.innerHTML = state.cat === 'pcb'
-          ? 'категория «печатные платы»&nbsp;— в&nbsp;разработке. напишите нам, чтобы&nbsp;получить актуальный прайс.'
+          ? `<a href="product-detail.html#cat-pcb" class="catalog__list-empty-link">печатные платы&nbsp;— перейти к&nbsp;описанию категории →</a>`
           : 'ничего не&nbsp;найдено';
         listGrid.innerHTML = '';
         listGrid.appendChild(empty);
@@ -683,7 +773,9 @@ function initCatalog() {
     const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
 
-    const hash = state.cat !== 'all' ? `#${state.cat}` : '';
+    let hash = '';
+    if (state.cat !== 'all') hash = `#${state.cat}`;
+    if (state.series) hash += `/${state.series}`;
     if (window.location.hash !== hash) {
       history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
     }
@@ -706,8 +798,9 @@ function initCatalog() {
     f.addEventListener('submit', (e) => e.preventDefault());
   });
 
-  sidebarBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
-  pillBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
+  // Clicking sidebar/pill clears any series sub-state too
+  sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
+  pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
   if (clearBtn) {
@@ -722,17 +815,20 @@ function initCatalog() {
   const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];
   function applyHash() {
     const h = window.location.hash.replace('#', '');
-    if (h && h !== 'search' && validCats.includes(h)) {
-      state.cat = h;
+    // Support sub-hash: #razemy/et-2rmg (category + series slug)
+    const [hCat, hSeries] = h.split('/');
+    if (hCat && hCat !== 'search' && validCats.includes(hCat)) {
+      state.cat = hCat;
+      state.series = hSeries || null;
       apply();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (!h || h === 'search') {
       state.cat = 'all';
+      state.series = null;
       apply();
     }
   }
   applyHash();
-  // Listen for hashchange (cat-card click sets href="#razemy" etc on same page)
   window.addEventListener('hashchange', applyHash);
 }
 
