@@ -750,6 +750,60 @@ function initProductDetail() {
   // Update page title
   document.title = `${(data.name || '').toUpperCase()} — IC Фарватер`;
 
+  // === VARIANTS section — only for series with items[] (connector/converter/capacitor) ===
+  const variantsSection = document.getElementById('pdVariantsSection');
+  const variantsPills = document.getElementById('pdVariantsPills');
+  const variantsTable = document.getElementById('pdVariantsTable');
+  const specsBlock = document.querySelector('.pd-block--specs');
+
+  if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
+    variantsSection.hidden = false;
+    if (specsBlock) specsBlock.hidden = true; // hide specs for series
+
+    // Build unique types (Вилка / Розетка / etc)
+    const types = ['все', ...new Set(data.items.map(i => i.type).filter(Boolean))];
+    variantsPills.innerHTML = '';
+    types.forEach((t, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pd-variants__pill' + (idx === 0 ? ' pd-variants__pill--active' : '');
+      btn.dataset.type = t;
+      btn.textContent = t.toLowerCase();
+      variantsPills.appendChild(btn);
+    });
+
+    // Render rows
+    function renderRows(filterType) {
+      variantsTable.innerHTML = '';
+      const filtered = filterType === 'все' ? data.items : data.items.filter(i => i.type === filterType);
+      filtered.forEach((it, i) => {
+        const row = document.createElement('a');
+        row.className = 'pd-variants__row';
+        row.href = `#v-${(it.partnumber || it.name).replace(/[^a-zа-яё0-9-]/gi, '-').toLowerCase()}`;
+        row.innerHTML = `
+          <span class="pd-variants__name">${(it.displayName || it.name).toLowerCase()}</span>
+          ${it.type ? `<span class="pd-variants__type">${it.type.toLowerCase()}</span>` : ''}
+          <span class="pd-variants__tu">${(it.tu || '').toLowerCase()}</span>
+          <span class="pd-variants__arrow" aria-hidden="true">→</span>
+        `;
+        variantsTable.appendChild(row);
+      });
+    }
+    renderRows('все');
+
+    // Pill click handler
+    variantsPills.querySelectorAll('.pd-variants__pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        variantsPills.querySelectorAll('.pd-variants__pill').forEach(b => b.classList.remove('pd-variants__pill--active'));
+        btn.classList.add('pd-variants__pill--active');
+        renderRows(btn.dataset.type);
+      });
+    });
+  } else if (variantsSection) {
+    variantsSection.hidden = true;
+    if (specsBlock) specsBlock.hidden = false;
+  }
+
   // Re-fire on hash change (clicking related-card or browser back/forward)
   if (!window.__pdHashWired) {
     window.__pdHashWired = true;

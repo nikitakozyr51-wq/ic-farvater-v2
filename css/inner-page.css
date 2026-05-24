@@ -1370,3 +1370,119 @@
   .cat-card--small .cat-card__info { padding-top: 12px; gap: 4px; }
 }
 
+
+/* ============================================================
+   9. SERIES DETAIL — variants table inside product-detail.html
+   Pencil qYQC0 desktop / nmbHh mobile.
+   Shown when loaded data is a series (has items[] array).
+   Filter pills (Все / Вилка / Розетка) + 75h table rows.
+   ============================================================ */
+
+/* [hidden] must actually hide — base .pd-block has display:flex which overrides default */
+.pd-block[hidden],
+.section--pd-variants[hidden] { display: none; }
+
+.section--pd-variants { padding-block: 48px; }
+.pd-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.pd-variants__title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1;
+}
+.pd-variants__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
+}
+
+.pd-variants__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pd-variants__pill {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.pd-variants__pill:hover { color: var(--c-text); border-color: var(--c-text); }
+.pd-variants__pill--active {
+  background: var(--c-text);
+  color: var(--c-bg);
+  border-color: var(--c-text);
+}
+
+.pd-variants__table {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-thin);
+}
+.pd-variants__row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: var(--border-thin);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+.pd-variants__row:hover { background: rgba(0, 0, 0, 0.02); }
+.pd-variants__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text);
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pd-variants__type {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  letter-spacing: var(--ls-label);
+}
+.pd-variants__tu {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.pd-variants__arrow {
+  font-size: 18px;
+  color: var(--c-text-muted);
+  line-height: 1;
+}
+.pd-variants__row:hover .pd-variants__arrow { color: var(--c-text); }
+
+@media (min-width: 1024px) {
+  .section--pd-variants { padding-block: 80px; }
+  .pd-variants__title { font-size: 30px; line-height: 1.15; }
+  .pd-variants__row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr) minmax(0, 1fr) auto;
+    padding: 24px 0; /* Pencil 75h - text 27h = 48 padding split */
+    gap: 24px;
+  }
+  .pd-variants__name { font-size: 15px; }
+}
+
+
