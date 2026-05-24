@@ -1336,7 +1336,10 @@
   background: var(--c-bg-alt);
 }
 
-/* Compact product card variant (Pencil jugib UoFcS card 234×270, mobile 165×195) */
+/* Compact product card variant (Pencil jugib UoFcS card 234×270, mobile 165×195).
+   Uses CSS Grid on the card itself for consistent height across rows
+   (image + info aligned regardless of description length). */
+.cat-card--small { display: flex; flex-direction: column; }
 .cat-card--small .cat-card__img {
   aspect-ratio: 1 / 1; /* square — image is the full square */
 }
@@ -1350,11 +1353,23 @@
   letter-spacing: 0;
   line-height: 1.2;
   color: var(--c-text);
+  /* truncate names that wrap */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: hidden;
 }
 .cat-card--small .cat-card__desc {
   font-size: 11px;
   line-height: 1.3;
   color: var(--c-text-muted);
+  /* Limit description to 2 lines — cards stay uniform height */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {

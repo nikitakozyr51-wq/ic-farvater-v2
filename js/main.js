@@ -629,13 +629,21 @@ function initCatalog() {
     });
   }
 
-  const initialHash = window.location.hash.replace('#', '');
-  if (initialHash && initialHash !== 'search') {
-    const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];
-    if (validCats.includes(initialHash)) state.cat = initialHash;
+  const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];
+  function applyHash() {
+    const h = window.location.hash.replace('#', '');
+    if (h && h !== 'search' && validCats.includes(h)) {
+      state.cat = h;
+      apply();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (!h || h === 'search') {
+      state.cat = 'all';
+      apply();
+    }
   }
-
-  apply();
+  applyHash();
+  // Listen for hashchange (cat-card click sets href="#razemy" etc on same page)
+  window.addEventListener('hashchange', applyHash);
 }
 
 
