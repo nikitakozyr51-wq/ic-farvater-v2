@@ -34,62 +34,33 @@ function initPageLoader() {
   }
 }
 
-/** Header search toggle — open on icon click, redirect on submit */
+/** Header search — icon click navigates to catalog (with input focused there).
+ *  Works on desktop (.header__search button in header__right) and mobile burger menu. */
 function initHeaderSearch() {
-  const header = document.querySelector('.header');
-  const toggle = document.querySelector('.header__search-toggle');
-  const box = document.querySelector('.header__search-box');
-  const input = document.querySelector('.header__search-input');
-  const submit = document.querySelector('.header__search-submit');
+  const searchBtns = document.querySelectorAll('.header__search, .header__search-mobile');
+  if (!searchBtns.length) return;
 
-  if (!header || !toggle || !box || !input) return;
-
-  function openSearch() {
-    header.classList.add('header--search-open');
-    box.setAttribute('aria-hidden', 'false');
-    toggle.setAttribute('aria-expanded', 'true');
-    requestAnimationFrame(() => input.focus());
-  }
-
-  function closeSearch() {
-    header.classList.remove('header--search-open');
-    box.setAttribute('aria-hidden', 'true');
-    toggle.setAttribute('aria-expanded', 'false');
-    input.value = '';
-  }
-
-  function doSearch() {
-    const q = input.value.trim();
-    if (!q) { closeSearch(); return; }
-    const base = window.location.pathname.includes('/pages/') ? 'products.html' : 'pages/products.html';
-    window.location.href = `${base}?search=${encodeURIComponent(q)}`;
-  }
-
-  toggle.addEventListener('click', () => {
-    header.classList.contains('header--search-open') ? closeSearch() : openSearch();
+  searchBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const base = window.location.pathname.includes('/pages/')
+        ? 'products.html'
+        : 'pages/products.html';
+      window.location.href = `${base}#search`;
+    });
   });
 
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') doSearch();
-    if (e.key === 'Escape') closeSearch();
-  });
-
-  if (submit) submit.addEventListener('click', doSearch);
-
-  document.addEventListener('click', (e) => {
-    if (header.classList.contains('header--search-open') && !e.target.closest('.header__search-wrap')) {
-      closeSearch();
-    }
-  });
+  // If we landed on products.html with #search hash → focus catalog search input
+  if (window.location.hash === '#search') {
+    const focusTarget = document.querySelector('.catalog__search input, .catalog__search-input, input[type="search"]');
+    if (focusTarget) requestAnimationFrame(() => focusTarget.focus());
+  }
 }
 
 /** Mobile burger menu toggle */
 function initMobileMenu() {
   const burger = document.querySelector('.header__burger');
   const nav = document.querySelector('.header__nav');
-  const searchBtn = document.querySelector('.header__search-mobile');
-  const searchInput = document.querySelector('.header__nav .header__search-input');
-
   if (!burger || !nav) return;
 
   function setOpen(open) {
@@ -103,23 +74,15 @@ function initMobileMenu() {
     setOpen(!nav.classList.contains('header__nav--open'));
   });
 
-  // Mobile search icon — open drawer + focus search input
-  if (searchBtn) {
-    searchBtn.addEventListener('click', () => {
-      setOpen(true);
-      if (searchInput) requestAnimationFrame(() => searchInput.focus());
-    });
-  }
-
-  // Close menu on link click
-  nav.querySelectorAll('.header__link').forEach(link => {
+  // Close menu on nav link click (v2 uses .header__nav-link)
+  nav.querySelectorAll('.header__nav-link, .header__link').forEach(link => {
     link.addEventListener('click', () => setOpen(false));
   });
 }
 
-/** Highlight the nav link matching current page or hash */
+/** Highlight nav link matching current page or hash (v2 .header__nav-link + v1 .header__link) */
 function initActiveNavLink() {
-  const links = document.querySelectorAll('.header__link');
+  const links = document.querySelectorAll('.header__nav-link, .header__link');
   if (!links.length) return;
 
   function syncHash() {
@@ -127,7 +90,7 @@ function initActiveNavLink() {
     if (!hash) return;
     links.forEach(link => {
       const href = link.getAttribute('href');
-      link.classList.toggle('header__link--active', href === hash || href.endsWith(hash));
+      link.classList.toggle('header__nav-link--active', href === hash || href.endsWith(hash));
     });
   }
 
@@ -140,36 +103,30 @@ const CONTACT_FILE_MAX_COUNT = 5;
 const CONTACT_FILE_MAX_TOTAL = 10 * 1024 * 1024;
 const CONTACT_FILE_ALLOWED = ['pdf','doc','docx','xls','xlsx','csv','txt','png','jpg','jpeg','zip','rar','7z'];
 
+/** Contact form — finds form by id="contactForm" OR by class .contact-form (fallback).
+ *  Placeholder: no backend on localhost/gh-pages — shows success after 600ms simulated send.
+ *  Replace setTimeout block with real fetch('/scripts/send.php') when backend is live. */
 function initContactForm() {
-  const form = document.getElementById('contactForm');
+  const form = document.getElementById('contactForm') || document.querySelector('.contact-form');
   if (!form) return;
 
   const btn = form.querySelector('.contact-form__submit');
   const fileState = initContactFiles(form);
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    const data = new FormData(form);
-    if (btn) { btn.disabled = true; btn.textContent = 'ОТПРАВКА...'; }
     removeFormMessage(form);
 
-    try {
-      const res = await fetch('/scripts/send.php', { method: 'POST', body: data });
-      const json = await res.json();
+    const originalLabel = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
-      if (json.ok) {
-        showFormMessage(form, 'Спасибо! Мы свяжемся с вами в течение рабочего дня.', true);
-        form.reset();
-        if (fileState) fileState.clear();
-      } else {
-        showFormMessage(form, json.error || 'Произошла ошибка. Попробуйте позже.', false);
-      }
-    } catch {
-      showFormMessage(form, 'Нет соединения с сервером. Напишите нам: info@ic-farvater.ru', false);
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'ОТПРАВИТЬ'; }
-    }
+    // TODO: replace with real backend
+    setTimeout(() => {
+      showFormMessage(form, 'спасибо! мы свяжемся с вами в течение рабочего дня.', true);
+      form.reset();
+      if (fileState) fileState.clear();
+      if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
+    }, 600);
   });
 }
 
@@ -271,11 +228,29 @@ function removeFormMessage(form) {
   form.querySelectorAll('.contact-form__msg').forEach(el => el.remove());
 }
 
-/** Cert accordion toggle */
+/** Accordion items (v2 .accordion-item used in About cert + FAQ).
+ *  Toggle icon between + and –; mark item as open. */
 function initCertAccordion() {
+  document.querySelectorAll('.accordion-item').forEach(item => {
+    item.setAttribute('role', 'button');
+    item.setAttribute('tabindex', '0');
+    const toggle = () => {
+      const open = item.classList.toggle('accordion-item--open');
+      const icon = item.querySelector('.accordion-item__icon');
+      if (icon) icon.textContent = open ? '–' : '+';
+    };
+    item.addEventListener('click', toggle);
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+    item.style.cursor = 'pointer';
+  });
+
+  // v1 fallback (just in case)
   document.querySelectorAll('.cert-row__header').forEach(btn => {
     btn.addEventListener('click', () => {
       const row = btn.closest('.cert-row');
+      if (!row) return;
       const isOpen = row.classList.toggle('cert-row--open');
       btn.setAttribute('aria-expanded', isOpen);
     });
