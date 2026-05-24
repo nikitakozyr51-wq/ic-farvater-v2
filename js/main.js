@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initCookieBanner();
   initProductCarousels();
+  initKpDrawer();
 });
 
 /** Page loader — hide overlay once window finishes loading */
@@ -386,5 +387,187 @@ function initProductCarousels() {
       resizeTimer = setTimeout(() => go(index, false), 150);
     });
   });
+}
+
+
+/** KP Drawer — "запросить КП" overlay form (Pencil GbmrD mobile).
+ *  Inject template into body, wire up open/close handlers, handle submit. */
+function initKpDrawer() {
+  if (document.getElementById('kpDrawer')) return;
+
+  // Resolve privacy-policy path relative to current page
+  const privacyHref = window.location.pathname.includes('/pages/')
+    ? 'privacy-policy.html'
+    : 'pages/privacy-policy.html';
+
+  const tpl = `
+    <div id="kpDrawer" class="kp-drawer" role="dialog" aria-label="Запрос цены" aria-hidden="true">
+      <div class="kp-drawer__overlay" data-action="close-kp-drawer" aria-hidden="true"></div>
+      <div class="kp-drawer__panel" role="document">
+        <header class="kp-drawer__header">
+          <span class="kp-drawer__title">форма — запрос цены</span>
+          <button type="button" class="kp-drawer__close" data-action="close-kp-drawer" aria-label="Закрыть">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+        </header>
+        <div class="kp-drawer__body">
+          <div class="kp-drawer__product">
+            <span class="kp-drawer__product-label" id="kpProductLabel">подбор</span>
+            <h2 class="kp-drawer__product-name" id="kpProductName">подбор по&nbsp;каталогу</h2>
+          </div>
+          <form id="kpForm" class="kp-form" novalidate>
+            <div class="kp-form__field">
+              <label for="kpName" class="kp-form__label">имя</label>
+              <input id="kpName" name="name" type="text" class="kp-form__input" autocomplete="name" required>
+            </div>
+            <div class="kp-form__field">
+              <label for="kpEmail" class="kp-form__label">электронная почта</label>
+              <input id="kpEmail" name="email" type="email" class="kp-form__input" autocomplete="email" required>
+            </div>
+            <div class="kp-form__field">
+              <label for="kpPhone" class="kp-form__label">телефон</label>
+              <input id="kpPhone" name="phone" type="tel" class="kp-form__input" autocomplete="tel">
+            </div>
+            <div class="kp-form__field kp-form__field--textarea">
+              <label for="kpComment" class="kp-form__label">комментарий к&nbsp;запросу</label>
+              <textarea id="kpComment" name="comment" class="kp-form__textarea" rows="3"></textarea>
+            </div>
+            <div class="kp-form__field">
+              <label class="kp-form__label" for="kpFiles">вложения</label>
+              <label for="kpFiles" class="kp-form__file-trigger">
+                <span>прикрепить файлы</span>
+                <span class="kp-form__file-icon" aria-hidden="true">+</span>
+              </label>
+              <input id="kpFiles" name="files" type="file" multiple class="is-hidden-file">
+              <ul class="kp-form__file-list" id="kpFilesList"></ul>
+            </div>
+            <label class="kp-form__consent">
+              <input type="checkbox" class="kp-form__checkbox" required>
+              <span>согласен(на)&nbsp;на&nbsp;обработку персональных данных в&nbsp;соответствии с&nbsp;<a href="${privacyHref}">политикой конфиденциальности</a></span>
+            </label>
+            <button type="submit" class="kp-form__submit">отправить запрос</button>
+          </form>
+          <div class="kp-drawer__contacts">
+            <div class="kp-drawer__row">
+              <span class="kp-drawer__row-label">телефон</span>
+              <a href="tel:+79967788842" class="kp-drawer__row-value">+7&nbsp;996 778-88-42</a>
+            </div>
+            <div class="kp-drawer__row">
+              <span class="kp-drawer__row-label">коммерческий отдел</span>
+              <a href="mailto:sale@ic-farvater.ru" class="kp-drawer__row-value">sale@ic-farvater.ru</a>
+            </div>
+            <div class="kp-drawer__row">
+              <span class="kp-drawer__row-label">режим работы</span>
+              <span class="kp-drawer__row-value">пн.–пт. 10:00–18:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', tpl);
+
+  const drawer = document.getElementById('kpDrawer');
+  const form = document.getElementById('kpForm');
+  const filesInput = document.getElementById('kpFiles');
+  const filesList = document.getElementById('kpFilesList');
+  let lastFocused = null;
+
+  function openDrawer(trigger) {
+    lastFocused = document.activeElement;
+    // Try to extract product context from trigger
+    const ctx = trigger?.closest('[data-kp-product]');
+    if (ctx) {
+      document.getElementById('kpProductName').textContent = ctx.getAttribute('data-kp-product');
+      document.getElementById('kpProductLabel').textContent = ctx.getAttribute('data-kp-category') || 'подбор';
+    } else {
+      // Default: pull from product-top on PD page
+      const pdTitle = document.querySelector('.product-top__title');
+      const pdEyebrow = document.querySelector('.product-top__eyebrow');
+      const nameEl = document.getElementById('kpProductName');
+      const labelEl = document.getElementById('kpProductLabel');
+      if (pdTitle) {
+        const clean = pdTitle.cloneNode(true);
+        clean.querySelectorAll('.product-top__counter').forEach(n => n.remove());
+        nameEl.textContent = clean.textContent.trim();
+      } else {
+        nameEl.textContent = 'подбор по каталогу';
+      }
+      if (pdEyebrow) {
+        labelEl.textContent = pdEyebrow.textContent.split('·').pop().trim();
+      } else {
+        labelEl.textContent = 'подбор';
+      }
+    }
+    drawer.classList.add('kp-drawer--open');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-drawer-open');
+    requestAnimationFrame(() => {
+      document.getElementById('kpName')?.focus();
+    });
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('kp-drawer--open');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-drawer-open');
+    if (lastFocused) lastFocused.focus();
+  }
+
+  // Open/close handlers via event delegation
+  document.addEventListener('click', (e) => {
+    const opener = e.target.closest('[data-action="open-kp-drawer"]');
+    if (opener) {
+      e.preventDefault();
+      openDrawer(opener);
+      return;
+    }
+    if (e.target.closest('[data-action="close-kp-drawer"]')) {
+      e.preventDefault();
+      closeDrawer();
+    }
+  });
+
+  // ESC closes
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('kp-drawer--open')) {
+      closeDrawer();
+    }
+  });
+
+  // File upload list
+  if (filesInput && filesList) {
+    filesInput.addEventListener('change', (e) => {
+      filesList.innerHTML = '';
+      Array.from(e.target.files || []).forEach((f) => {
+        const li = document.createElement('li');
+        li.className = 'kp-form__file-item';
+        li.textContent = `${f.name} · ${formatFileSize(f.size)}`;
+        filesList.appendChild(li);
+      });
+    });
+  }
+
+  // Submit (placeholder — replace with real backend later)
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('.kp-form__submit');
+      if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
+      // Remove old message
+      form.querySelectorAll('.kp-form__msg').forEach(el => el.remove());
+      setTimeout(() => {
+        const msg = document.createElement('p');
+        msg.className = 'kp-form__msg kp-form__msg--ok';
+        msg.textContent = 'Спасибо! Мы свяжемся с вами в течение рабочего дня.';
+        form.appendChild(msg);
+        form.reset();
+        if (filesList) filesList.innerHTML = '';
+        if (btn) { btn.disabled = false; btn.textContent = 'отправить запрос'; }
+      }, 600);
+    });
+  }
 }
 
