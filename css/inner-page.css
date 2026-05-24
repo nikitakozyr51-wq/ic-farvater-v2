@@ -913,19 +913,21 @@
    Mobile each block has border-top + padding [40, 0, 32, 0] for visual separation
    ============================================================ */
 
-/* Product top — Pencil x6QVgU desktop (eyebrow + title + subtitle stacked) */
+/* Product top — Pencil x6QVgU desktop (eyebrow + title + subtitle stacked).
+   Mobile Uda0l: eyebrow y=32, title y=64 (gap 16), subtitle y=120 (gap 16).
+   Desktop x6QVgU: eyebrow y=60, title y=100 (gap 24), subtitle y=186 (gap 24). */
 .product-top { padding-block: 32px 24px; /* mobile Pencil Uda0l */ }
 .product-top__inner {
   display: flex;
   flex-direction: column;
-  gap: 32px; /* mobile: eyebrow→title 32, title→subtitle 16 — uses default */
+  gap: 16px; /* mobile gap between eyebrow/title/subtitle */
 }
 .product-top__eyebrow {
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
+  line-height: 1.2; /* tight Pencil WxsJU h=16 */
   color: var(--c-text-muted);
-  margin-bottom: -16px; /* mobile: eyebrow→title 32-16=16 from inner gap */
 }
 .product-top__eyebrow a {
   color: var(--c-text-muted);
@@ -941,7 +943,6 @@
   display: inline-flex;
   align-items: flex-start;
   gap: 4px;
-  margin-bottom: -16px;
 }
 .product-top__counter {
   font-size: var(--t-label);
@@ -1109,7 +1110,7 @@
 .pd-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 12px; /* mobile Pencil: cards have larger captions */
   text-decoration: none;
   color: inherit;
 }
@@ -1127,18 +1128,16 @@
   text-transform: uppercase;
 }
 .pd-card__info { display: flex; flex-direction: column; gap: 4px; }
-.pd-card__name { font-size: 14px; font-weight: 500; color: var(--c-text); }
-.pd-card__desc { font-size: 13px; color: var(--c-text-muted); line-height: 1.4; }
+.pd-card__name { font-size: 15px; font-weight: 500; line-height: 1.3; color: var(--c-text); }
+.pd-card__desc { font-size: 13px; color: var(--c-text-muted); line-height: 1.35; }
 
 @media (min-width: 1024px) {
-  /* Desktop product-top — Pencil x6QVgU: eyebrow→title 40, title→subtitle 25 */
+  /* Desktop product-top — Pencil x6QVgU: eyebrow y=60 → title y=100 (gap 24) → subtitle y=186 (gap 24) */
   .product-top { padding-block: 60px 80px; }
-  .product-top__inner { gap: 25px; }
-  .product-top__eyebrow { margin-bottom: 15px; }
+  .product-top__inner { gap: 24px; }
   .product-top__title {
     font-size: var(--t-hero);
     line-height: var(--lh-hero);
-    margin-bottom: 0;
   }
   .product-top__subtitle { font-size: 16px; max-width: 760px; }
 
@@ -1167,11 +1166,11 @@
   .pd-block__title { font-size: 30px; line-height: 1.15; }
   .pd-block__body p { font-size: 16px; }
 
-  /* Specs rows taller on desktop */
-  .pd-specs__row { height: 60px; }
-  .pd-specs__label, .pd-specs__value { font-size: 16px; }
+  /* Specs rows compact on desktop — Pencil Cin6V h=384 / 8 rows = 48 each */
+  .pd-specs__row { height: 48px; }
+  .pd-specs__label, .pd-specs__value { font-size: 14px; }
 
-  /* Actions inline, auto-width pills */
+  /* Actions inline, auto-width pills — Pencil WrNDs h=41 */
   .pd-actions {
     flex-direction: row;
     gap: 12px;
@@ -1181,8 +1180,9 @@
   .pd-actions__primary,
   .pd-actions__secondary {
     flex: 0 0 auto;
-    height: 48px;
-    padding: 0 32px;
+    height: 41px;
+    padding: 0 24px;
+    font-size: 13px;
   }
 
   /* Related — 4 cards in row, container 1320 / 4 = 312 (Pencil exact) */
@@ -1193,6 +1193,11 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px;
   }
+  /* Desktop cards — Pencil I4cwln: 312×344, image 312×312, compact caption ~32h */
+  .pd-card { gap: 8px; }
+  .pd-card__info { gap: 2px; }
+  .pd-card__name { font-size: 13px; line-height: 1.25; }
+  .pd-card__desc { font-size: 12px; line-height: 1.3; }
   .pd-card__image-label { font-size: 13px; }
 }
 
