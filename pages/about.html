@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
   <link rel="stylesheet" href="../css/components.css?v=6">
-  <link rel="stylesheet" href="../css/inner-page.css?v=10">
+  <link rel="stylesheet" href="../css/inner-page.css?v=18">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -83,10 +83,16 @@
         <header class="split-grid__head">
           <h2 class="split-grid__title">сертификат соответствия<span class="split-grid__counter">(02)</span></h2>
         </header>
-        <ul class="split-grid__list accordion-list">
+        <ul class="split-grid__list accordion-list" data-accordion-group="cert">
           <li class="accordion-item">
-            <span class="accordion-item__title">iso 9001:2015</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">iso 9001:2015</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>сертификат соответствия системы менеджмента качества требованиям стандарта iso&nbsp;9001:2015. распространяется на&nbsp;разработку, поставку и&nbsp;техническое сопровождение электронной компонентной базы.</p>
+              <p class="accordion-item__meta">регистрационный номер: росс ru.фк05.к00001 · действителен до&nbsp;2027 г.</p>
+            </div>
           </li>
         </ul>
       </div>
@@ -98,30 +104,60 @@
         <header class="split-grid__head">
           <h2 class="split-grid__title">частые вопросы<span class="split-grid__counter">(03)</span></h2>
         </header>
-        <ul class="split-grid__list accordion-list">
+        <ul class="split-grid__list accordion-list" data-accordion-group="faq">
           <li class="accordion-item">
-            <span class="accordion-item__title">как быстро выполняется поставка?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">как быстро выполняется поставка?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>стандартные позиции из&nbsp;каталога&nbsp;— 1-3&nbsp;рабочих дня от&nbsp;склада в&nbsp;санкт-петербурге. под&nbsp;заказ&nbsp;— от&nbsp;4&nbsp;недель до&nbsp;3&nbsp;месяцев в&nbsp;зависимости от&nbsp;компонента и&nbsp;серии.</p>
+            </div>
           </li>
           <li class="accordion-item">
-            <span class="accordion-item__title">работаете ли&nbsp;вы&nbsp;с&nbsp;предприятиями опк?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">работаете ли&nbsp;вы&nbsp;с&nbsp;предприятиями опк?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>да. поставляем экб для&nbsp;предприятий опк, минобороны, роскосмоса. оформляем все необходимые сопроводительные документы (паспорта, сертификаты, акты входного контроля).</p>
+            </div>
           </li>
           <li class="accordion-item">
-            <span class="accordion-item__title">можно ли&nbsp;заменить иностранные компоненты на&nbsp;отечественные?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">можно ли&nbsp;заменить иностранные компоненты на&nbsp;отечественные?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>да. подбираем функциональные аналоги отечественного производства с&nbsp;учётом параметров корпуса, рабочего диапазона и&nbsp;совместимости по&nbsp;выводам. предоставляем сравнительные таблицы и&nbsp;поддержку при&nbsp;замене.</p>
+            </div>
           </li>
           <li class="accordion-item">
-            <span class="accordion-item__title">работаете ли&nbsp;вы&nbsp;с&nbsp;испытательной лабораторией?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">работаете ли&nbsp;вы&nbsp;с&nbsp;испытательной лабораторией?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>да. партнёр&nbsp;— лаборатория «экб&nbsp;тест». проводим входной контроль, климатические и&nbsp;механические испытания, сертификацию по&nbsp;гост&nbsp;рв.</p>
+            </div>
           </li>
           <li class="accordion-item">
-            <span class="accordion-item__title">есть ли&nbsp;минимальный объём заказа?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">есть ли&nbsp;минимальный объём заказа?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>минимального заказа нет. поставляем от&nbsp;1&nbsp;шт. для&nbsp;прототипирования и&nbsp;крупными партиями для&nbsp;серийного производства.</p>
+            </div>
           </li>
           <li class="accordion-item">
-            <span class="accordion-item__title">каков порядок заключения договора?</span>
-            <span class="accordion-item__icon" aria-hidden="true">+</span>
+            <button type="button" class="accordion-item__head" aria-expanded="false">
+              <span class="accordion-item__title">каков порядок заключения договора?</span>
+              <span class="accordion-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="accordion-item__body">
+              <p>1.&nbsp;отправляете запрос с&nbsp;тз&nbsp;через форму или&nbsp;email → 2.&nbsp;согласуем спецификацию и&nbsp;сроки → 3.&nbsp;подписываем договор/счёт → 4.&nbsp;отгрузка по&nbsp;графику с&nbsp;полным пакетом документов.</p>
+            </div>
           </li>
         </ul>
       </div>
@@ -196,7 +232,7 @@
   <script src="../js/vendor/lenis.min.js" defer></script>
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="../js/main.js?v=6" defer></script>
+  <script src="../js/main.js?v=7" defer></script>
   <script src="../js/animations.js?v=1" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>

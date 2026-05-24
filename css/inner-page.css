@@ -167,22 +167,66 @@
 }
 
 .accordion-item {
+  display: block;
+  border-bottom: var(--border-thin);
+  color: var(--c-text);
+}
+.accordion-item__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--row-height); /* 75 */
-  border-bottom: var(--border-thin);
-  font-size: 16px; /* mobile FAQ default (Pencil a85ePq 16px) */
+  width: 100%;
+  height: var(--row-height); /* 75 — Pencil row stride */
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px; /* mobile FAQ default */
   font-weight: 500;
   letter-spacing: var(--ls-sub);
-  color: var(--c-text);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
 }
-/* NO border-top on first item — Pencil items only have border-bottom (Mm62R/B3NRV stroke {bottom:1}) */
+.accordion-item__head:hover { opacity: 0.7; }
 
 .accordion-item__icon {
   font-size: 20px;
   font-weight: 400;
   line-height: 1;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+.accordion-item--open .accordion-item__icon {
+  /* Rotate "+" into "×" smoothly (45° rotation feels like × from +) */
+  transform: rotate(45deg);
+}
+
+/* Body — collapsed by default, expanded when --open via JS-set inline maxHeight */
+.accordion-item__body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
+  padding: 0;
+  opacity: 0;
+}
+.accordion-item--open .accordion-item__body {
+  padding: 0 0 24px;
+  opacity: 1;
+}
+.accordion-item__body p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+  margin-bottom: 12px;
+}
+.accordion-item__body p:last-child { margin-bottom: 0; }
+.accordion-item__meta {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
 }
 
 /* Cert accordion (single iso item) is 18px on mobile per Pencil jUtkY */

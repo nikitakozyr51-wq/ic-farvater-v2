@@ -230,25 +230,60 @@ function removeFormMessage(form) {
   form.querySelectorAll('.contact-form__msg').forEach(el => el.remove());
 }
 
-/** Accordion items (v2 .accordion-item used in About cert + FAQ).
- *  Toggle icon between + and –; mark item as open. */
+/** Accordion items — used in About (cert + faq). Pattern:
+ *    <ul class="accordion-list" data-accordion-group="faq">
+ *      <li class="accordion-item">
+ *        <button class="accordion-item__head" aria-expanded="false">title + icon</button>
+ *        <div class="accordion-item__body">answer content</div>
+ *      </li>...
+ *    </ul>
+ *  Behavior: click head → toggle open. Within same group only ONE open at a time
+ *  (others close automatically). Height animated via inline maxHeight (set to
+ *  scrollHeight when opening, 0 when closing). */
 function initCertAccordion() {
   document.querySelectorAll('.accordion-item').forEach(item => {
-    item.setAttribute('role', 'button');
-    item.setAttribute('tabindex', '0');
-    const toggle = () => {
-      const open = item.classList.toggle('accordion-item--open');
-      const icon = item.querySelector('.accordion-item__icon');
-      if (icon) icon.textContent = open ? '–' : '+';
-    };
-    item.addEventListener('click', toggle);
-    item.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    const head = item.querySelector('.accordion-item__head');
+    const body = item.querySelector('.accordion-item__body');
+    if (!head || !body) return;
+
+    head.addEventListener('click', () => {
+      const isOpen = item.classList.contains('accordion-item--open');
+      const group = item.closest('[data-accordion-group]') || item.parentElement;
+
+      // Close all siblings in the same group
+      if (group) {
+        group.querySelectorAll(':scope > .accordion-item--open').forEach(sib => {
+          if (sib !== item) {
+            sib.classList.remove('accordion-item--open');
+            const sibBody = sib.querySelector('.accordion-item__body');
+            const sibHead = sib.querySelector('.accordion-item__head');
+            if (sibBody) sibBody.style.maxHeight = '0px';
+            if (sibHead) sibHead.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Toggle clicked item
+      if (isOpen) {
+        item.classList.remove('accordion-item--open');
+        body.style.maxHeight = '0px';
+        head.setAttribute('aria-expanded', 'false');
+      } else {
+        item.classList.add('accordion-item--open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        head.setAttribute('aria-expanded', 'true');
+      }
     });
-    item.style.cursor = 'pointer';
   });
 
-  // v1 fallback (just in case)
+  // Recompute open accordion heights on resize (text wrap may change)
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.accordion-item--open .accordion-item__body').forEach(body => {
+      body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  });
+
+  // v1 fallback (just in case some legacy markup exists)
   document.querySelectorAll('.cert-row__header').forEach(btn => {
     btn.addEventListener('click', () => {
       const row = btn.closest('.cert-row');
