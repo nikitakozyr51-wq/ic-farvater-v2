@@ -22,8 +22,12 @@
 }
 
 /* === Body / typography defaults === */
-/* html bg matches body — prevents white "void" if scroll bounces past page edges (Lenis/Safari rubber-band). */
-html { background: var(--c-bg); }
+/* html bg matches body + overscroll-behavior disables rubber-band bounce past page edges
+   (Lenis trackpad gestures / Safari iOS / macOS scroll bounce). */
+html {
+  background: var(--c-bg);
+  overscroll-behavior: none;
+}
 
 body {
   font-family: var(--font-primary);
