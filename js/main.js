@@ -446,41 +446,53 @@ function initCatalog() {
   };
   const PAGE_SIZE = 12;
 
-  // Get items for a category from globals (defined in products.js / *-data.js)
+  // Get items for a single category (used by category-filter view)
   function getItems(cat) {
     const out = [];
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'connector', id: s.slug, name: s.name,
+        type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
         image: s.image, href: `product-detail.html#s-c-${s.slug}`
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'converter', id: s.slug, name: s.name,
+        type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
         image: s.image, href: `product-detail.html#s-v-${s.slug}`
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'capacitor', id: s.slug, name: s.name,
+        type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
         image: s.image, href: `product-detail.html#s-k-${s.slug}`
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
-        type: 'product', kind: 'microchip', id: p.id, name: p.name,
+        type: 'product', kind: 'microchip', cat: 'microchips', id: p.id, name: p.name,
         desc: (p.subcategory || p.description || '').toLowerCase(),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
-        type: 'product', kind: 'transistor', id: p.id, name: p.name,
+        type: 'product', kind: 'transistor', cat: 'transistors', id: p.id, name: p.name,
         desc: (p.subcategory || p.description || '').toLowerCase(),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     }
     return out;
+  }
+
+  // Global search across ALL data sources (PRODUCTS + all *_SERIES + categories)
+  // Used when search query is active with no specific category filter
+  function getAllItems() {
+    return [
+      ...getItems('razemy'),
+      ...getItems('converters'),
+      ...getItems('capacitors'),
+      ...getItems('microchips'),
+      ...getItems('transistors')
+    ];
   }
 
   function renderList(cat, search) {
@@ -505,44 +517,13 @@ function initCatalog() {
     const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
     if (existingBanner) existingBanner.remove();
     listGrid.innerHTML = '';
-    const shown = items.slice(0, PAGE_SIZE);
-    shown.forEach(it => {
-      const a = document.createElement('a');
-      a.className = 'cat-card cat-card--small';
-      a.href = it.href;
-      a.innerHTML = `
-        <div class="cat-card__img">
-          ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
-        </div>
-        <div class="cat-card__info">
-          <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
-          ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
-        </div>
-      `;
-      listGrid.appendChild(a);
-    });
-    // Load more
+    items.slice(0, PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
     if (items.length > PAGE_SIZE) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
         page++;
-        const next = items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE);
-        next.forEach(it => {
-          const a = document.createElement('a');
-          a.className = 'cat-card cat-card--small';
-          a.href = it.href;
-          a.innerHTML = `
-            <div class="cat-card__img">
-              ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
-            </div>
-            <div class="cat-card__info">
-              <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
-              ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
-            </div>
-          `;
-          listGrid.appendChild(a);
-        });
+        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
         if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
       };
     } else {
@@ -551,14 +532,76 @@ function initCatalog() {
     return count;
   }
 
-  const state = { search: '', cat: 'all' };
+  const state = { search: '', cat: 'all', view: 'grid' };
   let searchTimer = null;
+  const viewBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-view]');
+
+  // Render arbitrary items list with search-results header
+  function renderSearchResults(query) {
+    const q = normalize(query.trim());
+    const all = getAllItems();
+    const matched = all.filter(it => normalize(it.name + ' ' + (it.desc || '')).includes(q));
+    const count = matched.length;
+    listHeader.innerHTML = `
+      <span class="catalog__list-cat">результаты поиска</span>
+      <span class="catalog__list-count">${count} ${pluralize(count, 'результат', 'результата', 'результатов')}</span>
+    `;
+    listGrid.innerHTML = '';
+    if (count === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'catalog__list-empty';
+      empty.innerHTML = `ничего не&nbsp;найдено по&nbsp;запросу «${query}». попробуйте другой запрос или&nbsp;<a href="#all">вернитесь к&nbsp;категориям</a>.`;
+      listGrid.appendChild(empty);
+      if (listMore) listMore.hidden = true;
+      return 0;
+    }
+    const shown = matched.slice(0, PAGE_SIZE);
+    shown.forEach(it => listGrid.appendChild(buildCard(it)));
+    if (matched.length > PAGE_SIZE) {
+      listMore.hidden = false;
+      let page = 1;
+      listMore.onclick = () => {
+        page++;
+        matched.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
+        if (page * PAGE_SIZE >= matched.length) listMore.hidden = true;
+      };
+    } else {
+      listMore.hidden = true;
+    }
+    return count;
+  }
+
+  function buildCard(it) {
+    const a = document.createElement('a');
+    a.className = 'cat-card cat-card--small';
+    a.href = it.href;
+    a.innerHTML = `
+      <div class="cat-card__img">
+        ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
+      </div>
+      <div class="cat-card__info">
+        <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
+        ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
+      </div>
+    `;
+    return a;
+  }
 
   function apply() {
     const q = normalize(state.search.trim());
     const inListMode = state.cat !== 'all';
+    const inSearchMode = !inListMode && !!state.search.trim();
 
-    if (inListMode) {
+    if (inSearchMode) {
+      // Global search mode: hide cat-cards, render matches across ALL data
+      grid.hidden = true;
+      listWrap.hidden = false;
+      renderSearchResults(state.search);
+      // Remove any banner from previous renders
+      const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
+      if (existingBanner) existingBanner.remove();
+      if (emptyMsg) emptyMsg.hidden = true;
+    } else if (inListMode) {
       // List view: hide cat-cards, render category items
       grid.hidden = true;
       listWrap.hidden = false;
@@ -576,17 +619,11 @@ function initCatalog() {
       }
       if (emptyMsg) emptyMsg.hidden = true;
     } else {
-      // Default view: 6 cat-cards visible, filtered by search only
+      // Default view: 6 cat-cards visible
       grid.hidden = false;
       listWrap.hidden = true;
-      let visibleCount = 0;
-      cards.forEach(card => {
-        const cardName = normalize(card.dataset.name || card.textContent || '');
-        const show = !q || cardName.includes(q);
-        card.hidden = !show;
-        if (show) visibleCount++;
-      });
-      if (emptyMsg) emptyMsg.hidden = visibleCount > 0;
+      cards.forEach(card => { card.hidden = false; });
+      if (emptyMsg) emptyMsg.hidden = true;
     }
 
     // Update active state on sidebar + pills
@@ -598,6 +635,15 @@ function initCatalog() {
       b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
     });
     pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
+
+    // View toggle (сетка/список) — applies class to list grid
+    listGrid.classList.toggle('catalog__list-grid--list', state.view === 'list');
+    viewBtns.forEach(b => {
+      const isActive = b.dataset.view === state.view;
+      b.classList.toggle('filter-item--active', isActive);
+      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
+      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
+    });
 
     const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
@@ -627,6 +673,7 @@ function initCatalog() {
 
   sidebarBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
   pillBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
+  viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
@@ -893,6 +940,58 @@ function initProductDetail() {
   // Update page title
   document.title = `${(data.name || '').toUpperCase()} — IC Фарватер`;
 
+  // === RELATED cards — dynamic per category (was hardcoded to 4 connectors) ===
+  const relatedGrid = document.getElementById('pdRelatedGrid');
+  const relatedSection = document.querySelector('.section--pd-related');
+  if (relatedGrid && catSlug) {
+    let pool = [];
+    if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+      pool = CONNECTOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
+        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        image: s.image, href: `product-detail.html#s-c-${s.slug}`
+      }));
+    } else if (catSlug === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
+      pool = CONVERTER_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
+        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        image: s.image, href: `product-detail.html#s-v-${s.slug}`
+      }));
+    } else if (catSlug === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
+      pool = CAPACITOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
+        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        image: s.image, href: `product-detail.html#s-k-${s.slug}`
+      }));
+    } else if ((catSlug === 'microchips' || catSlug === 'transistors') && typeof PRODUCTS !== 'undefined') {
+      const catName = catSlug === 'microchips' ? 'Микросхемы' : 'СВЧ-транзисторы';
+      const currentId = (typeof data.id === 'number') ? data.id : null;
+      pool = PRODUCTS.filter(p => p.category === catName && p.id !== currentId).slice(0, 4).map(p => ({
+        name: p.name, desc: (p.subcategory || '').toLowerCase(),
+        image: p.image, href: `product-detail.html#p-${p.id}`
+      }));
+    }
+    if (pool.length) {
+      relatedGrid.innerHTML = '';
+      pool.forEach(it => {
+        const a = document.createElement('a');
+        a.className = 'pd-card';
+        a.href = it.href;
+        a.innerHTML = `
+          <div class="pd-card__image" aria-label="${it.name}">
+            ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>'+this.alt.toLowerCase()+'</span>')">` : `<span class="pd-card__image-label">${it.name.toLowerCase()}</span>`}
+          </div>
+          <div class="pd-card__info">
+            <span class="pd-card__name">${it.name.toLowerCase()}</span>
+            ${it.desc ? `<span class="pd-card__desc">${it.desc}</span>` : ''}
+          </div>
+        `;
+        relatedGrid.appendChild(a);
+      });
+      if (relatedSection) relatedSection.hidden = false;
+    } else {
+      // No related items → hide section entirely
+      if (relatedSection) relatedSection.hidden = true;
+    }
+  }
+
   // === VARIANTS section — only for series with items[] (connector/converter/capacitor) ===
   const variantsSection = document.getElementById('pdVariantsSection');
   const variantsPills = document.getElementById('pdVariantsPills');
@@ -934,7 +1033,21 @@ function initProductDetail() {
       filtered.forEach((it, i) => {
         const row = document.createElement('a');
         row.className = 'pd-variants__row';
-        row.href = `#v-${(it.partnumber || it.name).replace(/[^a-zа-яё0-9-]/gi, '-').toLowerCase()}`;
+        // Landing nomenclature: partnumber is a numeric product ID → link to product-detail
+        // Series variants (Вилка/Розетка inside a connector series): no individual page → open KP drawer
+        if (kind === 'landing' && /^\d+$/.test(String(it.partnumber))) {
+          row.href = `product-detail.html#p-${it.partnumber}`;
+        } else if (kind === 'landing' && it.partnumber && !/^\d+$/.test(String(it.partnumber))) {
+          // Series slug (razemy/converters/capacitors landing)
+          const prefix = catSlug === 'razemy' ? 's-c' : catSlug === 'converters' ? 's-v' : 's-k';
+          row.href = `product-detail.html#${prefix}-${it.partnumber}`;
+        } else {
+          // Series-internal variant — no detail page. Open KP drawer with name pre-filled.
+          row.href = '#';
+          row.setAttribute('data-action', 'open-kp-drawer');
+          row.setAttribute('data-kp-product', it.name);
+          row.setAttribute('data-kp-category', data.name || '');
+        }
         row.innerHTML = `
           <span class="pd-variants__name">${(it.displayName || it.name).toLowerCase()}</span>
           ${it.type ? `<span class="pd-variants__type">${it.type.toLowerCase()}</span>` : ''}

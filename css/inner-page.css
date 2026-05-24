@@ -1444,6 +1444,36 @@
   .cat-card--small .cat-card__info { padding-top: 12px; gap: 4px; }
 }
 
+/* List view (вид: список) — single column, horizontal card layout */
+.catalog__list-grid--list {
+  grid-template-columns: 1fr !important;
+  row-gap: 12px;
+}
+.catalog__list-grid--list .cat-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  border-bottom: var(--border-thin);
+  padding-bottom: 12px;
+}
+.catalog__list-grid--list .cat-card__img {
+  flex: 0 0 80px;
+  aspect-ratio: 1 / 1;
+}
+.catalog__list-grid--list .cat-card__info {
+  flex: 1;
+  padding-top: 0;
+  justify-content: center;
+}
+.catalog__list-grid--list .cat-card__name {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+@media (min-width: 1024px) {
+  .catalog__list-grid--list .cat-card__img { flex: 0 0 120px; }
+  .catalog__list-grid--list .cat-card__desc { -webkit-line-clamp: 1; line-clamp: 1; }
+}
+
 
 /* ============================================================
    9. SERIES DETAIL — variants table inside product-detail.html
