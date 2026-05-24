@@ -85,11 +85,13 @@ p {
   .section--services { padding-block: 80px; }
 }
 
-/* === Visibility utilities (для mobile-only / desktop-only elements) === */
-.is-mobile-only { display: none; }
-.is-desktop-only { display: initial; }
+/* === Visibility utilities (для mobile-only / desktop-only elements) ===
+   !important чтобы перебить display:flex/grid из компонентов (e.g. .contact-form__consent).
+   Breakpoint 1024px согласован с inner-page.css desktop layout. */
+.is-mobile-only { display: none !important; }
+.is-desktop-only { display: initial !important; }
 
-@media (max-width: 767.98px) {
-  .is-mobile-only { display: initial; }
-  .is-desktop-only { display: none; }
+@media (max-width: 1023.98px) {
+  .is-mobile-only { display: initial !important; }
+  .is-desktop-only { display: none !important; }
 }

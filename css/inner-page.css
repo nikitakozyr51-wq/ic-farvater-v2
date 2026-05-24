@@ -492,3 +492,237 @@
   .cat-card__img { aspect-ratio: 312 / 280; } /* Pencil verified VsLzM height:280 width:312 — fluid via aspect-ratio */
 }
 
+
+/* ============================================================
+   6. CONTACTS PAGE (Pencil HJty4 desktop / RIfD2 mobile)
+   Desktop: contact-info 400w left + contact-form 760w right, gap 160 (Pencil N3efi 60+400+160+760+60=1440)
+   Mobile:  single stack, info (5 rows), form with counter (02), map with counter (03)
+   ============================================================ */
+
+/* --- Contact Content section (info + form) --- */
+.section--contact-content { padding-block: 0; }
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  gap: 56px; /* mobile: info → form gap */
+}
+
+/* Info column */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* mobile gap between rows; Pencil GiyzV uses 24 (e.g. y=70 → 134 → 204) */
+}
+.contact-info__row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Pencil hiNQ9 label 16 + value 24 with ~6 gap */
+}
+.contact-info__label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+}
+.contact-info__value {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--c-text);
+  text-decoration: none;
+  line-height: 1.4;
+}
+.contact-info__value--multiline { font-style: normal; }
+
+/* Mobile (default): Pencil GiyzV ordering — address first, no purchase row */
+.contact-info__row--address { order: -1; }
+.contact-info__row--purchase { display: none; }
+@media (min-width: 1024px) {
+  /* Desktop: restore Pencil Ox7QR ordering (DOM order) + show purchase row */
+  .contact-info__row--address { order: 0; }
+  .contact-info__row--purchase { display: flex; }
+}
+
+/* Form column */
+.contact-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* mobile gap title → form */
+}
+.contact-form__title {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1;
+}
+.contact-form__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: var(--border-thin);
+  padding-bottom: 10px;
+}
+.contact-form__label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+}
+.contact-form__input,
+.contact-form__textarea {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--c-text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  line-height: 1.4;
+}
+.contact-form__textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+.contact-form__field--textarea { padding-bottom: 14px; }
+
+.contact-form__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0 8px;
+  border-top: var(--border-thin);
+}
+.contact-form__checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1px solid var(--c-text-muted);
+  background: transparent;
+  cursor: pointer;
+  margin-top: 2px;
+  position: relative;
+}
+.contact-form__checkbox:checked {
+  background: var(--c-text);
+  border-color: var(--c-text);
+}
+.contact-form__checkbox:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--c-bg);
+}
+.contact-form__consent-text {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--c-text-muted);
+}
+.contact-form__consent-text a { color: var(--c-text); }
+
+.contact-form__submit {
+  align-self: stretch;
+  height: 52px;
+  border-radius: 100px;
+  background: var(--c-text);
+  color: var(--c-bg);
+  border: 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.contact-form__submit:hover { opacity: 0.9; }
+
+/* --- Map Section (Pencil PB0jN desktop / luygh mobile) --- */
+.section--map { padding-block: 48px 48px; /* mobile */ }
+.map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.map-section__title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1;
+}
+.map-section__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
+}
+.map-section__placeholder {
+  aspect-ratio: 342 / 300; /* mobile Pencil sj020 */
+  background: var(--c-bg-alt);
+  border: var(--border-thin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.map-section__placeholder-label {
+  font-size: var(--t-label);
+  color: var(--c-text-muted);
+  letter-spacing: var(--ls-label);
+}
+
+@media (min-width: 1024px) {
+  /* Desktop Contact Content — Pencil N3efi: info 400w + gap 160 + form 760w within 1320 container (60+400+160+760+60=1380→1320 inside) */
+  .section--contact-content { padding-block: 0; }
+  .contact-content {
+    flex-direction: row;
+    gap: 160px;
+    align-items: flex-start;
+  }
+  .contact-info {
+    flex: 0 0 400px;
+    gap: 48px; /* Pencil Ox7QR: each row y=0,90,180,270 etc → 90 stride - 42 row height = 48 gap */
+  }
+  .contact-info__row { gap: 8px; }
+  .contact-info__value { font-size: 16px; }
+
+  .contact-form-wrap { flex: 1 1 auto; gap: 24px; }
+  .contact-form__title { font-size: 28px; }
+  .contact-form { gap: 24px; }
+  .contact-form__field { padding-bottom: 14px; }
+  .contact-form__input,
+  .contact-form__textarea { font-size: 16px; }
+  /* Desktop: hide mobile-only consent + show auto-width submit (Pencil bTsCA 200w pill at left) */
+  .contact-form__submit {
+    align-self: flex-start;
+    height: 48px;
+    width: 200px;
+    margin-top: 8px;
+  }
+
+  /* Desktop Map — Pencil PB0jN: title 199w + placeholder 1320w × 1000h, gap title→map = 59 (y=80→139) */
+  .section--map { padding-block: 80px 100px; }
+  .map-section { gap: 59px; }
+  .map-section__title { font-size: 28px; }
+  .map-section__placeholder { aspect-ratio: 1320 / 1000; /* Pencil WiwNb */ }
+}
+
