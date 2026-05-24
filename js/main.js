@@ -3,6 +3,17 @@
  * Mobile menu, smooth scroll, common interactions
  */
 
+/** Cyrillize: convert Latin look-alikes to Cyrillic for display of отечественные
+ *  product codes (ET1310PN1U → ЕТ1310РН1У). Used in catalog cards, product
+ *  detail title, variants table, related cards. Top-level so all init* see it. */
+const CYRILLIZE_MAP = {
+  'A':'А','B':'В','C':'С','E':'Е','H':'Н','I':'И','K':'К','M':'М','N':'Н','O':'О','P':'Р','R':'Р','S':'С','T':'Т','U':'У','V':'В','X':'Х','Y':'У',
+  'a':'а','b':'в','c':'с','e':'е','h':'н','i':'и','k':'к','m':'м','n':'н','o':'о','p':'р','r':'р','s':'с','t':'т','u':'у','v':'в','x':'х','y':'у'
+};
+function cyrillize(s) {
+  return String(s || '').split('').map(ch => CYRILLIZE_MAP[ch] || ch).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initPageLoader();
   initMobileMenu();
@@ -429,6 +440,7 @@ function initCatalog() {
   function normalize(s) {
     return s.toLowerCase().split('').map(ch => HOMOGLYPH[ch] || ch).join('');
   }
+  // cyrillize() defined at module level (top of file)
   function pluralize(n, one, two, many) {
     const mod10 = n % 10, mod100 = n % 100;
     if (mod10 === 1 && mod100 !== 11) return one;
@@ -580,8 +592,8 @@ function initCatalog() {
         ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
       </div>
       <div class="cat-card__info">
-        <h3 class="cat-card__name">${it.name.toLowerCase()}</h3>
-        ${it.desc ? `<p class="cat-card__desc">${it.desc}</p>` : ''}
+        <h3 class="cat-card__name">${cyrillize(it.name).toLowerCase()}</h3>
+        ${it.desc ? `<p class="cat-card__desc">${cyrillize(it.desc)}</p>` : ''}
       </div>
     `;
     return a;
@@ -870,11 +882,11 @@ function initProductDetail() {
 
   if (!data) return;
 
-  // Title (preserve counter span)
+  // Title (preserve counter span) — cyrillize for отечественные product codes
   const titleEl = document.querySelector('.product-top__title');
   if (titleEl) {
     const counter = titleEl.querySelector('.product-top__counter');
-    titleEl.textContent = (data.name || data.displayName || '').toLowerCase();
+    titleEl.textContent = cyrillize((data.name || data.displayName || '').toLowerCase());
     if (counter) titleEl.appendChild(counter);
   }
 
@@ -899,10 +911,11 @@ function initProductDetail() {
   // Image
   const imgEl = document.querySelector('.pd-image__placeholder');
   const labelEl = document.querySelector('.pd-image__label');
-  if (labelEl) labelEl.textContent = (data.name || '').toLowerCase();
+  if (labelEl) labelEl.textContent = cyrillize((data.name || '').toLowerCase());
   if (imgEl && data.image) {
     // Replace placeholder with actual image
-    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${(data.name || '').toLowerCase()}</span>'">`;
+    const lcName = cyrillize((data.name || '').toLowerCase());
+    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${lcName}</span>'">`;
   }
 
   // Description
@@ -937,8 +950,8 @@ function initProductDetail() {
     }
   }
 
-  // Update page title
-  document.title = `${(data.name || '').toUpperCase()} — IC Фарватер`;
+  // Update page title (browser tab) — cyrillize product code
+  document.title = `${cyrillize((data.name || '').toUpperCase())} — IC Фарватер`;
 
   // === RELATED cards — dynamic per category (was hardcoded to 4 connectors) ===
   const relatedGrid = document.getElementById('pdRelatedGrid');
@@ -974,13 +987,14 @@ function initProductDetail() {
         const a = document.createElement('a');
         a.className = 'pd-card';
         a.href = it.href;
+        const cyrName = cyrillize(it.name.toLowerCase());
         a.innerHTML = `
           <div class="pd-card__image" aria-label="${it.name}">
-            ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>'+this.alt.toLowerCase()+'</span>')">` : `<span class="pd-card__image-label">${it.name.toLowerCase()}</span>`}
+            ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${cyrName}</span>')">` : `<span class="pd-card__image-label">${cyrName}</span>`}
           </div>
           <div class="pd-card__info">
-            <span class="pd-card__name">${it.name.toLowerCase()}</span>
-            ${it.desc ? `<span class="pd-card__desc">${it.desc}</span>` : ''}
+            <span class="pd-card__name">${cyrName}</span>
+            ${it.desc ? `<span class="pd-card__desc">${cyrillize(it.desc)}</span>` : ''}
           </div>
         `;
         relatedGrid.appendChild(a);
@@ -1049,9 +1063,9 @@ function initProductDetail() {
           row.setAttribute('data-kp-category', data.name || '');
         }
         row.innerHTML = `
-          <span class="pd-variants__name">${(it.displayName || it.name).toLowerCase()}</span>
-          ${it.type ? `<span class="pd-variants__type">${it.type.toLowerCase()}</span>` : ''}
-          <span class="pd-variants__tu">${(it.tu || '').toLowerCase()}</span>
+          <span class="pd-variants__name">${cyrillize((it.displayName || it.name).toLowerCase())}</span>
+          ${it.type ? `<span class="pd-variants__type">${cyrillize(it.type.toLowerCase())}</span>` : ''}
+          <span class="pd-variants__tu">${cyrillize((it.tu || '').toLowerCase())}</span>
           <span class="pd-variants__arrow" aria-hidden="true">→</span>
         `;
         variantsTable.appendChild(row);
