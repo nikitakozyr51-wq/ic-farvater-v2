@@ -411,6 +411,10 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* Lock min-height to upper-bound page size so footer doesn't jump between
+     filter states (preobrazovateli 4 vs razemy 12 vs pcb empty vs microchips 12).
+     1300 covers paginated "12 items" max case (microchips ~1258). */
+  min-height: 1300px;
 }
 .catalog__search--desktop { display: none; }
 
