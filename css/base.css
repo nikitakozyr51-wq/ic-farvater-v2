@@ -21,14 +21,15 @@
   font-display: swap;
 }
 
-/* === Body / typography defaults === */
-/* Sticky footer pattern — body is a flex column that always fills viewport.
-   main grows to absorb extra space → footer sits at viewport bottom even on short pages
-   (products at wide screen, contacts on tall display).
-   Without this, body min-height:100vh leaves a cream gap below footer when content < viewport.
-   html bg = cream (matches body) — fallback for any rare overscroll bounce. */
+/* === Body / typography defaults ===
+   Sticky-footer pattern + zero-overscroll defense:
+   - body flex column + min-height:100vh + main flex:1 → footer always sits at viewport
+     bottom (no cream/blue gap when content shorter than viewport)
+   - html bg = footer dark blue → any rare overscroll bounce (trackpad inertia, browser
+     swipe gestures) shows footer-color extension, never a jarring white void
+   - overscroll-behavior: none on html AND body → prevents native rubber-band bounce */
 html {
-  background: var(--c-bg);
+  background: var(--c-text);
   overscroll-behavior: none;
 }
 
@@ -36,6 +37,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overscroll-behavior: none;
   font-family: var(--font-primary);
   font-size: var(--t-body);
   color: var(--c-text);
