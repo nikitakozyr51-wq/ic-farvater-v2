@@ -773,11 +773,46 @@
   line-height: 1;  /* tight UI text — match Pencil cap-height */
 }
 
-/* Mobile (default): nav + right hidden, burger visible */
+/* Mobile (default): nav + right hidden, burger visible.
+   Open state (.header__nav--open via JS): fullscreen overlay with stacked links. */
 .header__nav,
 .header__right {
   display: none;
 }
+
+.header__nav--open {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: 56px 0 0 0; /* below mobile header height */
+  z-index: 99;
+  background: var(--c-bg);
+  padding: 32px 24px 48px;
+  gap: 0;
+  align-items: stretch;
+}
+.header__nav--open .header__nav-link {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border-thin);
+  color: var(--c-text);
+}
+.header__nav--open .header__nav-link::after {
+  content: '→';
+  font-size: 18px;
+  color: var(--c-text-muted);
+  margin-left: 16px;
+}
+body.menu-open {
+  overflow: hidden;
+}
+/* Burger morphs to X when menu open */
+.header__burger--open svg path { d: path('M5 5L17 17M17 5L5 17'); }
 
 .header__burger {
   color: var(--c-text);

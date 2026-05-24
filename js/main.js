@@ -520,6 +520,17 @@ function initCatalog() {
       grid.hidden = true;
       listWrap.hidden = false;
       const count = renderList(state.cat, state.search);
+      // Empty-state for categories without data (e.g. pcb)
+      if (count === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'catalog__list-empty';
+        empty.innerHTML = state.cat === 'pcb'
+          ? 'категория «печатные платы»&nbsp;— в&nbsp;разработке. напишите нам, чтобы&nbsp;получить актуальный прайс.'
+          : 'ничего не&nbsp;найдено';
+        listGrid.innerHTML = '';
+        listGrid.appendChild(empty);
+        if (listMore) listMore.hidden = true;
+      }
       if (emptyMsg) emptyMsg.hidden = true;
     } else {
       // Default view: 6 cat-cards visible, filtered by search only
@@ -703,6 +714,15 @@ function initProductDetail() {
 
   // Update page title
   document.title = `${(data.name || '').toUpperCase()} — IC Фарватер`;
+
+  // Re-fire on hash change (clicking related-card or browser back/forward)
+  if (!window.__pdHashWired) {
+    window.__pdHashWired = true;
+    window.addEventListener('hashchange', () => {
+      initProductDetail();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    });
+  }
 }
 
 
