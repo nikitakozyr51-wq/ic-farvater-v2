@@ -896,11 +896,11 @@
     grid-row: 2;
     max-width: 380px;     /* Pencil sec frames width:380 */
     gap: 32px;            /* Pencil right gap:32 between sec frames */
-    padding-top: 16px;    /* visual gap edition → first section border */
+    padding-top: 32px;    /* Pencil right frame gap:32 between date and first section */
     padding-bottom: 80px; /* Pencil right padding-bottom:80 */
   }
   .legal-doc__section {
-    padding-top: 16px;
+    padding-top: 48px;    /* Pencil desktop sec frames padding [48,0,0,0] */
     gap: 16px;            /* Pencil sec gap:16 desktop */
   }
 }
