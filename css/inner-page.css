@@ -499,20 +499,25 @@
    Mobile:  single stack, info (5 rows), form with counter (02), map with counter (03)
    ============================================================ */
 
-/* --- Contact Content section (info + form) --- */
+/* --- Contact Content section (info + form) ---
+   Mobile Pencil RIfD2: GiyzV info + sdS8U form are flush separate sections, each with border-top + padding [40,24,...].
+   Implemented via flush .contact-content (gap 0) + border-top on .contact-info + border-top on .contact-form-wrap.
+   Desktop: borders removed, side-by-side layout via media query. */
 .section--contact-content { padding-block: 0; }
 
 .contact-content {
   display: flex;
   flex-direction: column;
-  gap: 56px; /* mobile: info → form gap */
+  gap: 0;
 }
 
-/* Info column */
+/* Info column — mobile separator Pencil GiyzV padding [40,24], border-top #D7D3CB */
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 24px; /* mobile gap between rows; Pencil GiyzV uses 24 (e.g. y=70 → 134 → 204) */
+  gap: 24px; /* mobile gap between rows; Pencil GiyzV uses 24 */
+  padding-top: 40px;
+  border-top: var(--border-thin);
 }
 .contact-info__row {
   display: flex;
@@ -543,11 +548,14 @@
   .contact-info__row--purchase { display: flex; }
 }
 
-/* Form column */
+/* Form column — mobile separator Pencil sdS8U padding [40,24,48,24], border-top #D7D3CB */
 .contact-form-wrap {
   display: flex;
   flex-direction: column;
   gap: 32px; /* mobile gap title → form */
+  padding-top: 40px;
+  padding-bottom: 48px;
+  border-top: var(--border-thin);
 }
 .contact-form__title {
   font-size: 28px;
@@ -653,8 +661,9 @@
 }
 .contact-form__submit:hover { opacity: 0.9; }
 
-/* --- Map Section (Pencil PB0jN desktop / luygh mobile) --- */
-.section--map { padding-block: 48px 48px; /* mobile */ }
+/* --- Map Section (Pencil PB0jN desktop / luygh mobile) ---
+   Mobile luygh padding [40,24,48,24] → padding-block 40 top / 48 bottom. Border-top from .section default. */
+.section--map { padding-block: 40px 48px; /* mobile Pencil luygh */ }
 .map-section {
   display: flex;
   flex-direction: column;
@@ -691,8 +700,10 @@
 }
 
 @media (min-width: 1024px) {
-  /* Desktop Contact Content — Pencil N3efi: info 400w + gap 160 + form 760w within 1320 container (60+400+160+760+60=1380→1320 inside) */
-  .section--contact-content { padding-block: 0; }
+  /* Desktop Contact Content — Pencil N3efi: info 400w + gap 160 + form 760w within 1320 container (60+400+160+760+60=1380→1320 inside).
+     Pencil N3efi has fixed height 760 with info column 522h, so ~238px of empty space below info before Map Section border-top.
+     padding-bottom 240 (8px-grid round) reproduces that breathing room → Map divider sits 240px below info column. */
+  .section--contact-content { padding-block: 0 240px; }
   .contact-content {
     flex-direction: row;
     gap: 160px;
@@ -701,6 +712,8 @@
   .contact-info {
     flex: 0 0 400px;
     gap: 48px; /* Pencil Ox7QR: row stride 90 = 42h row + 48 gap */
+    padding-top: 0; /* reset mobile border-top padding */
+    border-top: 0;
   }
   .contact-info__row { gap: 8px; }
   /* Pencil: label 16h, value 18h, row 42h. Tight line-height to hit those exact heights. */
@@ -708,7 +721,13 @@
   .contact-info__value { font-size: 16px; line-height: 1.15; }
   .contact-info__value--multiline { line-height: 1.4; /* address gets 2 visual lines = 48h Pencil vZnjN */ }
 
-  .contact-form-wrap { flex: 1 1 auto; gap: 24px; }
+  .contact-form-wrap {
+    flex: 1 1 auto;
+    gap: 24px;
+    padding-top: 0; /* reset mobile border-top padding */
+    padding-bottom: 0;
+    border-top: 0;
+  }
   .contact-form__title { font-size: 28px; }
   .contact-form { gap: 24px; }
   .contact-form__field { padding-bottom: 14px; }
@@ -722,11 +741,11 @@
     margin-top: 8px;
   }
 
-  /* Desktop Map — Pencil PB0jN: title Y6Qz0 y=80 h=35, placeholder WiwNb y=139 h=1000.
+  /* Desktop Map — Pencil PB0jN: padding [80,60], title Y6Qz0 fontSize 30 y=80 h=35, placeholder WiwNb y=139 h=1000.
      Gap title.bottom→placeholder.top = 139 - (80+35) = 24. */
-  .section--map { padding-block: 80px 100px; }
+  .section--map { padding-block: 80px; }
   .map-section { gap: 24px; }
-  .map-section__title { font-size: 28px; line-height: 1.25; /* Pencil 35h ≈ 28×1.25 */ }
+  .map-section__title { font-size: 30px; line-height: 1.15; /* Pencil Y6Qz0 */ }
   .map-section__placeholder { aspect-ratio: 1320 / 1000; /* Pencil WiwNb */ }
 }
 

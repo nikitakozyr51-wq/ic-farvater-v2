@@ -22,6 +22,9 @@
 }
 
 /* === Body / typography defaults === */
+/* html bg matches body — prevents white "void" if scroll bounces past page edges (Lenis/Safari rubber-band). */
+html { background: var(--c-bg); }
+
 body {
   font-family: var(--font-primary);
   font-size: var(--t-body);
