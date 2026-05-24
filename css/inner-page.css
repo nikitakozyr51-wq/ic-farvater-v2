@@ -1277,6 +1277,7 @@
 .catalog__list-header {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 16px;
   padding-bottom: 16px;
   border-bottom: var(--border-thin);
@@ -1291,27 +1292,70 @@
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  margin-right: auto; /* пушит остальное вправо */
 }
-.catalog__list-overview {
-  font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: var(--ls-label);
-  color: var(--c-text-muted);
-  text-decoration: none;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  transition: color 0.2s ease;
-}
-.catalog__list-overview:hover { color: var(--c-text); }
-.catalog__list-overview span { font-size: 14px; line-height: 1; }
 .catalog__list-count {
   font-size: var(--t-label);
   font-weight: 500;
   color: var(--c-text-muted);
   letter-spacing: var(--ls-label);
+}
+
+/* Banner — Variant B: "обзор категории" promo block above products grid.
+   Default: bordered cream bg, dark text. Hover: solid dark blue, cream text. */
+.catalog__list-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 24px;
+  background: var(--c-bg);
+  border: var(--border-thin);
+  color: var(--c-text);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.catalog__list-banner:hover {
+  background: var(--c-text);
+  color: var(--c-bg);
+  border-color: var(--c-text);
+}
+.catalog__list-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.catalog__list-banner__title {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: 1.2;
+}
+.catalog__list-banner__desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  letter-spacing: 0;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+.catalog__list-banner:hover .catalog__list-banner__desc {
+  color: var(--c-label-on-dark, rgba(245, 243, 239, 0.75));
+}
+.catalog__list-banner__arrow {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.catalog__list-banner:hover .catalog__list-banner__arrow {
+  transform: translateX(4px);
+}
+
+@media (min-width: 1024px) {
+  .catalog__list-banner { padding: 24px 28px; }
+  .catalog__list-banner__title { font-size: 18px; }
+  .catalog__list-banner__desc { font-size: 14px; }
 }
 
 .catalog__list-grid {
