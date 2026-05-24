@@ -6,6 +6,8 @@
   <title>Контакты — IC Фарватер</title>
   <meta name="description" content="Офис ООО «Айси Фарватер» в Санкт-Петербурге. Отгрузки ЭКБ по всей России в 1-3 рабочих дня от склада.">
 
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; frame-src https://yandex.ru https://*.yandex.ru; connect-src 'self'; base-uri 'self'; form-action 'self';">
+
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
@@ -13,7 +15,7 @@
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
   <link rel="stylesheet" href="../css/components.css?v=5">
-  <link rel="stylesheet" href="../css/inner-page.css?v=11">
+  <link rel="stylesheet" href="../css/inner-page.css?v=12">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -143,7 +145,12 @@
           <span class="map-section__counter is-mobile-only">(03)</span>
         </h2>
         <div class="map-section__placeholder" aria-label="Карта офиса">
-          <span class="map-section__placeholder-label">карта</span>
+          <iframe
+            src="https://yandex.ru/map-widget/v1/?ll=30.198967%2C59.941599&z=16&pt=30.198967%2C59.941599%2Cpm2blm&text=%D1%83%D0%BB.%20%D0%91%D0%B5%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%2C%20%D0%B4.%201-%D0%90%2C%20%D0%BE%D1%84.%2046-%D0%9D"
+            width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"
+            title="Яндекс.Карта — IC Farvater, ул. Беринга, д. 1-А, оф. 46-Н, Санкт-Петербург"
+            referrerpolicy="no-referrer-when-downgrade"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox"></iframe>
         </div>
       </div>
     </section>
@@ -217,7 +224,7 @@
   <script src="../js/vendor/lenis.min.js" defer></script>
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="../js/main.js?v=3" defer></script>
+  <script src="../js/main.js?v=4" defer></script>
   <script src="../js/animations.js?v=1" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>

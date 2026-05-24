@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCookieBanner();
   initProductCarousels();
   initKpDrawer();
+  initCatalog();
 });
 
 /** Page loader — hide overlay once window finishes loading */
@@ -365,6 +366,122 @@ function initProductCarousels() {
 }
 
 
+/** Catalog — search + category filter + hash routing.
+ *  Only activates on pages with #catalogGrid (i.e. products.html).
+ *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic) — matches v1 behavior.
+ *  Hash routing: #microchips, #razemy, #converters, #capacitors, #transistors, #pcb, #all, #search. */
+function initCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  if (!grid) return;
+
+  const cards = Array.from(grid.querySelectorAll('.cat-card'));
+  const emptyMsg = document.getElementById('catalogEmpty');
+  const searchInputs = document.querySelectorAll('.catalog__search input[type="search"]');
+  const sidebarBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-cat]');
+  const pillBtns = document.querySelectorAll('.catalog__pill[data-cat]');
+  const clearBtn = document.querySelector('.filter-clear__btn');
+  const clearBadge = document.querySelector('.filter-clear__badge');
+
+  // Homoglyph map (v1 catalog.js — Latin chars that look like Cyrillic)
+  const HOMOGLYPH = {
+    'a':'а','c':'с','e':'е','o':'о','p':'р','x':'х','y':'у','b':'в','h':'н','k':'к','m':'м','t':'т'
+  };
+  function normalize(s) {
+    return s.toLowerCase().split('').map(ch => HOMOGLYPH[ch] || ch).join('');
+  }
+
+  const state = { search: '', cat: 'all' };
+  let searchTimer = null;
+
+  function apply() {
+    const q = normalize(state.search.trim());
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const cardCat = card.dataset.cat || '';
+      const cardName = normalize(card.dataset.name || card.textContent || '');
+      const catMatch = state.cat === 'all' || cardCat === state.cat;
+      const searchMatch = !q || cardName.includes(q);
+      const show = catMatch && searchMatch;
+      card.hidden = !show;
+      if (show) visibleCount++;
+    });
+    if (emptyMsg) emptyMsg.hidden = visibleCount > 0;
+
+    // Update active state on sidebar + pills
+    sidebarBtns.forEach(b => {
+      const isActive = b.dataset.cat === state.cat;
+      b.classList.toggle('filter-item--active', isActive);
+      b.textContent = (isActive ? '(•) ' : '( ) ') + b.textContent.replace(/^[(•)\s]+/u, '');
+    });
+    pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
+
+    // Filter count badge (count active non-default filters)
+    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0);
+    if (clearBadge) clearBadge.textContent = String(activeCount);
+
+    // Sync hash (without scroll jump)
+    const hash = state.cat !== 'all' ? `#${state.cat}` : '';
+    if (window.location.hash !== hash) {
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+    }
+  }
+
+  function setSearch(v) {
+    state.search = v;
+    apply();
+  }
+  function setCat(c) {
+    state.cat = c;
+    apply();
+  }
+
+  // Search inputs (debounced) + sync both desktop and mobile inputs
+  searchInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      const val = e.target.value;
+      searchTimer = setTimeout(() => {
+        // Sync the other input(s) so they show the same query
+        searchInputs.forEach(i => { if (i !== input) i.value = val; });
+        setSearch(val);
+      }, 250);
+    });
+  });
+  // Prevent form submission (reload)
+  document.querySelectorAll('.catalog__search').forEach(f => {
+    f.addEventListener('submit', (e) => e.preventDefault());
+  });
+
+  // Sidebar buttons
+  sidebarBtns.forEach(btn => {
+    btn.addEventListener('click', () => setCat(btn.dataset.cat));
+  });
+  // Pills (mobile)
+  pillBtns.forEach(btn => {
+    btn.addEventListener('click', () => setCat(btn.dataset.cat));
+  });
+
+  // Clear filters
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      state.search = '';
+      state.cat = 'all';
+      searchInputs.forEach(i => i.value = '');
+      apply();
+    });
+  }
+
+  // Init from URL hash (e.g. ?#microchips → activate microchips filter)
+  const initialHash = window.location.hash.replace('#', '');
+  if (initialHash && initialHash !== 'search') {
+    const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];
+    if (validCats.includes(initialHash)) state.cat = initialHash;
+  }
+
+  apply();
+}
+
+
 /** KP Drawer — "запросить КП" overlay form (Pencil GbmrD mobile).
  *  Inject template into body, wire up open/close handlers, handle submit. */
 function initKpDrawer() {
@@ -471,7 +588,9 @@ function initKpDrawer() {
         nameEl.textContent = 'подбор по каталогу';
       }
       if (pdEyebrow) {
-        labelEl.textContent = pdEyebrow.textContent.split('·').pop().trim();
+        // Eyebrow is "каталог · РАЗДЕЛ · серия" — pick middle segment (the category)
+        const segs = pdEyebrow.textContent.split('·').map(s => s.trim()).filter(Boolean);
+        labelEl.textContent = segs.length >= 2 ? segs[1] : (segs[0] || 'подбор');
       } else {
         labelEl.textContent = 'подбор';
       }

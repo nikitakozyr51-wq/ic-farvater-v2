@@ -693,6 +693,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden; /* clip the iframe edges to placeholder bounds */
+}
+.map-section__placeholder iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 .map-section__placeholder-label {
   font-size: var(--t-label);
