@@ -495,7 +495,12 @@ function initCatalog() {
     const itemWord = items.length && items[0].type === 'series'
       ? pluralize(count, 'серия', 'серии', 'серий')
       : pluralize(count, 'товар', 'товара', 'товаров');
-    listHeader.innerHTML = `<span class="catalog__list-cat">${catLabel}</span><span class="catalog__list-count">${count} ${itemWord}</span>`;
+    const hasLanding = !!(typeof CATEGORY_LANDINGS !== 'undefined' && CATEGORY_LANDINGS[cat]);
+    listHeader.innerHTML = `
+      <span class="catalog__list-cat">${catLabel}</span>
+      ${hasLanding ? `<a class="catalog__list-overview" href="product-detail.html#cat-${cat}">обзор категории <span aria-hidden="true">→</span></a>` : ''}
+      <span class="catalog__list-count">${count} ${itemWord}</span>
+    `;
     listGrid.innerHTML = '';
     const shown = items.slice(0, PAGE_SIZE);
     shown.forEach(it => {
@@ -647,7 +652,9 @@ function initCatalog() {
 }
 
 
-/** Static landing pages (microchips/transistors/pcb) — Pencil fh0MA/DA6LB/Py4Cq.
+/** Static landing pages — one per catalog category (6 total).
+ *  Pencil fh0MA/DA6LB/Py4Cq (microchips/transistors/pcb originals) +
+ *  razemy/converters/capacitors added for UX consistency.
  *  Each: title + description + key specs + nomenclature table + related categories. */
 const CATEGORY_LANDINGS = {
   microchips: {
@@ -658,9 +665,51 @@ const CATEGORY_LANDINGS = {
     specs: {
       'категория': 'цифровые и аналоговые',
       'тип корпуса': 'sot-23, sot-89, sop-8, to-220 и другие',
-      'температурный диапазон': '-40…+85 °C типично, до -55…+125 °C спец-исп.',
+      'температурный диапазон': '-40…+85 °c типично, до -55…+125 °c спец-исп.',
       'количество позиций': '51 и более',
-      'сертификация': 'эКб тест · гост рв 20.39.412'
+      'сертификация': 'экб тест · гост рв 20.39.412'
+    }
+  },
+  razemy: {
+    name: 'разъёмы',
+    eyebrowCategory: ['razemy', 'разъёмы'],
+    description: 'промышленные соединители серий ет — отечественные аналоги 2рм, 2рмт, снц. цилиндрические, прямоугольные и приборные исполнения для радиоэлектронной и бортовой аппаратуры.',
+    image: '../assets/images/products/connectors/et-snc28.webp',
+    specs: {
+      'количество серий': '23',
+      'типы корпусов': 'цилиндрические, прямоугольные, приборные',
+      'количество контактов': 'от 4 до 100+',
+      'температурный диапазон': '-60…+200 °с',
+      'покрытие контактов': 'золото, серебро, никель',
+      'сертификация': 'гост рв 20.39.414, ткес'
+    }
+  },
+  converters: {
+    name: 'преобразователи напряжения',
+    eyebrowCategory: ['converters', 'преобразователи'],
+    description: 'dc/dc и ac/dc модульные преобразователи серий иртыш, волга, енисей, кама. pin-to-pin совместимость с продукцией vicor. отечественные решения для аппаратуры специального назначения.',
+    image: '../assets/images/products/items/Irtysh.webp',
+    specs: {
+      'количество серий': '4',
+      'тип': 'dc/dc и ac/dc',
+      'выходная мощность': '50–1000 вт',
+      'входное напряжение': '24, 28, 110, 230, 300, 375 в',
+      'форм-факторы': '1/2 brick, 1/4 brick, full brick',
+      'температурное исполнение': 'c, h, m (-55…+100 °c)'
+    }
+  },
+  capacitors: {
+    name: 'свч-конденсаторы',
+    eyebrowCategory: ['capacitors', 'свч-конденсаторы'],
+    description: 'высокочастотные конденсаторы серии arc70 для свч-модулей. применяются в усилителях мощности, фильтрах и согласующих цепях в радиолокации, связи и спецтехнике.',
+    image: '../assets/images/products/capacitors.webp',
+    specs: {
+      'количество серий': '3',
+      'тип': 'arc70',
+      'диапазон частот': 'до 18 ггц',
+      'ёмкость': '0,1–100 пф',
+      'температурный диапазон': '-55…+125 °с',
+      'добротность': 'высокая (low esr/esl)'
     }
   },
   transistors: {
@@ -686,7 +735,7 @@ const CATEGORY_LANDINGS = {
       'минимальная ширина проводника': '0,1 мм',
       'минимальное отверстие': '0,2 мм',
       'импеданс-контроль': 'да',
-      'поверхность': 'honal, hasl, immersion gold, osp',
+      'поверхность': 'hasl, immersion gold, osp',
       'материал': 'fr-4, rogers, политетрафторэтилен'
     }
   }
@@ -734,19 +783,34 @@ function initProductDetail() {
     const landingKey = hash.slice(5);
     const landing = CATEGORY_LANDINGS[landingKey];
     if (landing) {
-      // Landing data → render with PRODUCTS as items[] for nomenclature
+      // Nomenclature items from data file (PRODUCTS for microchips/transistors, _SERIES for others)
+      let items = [];
+      if (landingKey === 'microchips' && typeof PRODUCTS !== 'undefined') {
+        items = PRODUCTS.filter(p => p.category === 'Микросхемы')
+          .map(p => ({ name: p.name, type: p.subcategory || '', partnumber: String(p.id), tu: '' }));
+      } else if (landingKey === 'transistors' && typeof PRODUCTS !== 'undefined') {
+        items = PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы')
+          .map(p => ({ name: p.name, type: p.subcategory || '', partnumber: String(p.id), tu: '' }));
+      } else if (landingKey === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+        items = CONNECTOR_SERIES.map(s => ({
+          name: s.name, type: 'серия', partnumber: s.slug, tu: s.tu || ''
+        }));
+      } else if (landingKey === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
+        items = CONVERTER_SERIES.map(s => ({
+          name: s.name, type: 'серия', partnumber: s.slug, tu: s.tu || ''
+        }));
+      } else if (landingKey === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
+        items = CAPACITOR_SERIES.map(s => ({
+          name: s.name, type: 'серия', partnumber: s.slug, tu: s.tu || ''
+        }));
+      }
+      // pcb has no data → items stays empty
       data = {
         name: landing.name,
         description: landing.description,
         image: landing.image,
         specs: landing.specs,
-        items: (typeof PRODUCTS !== 'undefined' && landingKey !== 'pcb')
-          ? PRODUCTS.filter(p => {
-              if (landingKey === 'microchips') return p.category === 'Микросхемы';
-              if (landingKey === 'transistors') return p.category === 'СВЧ-транзисторы';
-              return false;
-            }).map(p => ({ name: p.name, type: p.subcategory || '', partnumber: String(p.id), tu: '' }))
-          : []
+        items: items
       };
       kind = 'landing';
       catSlug = landing.eyebrowCategory[0];

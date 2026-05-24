@@ -1277,10 +1277,10 @@
 .catalog__list-header {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   gap: 16px;
   padding-bottom: 16px;
   border-bottom: var(--border-thin);
+  flex-wrap: wrap;
 }
 .catalog__list-cat {
   font-size: 22px;
@@ -1291,7 +1291,22 @@
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
+  margin-right: auto; /* пушит остальное вправо */
 }
+.catalog__list-overview {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+.catalog__list-overview:hover { color: var(--c-text); }
+.catalog__list-overview span { font-size: 14px; line-height: 1; }
 .catalog__list-count {
   font-size: var(--t-label);
   font-weight: 500;
