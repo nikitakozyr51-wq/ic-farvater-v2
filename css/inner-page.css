@@ -511,12 +511,13 @@
   gap: 0;
 }
 
-/* Info column — mobile separator Pencil GiyzV padding [40,24], border-top #D7D3CB */
+/* Info column — mobile separator Pencil GiyzV padding [40,24] (40 top+bottom), border-top #D7D3CB */
 .contact-info {
   display: flex;
   flex-direction: column;
   gap: 24px; /* mobile gap between rows; Pencil GiyzV uses 24 */
   padding-top: 40px;
+  padding-bottom: 40px;
   border-top: var(--border-thin);
 }
 .contact-info__row {
@@ -713,6 +714,7 @@
     flex: 0 0 400px;
     gap: 48px; /* Pencil Ox7QR: row stride 90 = 42h row + 48 gap */
     padding-top: 0; /* reset mobile border-top padding */
+    padding-bottom: 0;
     border-top: 0;
   }
   .contact-info__row { gap: 8px; }

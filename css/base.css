@@ -22,10 +22,12 @@
 }
 
 /* === Body / typography defaults === */
-/* html bg matches body + overscroll-behavior disables rubber-band bounce past page edges
-   (Lenis trackpad gestures / Safari iOS / macOS scroll bounce). */
+/* html bg = footer dark blue: any space past document (Lenis momentum, browser bounce, Edge UI)
+   shows footer-extending dark blue instead of jarring white.
+   overscroll-behavior: none — prevents browser-native rubber-band where supported.
+   body bg = cream — that's what user actually sees within the page. */
 html {
-  background: var(--c-bg);
+  background: var(--c-text);
   overscroll-behavior: none;
 }
 
@@ -34,6 +36,7 @@ body {
   font-size: var(--t-body);
   color: var(--c-text);
   background: var(--c-bg);
+  overscroll-behavior: none;
   font-weight: 400;
 }
 
