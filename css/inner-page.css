@@ -866,20 +866,20 @@
 }
 .legal-doc__body a:hover { opacity: 0.8; }
 
-/* Desktop (≥1024) — Pencil f0xc1y/CfYdB 1440 frame:
-   - left col x=0 w=720 padding [48,60,80,60] → title text width ~600
-   - right col x=732 w=708 padding [320,60,80,0] → sections width 380 left-aligned
-   - canvas full-bleed 1440, content inside 1320 container fits
-   - 2-col grid 1fr 1fr; sections max-w 380 inside right col with padding-top to push down */
+/* Desktop (≥1024) — Pencil f0xc1y/CfYdB:
+   Aligned to the SAME 4-col footer grid used by .footer__navs (4 × 312w + 3 × 24 gap = 1320).
+   This puts title in cols 1-2 (x=60→708) and edition/sections in cols 3-4 (x=732→1380),
+   so .legal-doc__sections starts at exact same x=732 as .footer__nav--site below (Pencil col 7).
+   Sections themselves stay 380w left-aligned inside cols 3-4 (Pencil sec frames width:380). */
 @media (min-width: 1024px) {
   .legal-doc {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 24px;
     align-items: start;
   }
   .legal-doc__title {
-    grid-column: 1;
+    grid-column: 1 / span 2;
     grid-row: 1 / span 2;
     font-size: 56px;
     letter-spacing: -1.5px;
@@ -887,14 +887,14 @@
     margin-bottom: 80px;  /* Pencil left padding-bottom:80 */
   }
   .legal-doc__edition {
-    grid-column: 2;
+    grid-column: 3 / span 2;
     grid-row: 1;
     padding-top: 320px;   /* Pencil right padding-top:320 — visual offset below title */
   }
   .legal-doc__sections {
-    grid-column: 2;
+    grid-column: 3 / span 2;
     grid-row: 2;
-    max-width: 380px;     /* Pencil sec frames width:380 */
+    max-width: 380px;     /* Pencil sec frames width:380, left-aligned inside cols 3-4 */
     gap: 32px;            /* Pencil right gap:32 between sec frames */
     padding-top: 32px;    /* Pencil right frame gap:32 between date and first section */
     padding-bottom: 80px; /* Pencil right padding-bottom:80 */
