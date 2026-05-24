@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProductCarousels();
   initKpDrawer();
   initCatalog();
+  initProductDetail();
 });
 
 /** Page loader — hide overlay once window finishes loading */
@@ -589,6 +590,119 @@ function initCatalog() {
   }
 
   apply();
+}
+
+
+/** Product Detail — populate fields from data based on URL hash.
+ *  Hash formats: #p-<id> (PRODUCTS by id), #s-c-<slug> (connector series),
+ *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series).
+ *  No hash → leave default static content (ET-СНЦ23). */
+function initProductDetail() {
+  if (!document.querySelector('.product-top__title') || !document.querySelector('.section--pd-content')) return;
+  const hash = window.location.hash;
+  if (!hash || hash === '#') return;
+
+  let data = null, kind = null, catSlug = null, catLabel = null;
+
+  if (hash.startsWith('#p-')) {
+    const id = parseInt(hash.slice(3), 10);
+    if (typeof PRODUCTS !== 'undefined') data = PRODUCTS.find(p => p.id === id);
+    if (data) {
+      kind = 'product';
+      const map = {
+        'Микросхемы': ['microchips', 'микросхемы'],
+        'СВЧ-транзисторы': ['transistors', 'свч-транзисторы'],
+        'СВЧ-конденсаторы': ['capacitors', 'свч-конденсаторы'],
+        'Преобразователи напряжения': ['converters', 'преобразователи'],
+        'Разъёмы': ['razemy', 'разъёмы']
+      };
+      [catSlug, catLabel] = map[data.category] || ['', (data.category || '').toLowerCase()];
+    }
+  } else if (hash.startsWith('#s-c-') && typeof CONNECTOR_SERIES !== 'undefined') {
+    data = CONNECTOR_SERIES.find(s => s.slug === hash.slice(5));
+    kind = 'connector-series';
+    catSlug = 'razemy'; catLabel = 'разъёмы';
+  } else if (hash.startsWith('#s-v-') && typeof CONVERTER_SERIES !== 'undefined') {
+    data = CONVERTER_SERIES.find(s => s.slug === hash.slice(5));
+    kind = 'converter-series';
+    catSlug = 'converters'; catLabel = 'преобразователи';
+  } else if (hash.startsWith('#s-k-') && typeof CAPACITOR_SERIES !== 'undefined') {
+    data = CAPACITOR_SERIES.find(s => s.slug === hash.slice(5));
+    kind = 'capacitor-series';
+    catSlug = 'capacitors'; catLabel = 'свч-конденсаторы';
+  }
+
+  if (!data) return;
+
+  // Title (preserve counter span)
+  const titleEl = document.querySelector('.product-top__title');
+  if (titleEl) {
+    const counter = titleEl.querySelector('.product-top__counter');
+    titleEl.textContent = (data.name || data.displayName || '').toLowerCase();
+    if (counter) titleEl.appendChild(counter);
+  }
+
+  // Eyebrow breadcrumb: каталог · <category> · <type>
+  const eyebrowEl = document.querySelector('.product-top__eyebrow');
+  if (eyebrowEl) {
+    const trail = data.subcategory || (kind && kind.includes('series') ? (data.slug || '') : '');
+    eyebrowEl.innerHTML = `<a href="products.html">каталог</a> · <a href="products.html#${catSlug}">${catLabel}</a>` +
+      (trail ? ` · <span>${String(trail).toLowerCase()}</span>` : '');
+  }
+
+  // Subtitle (short description)
+  const subtitleEl = document.querySelector('.product-top__subtitle');
+  if (subtitleEl) {
+    if (data.description) {
+      subtitleEl.textContent = data.description.split('.')[0] + '.';
+    } else if (data.tu) {
+      subtitleEl.textContent = data.tu.toLowerCase();
+    }
+  }
+
+  // Image
+  const imgEl = document.querySelector('.pd-image__placeholder');
+  const labelEl = document.querySelector('.pd-image__label');
+  if (labelEl) labelEl.textContent = (data.name || '').toLowerCase();
+  if (imgEl && data.image) {
+    // Replace placeholder with actual image
+    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${(data.name || '').toLowerCase()}</span>'">`;
+  }
+
+  // Description
+  const descBody = document.querySelector('.pd-block--description .pd-block__body');
+  if (descBody && data.description) {
+    // Split into paragraphs by sentence end
+    const sentences = data.description.split(/(?<=[.])\s+/).filter(Boolean);
+    descBody.innerHTML = sentences.map(s => `<p>${s.trim()}</p>`).join('');
+  }
+
+  // Specs table
+  const specsTable = document.querySelector('.pd-specs');
+  if (specsTable) {
+    let specsObj = {};
+    if (data.specs) {
+      specsObj = data.specs;
+    } else if (kind && kind.includes('series')) {
+      // Build specs from series-level fields
+      if (data.tu) specsObj['ту'] = data.tu;
+      if (data.count) specsObj['количество позиций'] = String(data.count);
+      if (data.group) specsObj['группа'] = data.group === 'main' ? 'основные серии' : (data.group === 'additional' ? 'дополнительные серии' : 'в разработке');
+    }
+    const entries = Object.entries(specsObj);
+    if (entries.length) {
+      specsTable.innerHTML = '';
+      entries.forEach(([k, v]) => {
+        const row = document.createElement('div');
+        row.className = 'pd-specs__row';
+        row.innerHTML = `<dt class="pd-specs__label">${String(k).toLowerCase()}</dt><dd class="pd-specs__value">${String(v)}</dd>`;
+        specsTable.appendChild(row);
+      });
+    }
+  }
+
+  // Update page title
+  document.title = `${(data.name || '').toUpperCase()} — IC Фарватер`;
 }
 
 
