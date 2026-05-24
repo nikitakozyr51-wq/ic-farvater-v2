@@ -861,3 +861,179 @@
   }
 }
 
+
+/* ============================================================
+   11.5 PAGE LOADER — fullscreen overlay shown during initial load
+   (ported from v1 components.css). main.js initPageLoader() removes
+   .page-loader--hidden on window.load. Logo pulses + bar slides.
+   ============================================================ */
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--c-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+  pointer-events: auto;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.page-loader.page-loader--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.page-loader__logo {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  color: var(--c-text);
+  text-transform: lowercase;
+  opacity: 0;
+  animation: pl-logo-fade 1.4s ease-in-out infinite;
+}
+.page-loader__bar {
+  position: relative;
+  width: 200px;
+  height: 1px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+.page-loader__bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: var(--c-text);
+  animation: pl-bar 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes pl-logo-fade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+@keyframes pl-bar {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loader__logo { animation: none; opacity: 1; }
+  .page-loader__bar::after { animation: none; left: 0; width: 100%; }
+}
+
+
+/* ============================================================
+   12. COOKIE BANNER — Pencil rMkUS mobile 390×178 / ZHi2k desktop 1440×95
+   Fixed-bottom bar, dark blue bg, text + 2 buttons (отклонить outline / принять cream)
+   Hidden by default; main.js initCookieBanner() removes --hidden on first visit
+   ============================================================ */
+
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--c-text);
+  z-index: 100;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  /* Mobile Pencil rMkUS: padding [24, 24, 24, 24] = 24 vertical, container handles horizontal */
+  padding-block: 24px;
+}
+
+/* Hidden state (initial render + after accept/reject) */
+.cookie-banner--hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cookie-banner__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cookie-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cookie-banner__title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--c-bg);
+}
+
+.cookie-banner__link {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--c-label-on-dark, rgba(245, 243, 239, 0.7));
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease;
+}
+.cookie-banner__link:hover { color: var(--c-bg); }
+
+.cookie-banner__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cookie-banner__btn {
+  flex: 1; /* mobile: 2 equal buttons full-width row */
+  height: 40px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.cookie-banner__btn--reject {
+  background: transparent;
+  color: var(--c-bg);
+  border: 1px solid var(--c-bg);
+}
+.cookie-banner__btn--reject:hover { background: var(--c-bg); color: var(--c-text); }
+
+.cookie-banner__btn--accept {
+  background: var(--c-bg);
+  color: var(--c-text);
+  border: 0;
+}
+.cookie-banner__btn--accept:hover { opacity: 0.9; }
+
+@media (min-width: 1024px) {
+  /* Desktop Pencil ZHi2k: h=95, padding [24, 60], text-left + actions-right inline */
+  .cookie-banner__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+  }
+  .cookie-banner__text {
+    flex: 1;
+    gap: 6px; /* Pencil PnUDy: R5m0Eu→XNee8 gap = 6 (y=27 - h=21) */
+  }
+  .cookie-banner__title { font-size: 14px; }
+  .cookie-banner__actions {
+    flex: 0 0 auto;
+    gap: 12px;
+  }
+  .cookie-banner__btn {
+    flex: 0 0 auto;
+    height: 36px; /* Pencil Lsmgk h=36 */
+    padding: 0 18px;
+    font-size: 13px;
+  }
+}

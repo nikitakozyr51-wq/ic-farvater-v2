@@ -15,10 +15,16 @@
   <link rel="stylesheet" href="css/tokens.css?v=2">
   <link rel="stylesheet" href="css/base.css?v=7">
   <link rel="stylesheet" href="css/layout.css?v=1">
-  <link rel="stylesheet" href="css/components.css?v=3">
+  <link rel="stylesheet" href="css/components.css?v=4">
   <link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
+
+  <!-- Page loader — main.js initPageLoader hides on window.load -->
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <span class="page-loader__logo">ic farvater</span>
+    <div class="page-loader__bar"></div>
+  </div>
 
   <!-- Header (verified: ISnHK desktop, xAjS9 mobile) -->
   <header class="header">
@@ -333,6 +339,20 @@
       </div>
     </div>
   </footer>
+
+  <!-- Cookie banner — Pencil rMkUS mobile / ZHi2k desktop. Hidden initially; main.js initCookieBanner shows on first visit. -->
+  <div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="Использование cookie">
+    <div class="container cookie-banner__inner">
+      <div class="cookie-banner__text">
+        <p class="cookie-banner__title">мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости.</p>
+        <a href="pages/privacy-policy.html" class="cookie-banner__link">подробнее в&nbsp;политике конфиденциальности →</a>
+      </div>
+      <div class="cookie-banner__actions">
+        <button class="cookie-banner__btn cookie-banner__btn--reject" type="button" data-cookie-action="reject">отклонить</button>
+        <button class="cookie-banner__btn cookie-banner__btn--accept" type="button" data-cookie-action="accept">принять</button>
+      </div>
+    </div>
+  </div>
 
   <!-- JS — vendor first, then app, then animations -->
   <script src="js/vendor/lenis.min.js" defer></script>
