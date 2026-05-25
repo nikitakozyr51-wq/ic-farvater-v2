@@ -861,96 +861,193 @@ function initCatalog() {
 }
 
 
-/** Static landing pages — one per catalog category (6 total).
- *  Pencil fh0MA/DA6LB/Py4Cq (microchips/transistors/pcb originals) +
- *  razemy/converters/capacitors added for UX consistency.
- *  Each: title + description + key specs + nomenclature table + related categories. */
+/** Category Landing pages — Pencil v4 spec.
+ *  Frames: fh0MA microchips / tUie5 razemy / USmAk converters / njeyO capacitors /
+ *  DA6LB transistors / Py4Cq pcb (Desktop). Mobile: HPQvI / X61Pn / zyxIp / BqfNx / PtnRv / YpDYC.
+ *  Each: H1 + breadcrumb + subtitle / pd-image + 2 desc paragraphs + bullets list + CTA /
+ *  nomenclature 9-row table / related 3 other cats. */
 const CATEGORY_LANDINGS = {
   microchips: {
     name: 'микросхемы',
     eyebrowCategory: ['microchips', 'микросхемы'],
-    description: 'микросхемы серии экб тест — широкий ассортимент цифровых и аналоговых компонентов для управления питанием, обработки сигналов и систем автоматики. отечественные аналоги импортных решений с подтверждённой надёжностью.',
+    subtitle: 'цифровые и&nbsp;аналоговые ис&nbsp; ·&nbsp; 51 позиция&nbsp; ·&nbsp; аналоги импортных компонентов',
     image: '../assets/images/products/items/ET1310PN1U.webp',
-    specs: {
-      'категория': 'цифровые и аналоговые',
-      'тип корпуса': 'sot-23, sot-89, sop-8, to-220 и другие',
-      'температурный диапазон': '-40…+85 °c типично, до -55…+125 °c спец-исп.',
-      'количество позиций': '51 и более',
-      'сертификация': 'экб тест · гост рв 20.39.412'
-    }
+    description: [
+      'поставляем цифровые и&nbsp;аналоговые интегральные микросхемы для&nbsp;ответственных применений: ацп/цап, сигнальные процессоры (цсп), микроконтроллеры, интерфейсные и&nbsp;драйверные ис, dc/dc-контроллеры, линейные стабилизаторы, операционные усилители, компараторы и&nbsp;источники опорного напряжения.',
+      'номенклатура включает как&nbsp;массовые серии, так&nbsp;и&nbsp;специализированные компоненты под&nbsp;бортовую, измерительную и&nbsp;промышленную аппаратуру. подбираем функциональные аналоги снятых с&nbsp;производства или&nbsp;попавших под&nbsp;санкции импортных микросхем.'
+    ],
+    bullets: [
+      ['цифровые ис', 'логика, регистры, дешифраторы'],
+      ['процессоры',  'микроконтроллеры, цсп, плис'],
+      ['ацп / цап',   'разрядность 8–24&nbsp;бит, sar, Σ-Δ'],
+      ['усилители',   'оу, инструментальные, компараторы']
+    ],
+    nomenclature: [
+      ['цифровые ис',  'логика, счётчики, регистры, дешифраторы'],
+      ['процессоры',   'микроконтроллеры, цсп, плис'],
+      ['ацп / цап',    'разрядность 8–24&nbsp;бит, sar, Σ-Δ'],
+      ['усилители',    'оу, инструментальные, компараторы'],
+      ['питание',      'ldo, dc/dc-контроллеры, супервизоры'],
+      ['интерфейсы',   'rs-232/485, can, spi, i²c, lvds'],
+      ['память',       'sram, eeprom, flash, fram'],
+      ['исполнения',   'коммерческое, индустриальное, «5»'],
+      ['корпуса',      'dip, soic, qfp, qfn, bga, металлокерамика']
+    ]
   },
   razemy: {
     name: 'разъёмы',
     eyebrowCategory: ['razemy', 'разъёмы'],
-    description: 'промышленные соединители серий ет — отечественные аналоги 2рм, 2рмт, снц. цилиндрические, прямоугольные и приборные исполнения для радиоэлектронной и бортовой аппаратуры.',
+    subtitle: 'герметичные блочные ет-серии&nbsp; ·&nbsp; более 1500&nbsp;позиций&nbsp; ·&nbsp; замена 2рмг&nbsp;/ 2рмт&nbsp;/ снц&nbsp;/ шр',
     image: '../assets/images/products/connectors/et-snc28.webp',
-    specs: {
-      'количество серий': '23',
-      'типы корпусов': 'цилиндрические, прямоугольные, приборные',
-      'количество контактов': 'от 4 до 100+',
-      'температурный диапазон': '-60…+200 °с',
-      'покрытие контактов': 'золото, серебро, никель',
-      'сертификация': 'гост рв 20.39.414, ткес'
-    }
+    description: [
+      'поставляем герметичные блочные разъёмы ет-серии для&nbsp;бортовой и&nbsp;наземной аппаратуры. цилиндрические низкочастотные соединители 2рмг(д)&nbsp;/ 2рмт&nbsp;/ 2рмдт&nbsp;/ 2ртт&nbsp;/ шр&nbsp;/ снц23&nbsp;/ снц28&nbsp;/ снц144&nbsp;/ онц-бс&nbsp;/ ррс&nbsp;/ рс(г)&nbsp;/ мр1, а&nbsp;также заглушки эк&nbsp;/ эп.',
+      'функциональные аналоги изделий 2рм&nbsp;/ 2рмгд&nbsp;/ шр&nbsp;/ снц по&nbsp;ткес.434410.039, 016, 005, 014 и&nbsp;др. рабочая температура −60…+200&nbsp;°с, напряжение до&nbsp;560&nbsp;в, число контактов 4–50, ресурс 500&nbsp;циклов.'
+    ],
+    bullets: [
+      ['цилиндрические', 'блочные 2рмг(д), розетки 2рмт&nbsp;/ 2рмдт'],
+      ['снц-серии',      'снц23&nbsp;· снц28&nbsp;· снц127&nbsp;· снц144'],
+      ['шр и&nbsp;онц-бс',     'кабельные и&nbsp;приборные соединители'],
+      ['ррс, рс(г), мр1','розетки экранированные, заглушки эк&nbsp;/ эп']
+    ],
+    nomenclature: [
+      ['серии',       '12 основных серий ет + 12 в&nbsp;разработке'],
+      ['контакты',    'от&nbsp;4 до&nbsp;50, шаг 3,5–6&nbsp;мм'],
+      ['напряжение',  'до&nbsp;560&nbsp;в, ток до&nbsp;25&nbsp;а'],
+      ['температура', '−60…+200&nbsp;°с (испол. ухл)'],
+      ['вибрация',    '5–5000&nbsp;гц при&nbsp;50g'],
+      ['удар',        'одиночный 500g, многократный 100g'],
+      ['покрытия',    'золото, серебро, химический никель'],
+      ['ту',          'ткес.434410.039 / 016 / 005 / 014 / 049'],
+      ['ресурс',      '500 циклов, срок хранения 7&nbsp;лет']
+    ]
   },
   converters: {
-    name: 'преобразователи напряжения',
-    eyebrowCategory: ['converters', 'преобразователи'],
-    description: 'dc/dc и ac/dc модульные преобразователи серий иртыш, волга, енисей, кама. pin-to-pin совместимость с продукцией vicor. отечественные решения для аппаратуры специального назначения.',
+    name: 'преобразователи',
+    eyebrowCategory: ['converters', 'преобразователи напряжения'],
+    subtitle: 'dc/dc модульные&nbsp; ·&nbsp; 626 позиций&nbsp; ·&nbsp; pin-to-pin замена vicor',
     image: '../assets/images/products/items/Irtysh.webp',
-    specs: {
-      'количество серий': '4',
-      'тип': 'dc/dc и ac/dc',
-      'выходная мощность': '50–1000 вт',
-      'входное напряжение': '24, 28, 110, 230, 300, 375 в',
-      'форм-факторы': '1/2 brick, 1/4 brick, full brick',
-      'температурное исполнение': 'c, h, m (-55…+100 °c)'
-    }
+    description: [
+      'поставляем модульные dc/dc-преобразователи серий иртыш, волга, енисей и&nbsp;кама с&nbsp;полной pin-to-pin совместимостью с&nbsp;продукцией vicor. применяются в&nbsp;бортовых системах электропитания, промышленной автоматике, средствах связи и&nbsp;специальной аппаратуре.',
+      'входные напряжения 24, 28, 300 и&nbsp;375&nbsp;в, выходные 3,3–48&nbsp;в, мощность 50–600&nbsp;вт. форм-факторы 1/2, 1/4&nbsp;brick и&nbsp;full&nbsp;brick 117×55,9×12,7&nbsp;мм. три температурных исполнения: c, h, m с&nbsp;верхней границей +100&nbsp;°с.'
+    ],
+    bullets: [
+      ['иртыш',  '370 позиций dc/dc&nbsp;· vin&nbsp;24/28/300/375&nbsp;в'],
+      ['волга',  '124 позиции&nbsp;· мощность 50–500&nbsp;вт'],
+      ['енисей', '80 позиций&nbsp;· промышленный диапазон'],
+      ['кама',   '52 позиции&nbsp;· компактные модули']
+    ],
+    nomenclature: [
+      ['серии',         'иртыш&nbsp;· волга&nbsp;· енисей&nbsp;· кама'],
+      ['входные',       '24&nbsp;в (18–36), 28&nbsp;в (9–36), 300&nbsp;в (180–375), 375&nbsp;в (250–425)'],
+      ['выходные',      '3,3&nbsp;/ 5&nbsp;/ 8&nbsp;/ 12&nbsp;/ 15&nbsp;/ 24&nbsp;/ 28&nbsp;/ 36&nbsp;/ 48&nbsp;в'],
+      ['мощность',      '50–600&nbsp;вт'],
+      ['форм-фактор',   '1/2&nbsp;brick, 1/4&nbsp;brick, full&nbsp;brick 117×55,9×12,7&nbsp;мм'],
+      ['температура',   'c (−20…+100), h (−40…+100), m (−55…+100&nbsp;°с)'],
+      ['совместимость', 'pin-to-pin с&nbsp;vicor'],
+      ['применение',    'опк, авиация, космос, телекоммуникации'],
+      ['позиций',       '626 в&nbsp;каталоге']
+    ]
   },
   capacitors: {
     name: 'свч-конденсаторы',
     eyebrowCategory: ['capacitors', 'свч-конденсаторы'],
-    description: 'высокочастотные конденсаторы серии arc70 для свч-модулей. применяются в усилителях мощности, фильтрах и согласующих цепях в радиолокации, связи и спецтехнике.',
+    subtitle: 'mlcc серии arc70&nbsp; ·&nbsp; 273 позиции&nbsp; ·&nbsp; аналог atc&nbsp;100a&nbsp;/ 100c&nbsp;/ 100e',
     image: '../assets/images/products/capacitors.webp',
-    specs: {
-      'количество серий': '3',
-      'тип': 'arc70',
-      'диапазон частот': 'до 18 ггц',
-      'ёмкость': '0,1–100 пф',
-      'температурный диапазон': '-55…+125 °с',
-      'добротность': 'высокая (low esr/esl)'
-    }
+    description: [
+      'поставляем многослойные керамические свч-конденсаторы (mlcc) серий arc70a, arc70c и&nbsp;arc70e&nbsp;— прямые функциональные аналоги american technical ceramics atc&nbsp;100a, 100c, 100e из&nbsp;тех&nbsp;же материалов.',
+      'корпус 0505, ёмкость 0,1–1000&nbsp;пф, рабочее напряжение 150 или&nbsp;300&nbsp;в, температура −55…+200&nbsp;°с. применяются в&nbsp;усилителях мощности, задающих генераторах, согласующих цепях и&nbsp;свч-фильтрах.'
+    ],
+    bullets: [
+      ['arc70a',     '86 позиций&nbsp;· аналог atc&nbsp;100a'],
+      ['arc70c',     '90 позиций&nbsp;· аналог atc&nbsp;100c'],
+      ['arc70e',     '97 позиций&nbsp;· аналог atc&nbsp;100e'],
+      ['применение', 'усилители мощности, генераторы, фильтры']
+    ],
+    nomenclature: [
+      ['серии',       'arc70a&nbsp;· arc70c&nbsp;· arc70e'],
+      ['ёмкость',     '0,1–1000&nbsp;пф'],
+      ['корпус',      '0505'],
+      ['напряжение',  '150&nbsp;в (код 151) или&nbsp;300&nbsp;в (код 301)'],
+      ['температура', '−55…+200&nbsp;°с'],
+      ['допуск',      '±0,05&nbsp;пф … ±0,5&nbsp;пф'],
+      ['аналог',      'atc 100a&nbsp;· 100c&nbsp;· 100e'],
+      ['ту',          'ткес.434410.002 ту'],
+      ['позиций',     '273 в&nbsp;каталоге']
+    ]
   },
   transistors: {
     name: 'свч-транзисторы',
     eyebrowCategory: ['transistors', 'свч-транзисторы'],
-    description: 'свч-транзисторы ldmos для усилителей мощности в радиолокации, связи и спецтехнике. отечественные решения с рабочей частотой 0,5–4 ггц и выходной мощностью до 200 вт. высокая линейность и стабильность параметров.',
+    subtitle: 'ldmos для&nbsp;усилителей мощности&nbsp; ·&nbsp; до&nbsp;киловатт&nbsp; ·&nbsp; частоты до&nbsp;ггц',
     image: '../assets/images/products/transistors.webp',
-    specs: {
-      'технология': 'ldmos',
-      'диапазон частот': '0,5–4 ггц',
-      'выходная мощность': 'до 200 вт',
-      'температурный диапазон': '-60…+150 °c',
-      'количество позиций': '37 серий'
-    }
+    description: [
+      'мощные свч-транзисторы ldmos (laterally diffused mos)&nbsp;— полевые транзисторы с&nbsp;боковой диффузией, оптимизированные для&nbsp;работы на&nbsp;высоких частотах и&nbsp;больших уровнях мощности.',
+      'архитектура ldmos обеспечивает высокий кпд, линейность передаточной характеристики и&nbsp;устойчивость к&nbsp;рассогласованию нагрузки. кристаллы и&nbsp;корпусные приборы с&nbsp;выходной мощностью от&nbsp;единиц ватт до&nbsp;киловатт, рабочее напряжение 28–50&nbsp;в.'
+    ],
+    bullets: [
+      ['ldmos',      'от&nbsp;единиц вт до&nbsp;квт'],
+      ['технология', 'ldmos (кремний), gan на&nbsp;sic'],
+      ['частоты',    'вч&nbsp;/ увч&nbsp;/ свч до&nbsp;нескольких ггц'],
+      ['корпуса',    'металлокерамика, фланцевые, smd']
+    ],
+    nomenclature: [
+      ['технология',           'ldmos (кремний)'],
+      ['частотный диапазон',   'вч&nbsp;/ увч&nbsp;/ свч, до&nbsp;нескольких ггц'],
+      ['выходная мощность',    'от&nbsp;единиц вт до&nbsp;квт'],
+      ['напряжение питания',   '28&nbsp;в&nbsp;/ 32&nbsp;в&nbsp;/ 50&nbsp;в'],
+      ['режим работы',         'cw, импульсный'],
+      ['класс усиления',       'a, ab, c, d'],
+      ['корпуса',              'металлокерамика, фланцевые, smd'],
+      ['применение',           'связь, радиолокация, ism, медтехника'],
+      ['форм-фактор',          'кристалл&nbsp;/ корпусной прибор']
+    ]
   },
   pcb: {
     name: 'печатные платы',
     eyebrowCategory: ['pcb', 'печатные платы'],
-    description: 'проектируем и изготавливаем печатные платы под задачу заказчика — от односторонних до многослойных на 40 слоёв, включая свч, гибкие, гибко-жёсткие и платы на металлическом основании. всесторонняя технологическая проработка на этапе подготовки выявляет нюансы до запуска в производство и позволяет согласовать необходимые изменения без срыва сроков.',
+    subtitle: 'проектирование и&nbsp;производство под&nbsp;заказ&nbsp; ·&nbsp; до&nbsp;40&nbsp;слоёв&nbsp; ·&nbsp; класс точности до&nbsp;6',
     image: '../assets/images/products/pcb.webp',
-    specs: {
-      'типы плат': 'опп, дпп, мпп, свч, гибкие',
-      'кол-во слоёв': '1–40',
-      'класс точности': 'до 6 (гост р 53429-2009)',
-      'проводник / зазор': 'от 0,07 мм',
-      'толщина платы': '0,1–6,0 мм',
-      'мин. отверстие': '0,1 мм',
-      'материалы': 'fr-4, high tg, rogers, arlon, taconic, al, cu',
-      'финишные покрытия': 'hasl, lead free, ni-au, enepig, osp',
-      'контроль качества': 'летающий щуп, адаптерный, оптический'
-    }
+    description: [
+      'проектируем и&nbsp;изготавливаем печатные платы под&nbsp;задачу заказчика: опп, дпп, многослойные до&nbsp;40 слоёв, свч-платы, гибкие и&nbsp;гибко-жёсткие конструкции, а&nbsp;также платы на&nbsp;алюминиевом и&nbsp;медном основании.',
+      'выполняем обратное проектирование топологии (сколка) без&nbsp;документации, слепые и&nbsp;скрытые переходные отверстия, металлизацию торцов и&nbsp;вырезов, заполнение отверстий проводящим или&nbsp;непроводящим компаундом.'
+    ],
+    bullets: [
+      ['опп&nbsp;· дпп&nbsp;· мпп',     'до&nbsp;40 слоёв со&nbsp;слепыми и&nbsp;скрытыми переходами'],
+      ['свч и&nbsp;гибкие',          'rogers, taconic, arlon, полиимидные основания'],
+      ['класс точности',       'до&nbsp;6 по&nbsp;ГОСТ&nbsp;Р&nbsp;53429-2009, ipc&nbsp;class 2&nbsp;/ 3'],
+      ['обратное проектирование','восстановление топологии готовой платы без&nbsp;документации']
+    ],
+    nomenclature: [
+      ['типы плат',         'опп, дпп, мпп, свч, гибкие, гибко-жёсткие'],
+      ['кол-во слоёв',      '1–40'],
+      ['класс точности',    'до&nbsp;6 по&nbsp;ГОСТ&nbsp;Р&nbsp;53429-2009, ipc&nbsp;class 2&nbsp;/ 3'],
+      ['проводник / зазор', 'от&nbsp;0,07&nbsp;мм'],
+      ['отверстия',         'от&nbsp;0,1&nbsp;мм, соотношение 1:10&nbsp;— 1:20'],
+      ['толщина платы',     '0,1–6,0&nbsp;мм, фольга 5–150&nbsp;мкм'],
+      ['материалы',         'fr-4, high&nbsp;tg, rogers, taconic, arlon, isola, алюминий, медь'],
+      ['покрытия',          'hasl, lead&nbsp;free, ni-au, enepig, иммерс. sn&nbsp;/ ag, осп'],
+      ['контроль качества', 'адаптерный и&nbsp;летающий щуп, aoi, контроль импеданса ±5&nbsp;/ 10%']
+    ]
   }
+};
+
+/** Related cards (Pencil "другие категории" — 3 cats at bottom of each landing).
+ *  Per landing: show 3 OTHER cats (not current one). */
+const RELATED_CATS = {
+  microchips:  ['razemy',     'converters',  'capacitors'],
+  razemy:      ['microchips', 'converters',  'transistors'],
+  converters:  ['microchips', 'razemy',      'capacitors'],
+  capacitors:  ['transistors','converters',  'pcb'],
+  transistors: ['capacitors', 'microchips',  'converters'],
+  pcb:         ['razemy',     'microchips',  'converters']
+};
+const RELATED_CAT_INFO = {
+  microchips:  { label: 'микросхемы',       desc: 'цифровые и&nbsp;аналоговые ис', image: '../assets/images/products/items/ET1636RR1 1.webp' },
+  razemy:      { label: 'разъёмы',          desc: 'ет-серии, более 1500 позиций', image: '../assets/images/products/connectors/et-snc28.webp' },
+  converters:  { label: 'преобразователи',  desc: 'dc/dc иртыш&nbsp;· волга&nbsp;· енисей&nbsp;· кама', image: '../assets/images/products/items/Irtysh.webp' },
+  capacitors:  { label: 'свч-конденсаторы', desc: 'mlcc arc70a&nbsp;/ 70c&nbsp;/ 70e', image: '../assets/images/products/capacitors.webp' },
+  transistors: { label: 'свч-транзисторы',  desc: 'ldmos для&nbsp;усилителей мощности', image: '../assets/images/products/transistors.webp' },
+  pcb:         { label: 'печатные платы',   desc: 'до&nbsp;40 слоёв, опп&nbsp;/ дпп&nbsp;/ мпп', image: '../assets/images/products/pcb.webp' }
 };
 
 /** Product Detail — populate fields from data based on URL hash.
@@ -1051,9 +1148,12 @@ function initProductDetail() {
       // pcb has no data → items stays empty
       data = {
         name: landing.name,
+        subtitle: landing.subtitle,
         description: landing.description,
         image: landing.image,
         specs: landing.specs,
+        bullets: landing.bullets,
+        nomenclature: landing.nomenclature,
         items: items
       };
       kind = 'landing';
@@ -1085,8 +1185,11 @@ function initProductDetail() {
   // Subtitle (short description)
   const subtitleEl = document.querySelector('.product-top__subtitle');
   if (subtitleEl) {
-    if (data.description) {
-      subtitleEl.textContent = data.description.split('.')[0] + '.';
+    if (kind === 'landing' && data.subtitle) {
+      subtitleEl.innerHTML = data.subtitle;
+    } else if (data.description) {
+      const desc = Array.isArray(data.description) ? data.description[0] : data.description;
+      subtitleEl.textContent = String(desc).split('.')[0] + '.';
     } else if (data.tu) {
       subtitleEl.textContent = data.tu.toLowerCase();
     }
@@ -1101,47 +1204,87 @@ function initProductDetail() {
     imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
   }
 
-  // Description
+  // Description — can be string (single para) or array (multi-para per Pencil v4 landings)
   const descBody = document.querySelector('.pd-block--description .pd-block__body');
   if (descBody && data.description) {
-    // Split into paragraphs by sentence end
-    const sentences = data.description.split(/(?<=[.])\s+/).filter(Boolean);
-    descBody.innerHTML = sentences.map(s => `<p>${s.trim()}</p>`).join('');
+    let paras;
+    if (Array.isArray(data.description)) {
+      paras = data.description;
+    } else {
+      paras = String(data.description).split(/(?<=[.])\s+/).filter(Boolean);
+    }
+    descBody.innerHTML = paras.map(s => `<p>${String(s).trim()}</p>`).join('');
   }
 
-  // Specs table
-  const specsTable = document.querySelector('.pd-specs');
-  if (specsTable) {
-    let specsObj = {};
-    if (data.specs) {
-      specsObj = data.specs;
-    } else if (kind && kind.includes('series')) {
-      // Build specs from series-level fields
-      if (data.tu) specsObj['ту'] = data.tu;
-      if (data.count) specsObj['количество позиций'] = String(data.count);
-      if (data.group) specsObj['группа'] = data.group === 'main' ? 'основные серии' : (data.group === 'additional' ? 'дополнительные серии' : 'в разработке');
+  // Specs table — variants/series only (landings show specs via Nomenclature section instead)
+  const specsBlockEl = document.querySelector('.pd-block--specs');
+  if (kind === 'landing') {
+    if (specsBlockEl) specsBlockEl.hidden = true;
+  } else {
+    if (specsBlockEl) specsBlockEl.hidden = false;
+    const specsTable = document.querySelector('.pd-specs');
+    if (specsTable) {
+      let specsObj = {};
+      if (data.specs) {
+        specsObj = data.specs;
+      } else if (kind && kind.includes('series')) {
+        if (data.tu) specsObj['ту'] = data.tu;
+        if (data.count) specsObj['количество позиций'] = String(data.count);
+        if (data.group) specsObj['группа'] = data.group === 'main' ? 'основные серии' : (data.group === 'additional' ? 'дополнительные серии' : 'в разработке');
+      }
+      const entries = Object.entries(specsObj);
+      if (entries.length) {
+        specsTable.innerHTML = '';
+        entries.forEach(([k, v]) => {
+          const row = document.createElement('div');
+          row.className = 'pd-specs__row';
+          row.innerHTML = `<dt class="pd-specs__label">${String(k).toLowerCase()}</dt><dd class="pd-specs__value">${String(v)}</dd>`;
+          specsTable.appendChild(row);
+        });
+      }
     }
-    const entries = Object.entries(specsObj);
-    if (entries.length) {
-      specsTable.innerHTML = '';
-      entries.forEach(([k, v]) => {
+  }
+
+  // Nomenclature section (Pencil v4 — landings only). 9-row spec table.
+  const nomSection = document.getElementById('pdNomenclatureSection');
+  const nomTable = document.getElementById('pdNomenclatureTable');
+  if (nomSection && nomTable) {
+    if (kind === 'landing' && Array.isArray(data.nomenclature)) {
+      nomTable.innerHTML = '';
+      data.nomenclature.forEach(([label, value]) => {
         const row = document.createElement('div');
-        row.className = 'pd-specs__row';
-        row.innerHTML = `<dt class="pd-specs__label">${String(k).toLowerCase()}</dt><dd class="pd-specs__value">${String(v)}</dd>`;
-        specsTable.appendChild(row);
+        row.className = 'pd-nomenclature__row';
+        row.innerHTML = `<span class="pd-nomenclature__label">${label}</span><span class="pd-nomenclature__value">${value}</span>`;
+        nomTable.appendChild(row);
       });
+      nomSection.hidden = false;
+    } else {
+      nomSection.hidden = true;
     }
   }
 
   // Update page title (browser tab) — cyrillize product code
   document.title = `${cyrillize((data.name || '').toUpperCase())} — IC Фарватер`;
 
-  // === RELATED cards — dynamic per category (was hardcoded to 4 connectors) ===
+  // === RELATED cards — dynamic per category. For LANDINGS → "другие категории" (3 other cats).
+  // For variants/series → 4 sibling items in same category. ===
   const relatedGrid = document.getElementById('pdRelatedGrid');
   const relatedSection = document.querySelector('.section--pd-related');
-  if (relatedGrid && catSlug) {
+  const relatedTitleEl = document.querySelector('.pd-related__title');
+  if (relatedGrid) {
     let pool = [];
-    if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+    if (kind === 'landing' && Array.isArray(RELATED_CATS[catSlug])) {
+      // Other categories — 3 cards linking to other landings
+      pool = RELATED_CATS[catSlug].map(key => {
+        const info = RELATED_CAT_INFO[key];
+        return info ? { name: info.label, desc: info.desc, image: info.image, href: `product-detail.html#cat-${key}` } : null;
+      }).filter(Boolean);
+      if (relatedTitleEl) {
+        const counter = relatedTitleEl.querySelector('.pd-related__counter');
+        relatedTitleEl.textContent = 'другие категории';
+        if (counter) relatedTitleEl.appendChild(counter);
+      }
+    } else if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       pool = CONNECTOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
         image: s.image, href: `product-detail.html#s-c-${s.slug}`
@@ -1170,21 +1313,20 @@ function initProductDetail() {
         const a = document.createElement('a');
         a.className = 'pd-card';
         a.href = it.href;
-        const cyrName = cyrillize(it.name);
+        const cyrName = kind === 'landing' ? it.name : cyrillize(it.name);
         a.innerHTML = `
           <div class="pd-card__image" aria-label="${it.name}">
             ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${cyrName}</span>')">` : `<span class="pd-card__image-label">${cyrName}</span>`}
           </div>
           <div class="pd-card__info">
             <span class="pd-card__name">${cyrName}</span>
-            ${it.desc ? `<span class="pd-card__desc">${cyrillize(it.desc).toLowerCase()}</span>` : ''}
+            ${it.desc ? `<span class="pd-card__desc">${it.desc}</span>` : ''}
           </div>
         `;
         relatedGrid.appendChild(a);
       });
       if (relatedSection) relatedSection.hidden = false;
     } else {
-      // No related items → hide section entirely
       if (relatedSection) relatedSection.hidden = true;
     }
   }
@@ -1195,16 +1337,18 @@ function initProductDetail() {
   const variantsTable = document.getElementById('pdVariantsTable');
   const specsBlock = document.querySelector('.pd-block--specs');
 
-  if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
+  // Landings render Nomenclature instead — hide old pd-variants pills/table for landings.
+  if (kind === 'landing') {
+    if (variantsSection) variantsSection.hidden = true;
+  } else if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
     variantsSection.hidden = false;
-    if (specsBlock) specsBlock.hidden = (kind !== 'landing'); // landings keep specs visible
+    if (specsBlock) specsBlock.hidden = false;
 
-    // Update section title — "номенклатура" for landings, "варианты исполнения" for series
+    // Series detail — title is "варианты исполнения"
     const variantsTitleEl = document.querySelector('.pd-variants__title');
     if (variantsTitleEl) {
-      const titleText = kind === 'landing' ? 'номенклатура' : 'варианты исполнения';
       const counter = variantsTitleEl.querySelector('.pd-variants__counter');
-      variantsTitleEl.textContent = titleText;
+      variantsTitleEl.textContent = 'варианты исполнения';
       if (counter) variantsTitleEl.appendChild(counter);
     }
 

@@ -1140,6 +1140,71 @@
 .pd-actions__secondary:hover { background: var(--c-text); color: var(--c-bg); }
 .pd-actions__arrow { display: inline-flex; line-height: 1; }
 
+/* PD Nomenclature (Pencil v4 KLr6C / TquVi / DKTVM / CPfHe / s2AB0d / nobk8) —
+   category-wide spec table on Landing pages. 9 rows, label left + value right.
+   Section padding [80,60] mobile [32,24]. Row height 56 fixed. */
+.section--pd-nomenclature {
+  padding-block: 32px;
+  border-top: var(--border-thin);
+}
+.pd-nomenclature {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.pd-nomenclature__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 24px;
+  border-bottom: var(--border-thin);
+}
+.pd-nomenclature__title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: var(--ls-section);
+  line-height: 1.15;
+  color: var(--c-text);
+}
+.pd-nomenclature__counter {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+}
+.pd-nomenclature__table {
+  display: flex;
+  flex-direction: column;
+}
+.pd-nomenclature__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 14px 0;
+  border-bottom: var(--border-thin);
+}
+.pd-nomenclature__label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+  flex: 0 0 auto;
+}
+.pd-nomenclature__value {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--c-text);
+  text-align: right;
+}
+@media (min-width: 1024px) {
+  .section--pd-nomenclature { padding-block: 80px; }
+  .pd-nomenclature { gap: 32px; }
+  .pd-nomenclature__title { font-size: 30px; letter-spacing: -0.5px; }
+  .pd-nomenclature__row { min-height: 56px; padding: 0; }
+}
+
 /* PD Related — "другие исполнения" — Pencil I4cwln desktop / x0Ycp mobile */
 .section--pd-related { padding-block: 48px; }
 .pd-related {

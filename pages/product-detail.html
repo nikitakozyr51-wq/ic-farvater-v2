@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
   <link rel="stylesheet" href="../css/components.css?v=6">
-  <link rel="stylesheet" href="../css/inner-page.css?v=34">
+  <link rel="stylesheet" href="../css/inner-page.css?v=36">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -141,12 +141,24 @@
     </section>
 
     <!-- Variants: "варианты исполнения" — only shown when loaded data is a Series with items[]
-         (connector/converter/capacitor). JS renders pills + table. Pencil qYQC0/nmbHh. -->
+         (connector/converter/capacitor). JS renders pills + table. Pencil qYQC0. -->
     <section class="section section--pd-variants" id="pdVariantsSection" hidden>
       <div class="container pd-variants">
         <h2 class="pd-variants__title">варианты исполнения<sup class="pd-variants__counter" id="pdVariantsCounter">(02)</sup></h2>
         <div class="pd-variants__pills" id="pdVariantsPills" role="tablist"></div>
         <div class="pd-variants__table" id="pdVariantsTable"></div>
+      </div>
+    </section>
+
+    <!-- Nomenclature (Pencil v4 KLr6C/TquVi/DKTVM/CPfHe/s2AB0d/nobk8): only shown for category landings.
+         9-row spec table — label left, value right, height 56, border-bottom #D7D3CB. -->
+    <section class="section section--pd-nomenclature" id="pdNomenclatureSection" hidden>
+      <div class="container pd-nomenclature">
+        <div class="pd-nomenclature__header">
+          <h2 class="pd-nomenclature__title">номенклатура</h2>
+          <sup class="pd-nomenclature__counter">(04)</sup>
+        </div>
+        <div class="pd-nomenclature__table" id="pdNomenclatureTable"></div>
       </div>
     </section>
 
@@ -271,7 +283,7 @@
   <script src="../js/connectors-data.js" defer></script>
   <script src="../js/converters-data.js" defer></script>
   <script src="../js/capacitors-data.js" defer></script>
-  <script src="../js/main.js?v=21" defer></script>
+  <script src="../js/main.js?v=23" defer></script>
   <script src="../js/animations.js?v=1" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
