@@ -330,6 +330,12 @@
   gap: 10px;
   padding-bottom: 16px;
 }
+.filter-group--collapsed .filter-group__items { display: none; }
+.filter-group__icon {
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.filter-group--collapsed .filter-group__icon { transform: rotate(-90deg); }
 .filter-item {
   font-size: 14px;
   text-align: left;

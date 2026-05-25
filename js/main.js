@@ -508,16 +508,46 @@ function initCatalog() {
     return out;
   }
 
-  // Global search across ALL data sources (PRODUCTS + all *_SERIES + categories)
-  // Used when search query is active with no specific category filter
+  // Global search across ALL data sources (PRODUCTS + all *_SERIES + variants nested in series.items[])
+  // Used when search query is active with no specific category filter.
+  // User must be able to find ANY SKU by typing exact code (e.g. "ет-2рмг14б4ш1а2").
   function getAllItems() {
-    return [
+    const out = [
       ...getItems('razemy'),
       ...getItems('converters'),
       ...getItems('capacitors'),
       ...getItems('microchips'),
       ...getItems('transistors')
     ];
+    // Also index individual SKU variants inside each series.items[]
+    if (typeof CONNECTOR_SERIES !== 'undefined') {
+      CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
+        type: 'variant', kind: 'connector-variant', cat: 'razemy',
+        id: `${s.slug}:${idx}`, name: it.name,
+        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        href: `product-detail.html#v-${s.slug}:${idx}`
+      })));
+    }
+    if (typeof CONVERTER_SERIES !== 'undefined') {
+      CONVERTER_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
+        type: 'variant', kind: 'converter-variant', cat: 'converters',
+        id: `${s.slug}:${idx}`, name: it.name,
+        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        href: `product-detail.html#v-${s.slug}:${idx}`
+      })));
+    }
+    if (typeof CAPACITOR_SERIES !== 'undefined') {
+      CAPACITOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
+        type: 'variant', kind: 'capacitor-variant', cat: 'capacitors',
+        id: `${s.slug}:${idx}`, name: it.name,
+        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        href: `product-detail.html#v-${s.slug}:${idx}`
+      })));
+    }
+    return out;
   }
 
   function renderList(cat, search) {
@@ -830,6 +860,24 @@ function initCatalog() {
   sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
+
+  // Collapsible filter groups — click on header toggles items below (Pencil J1dha chevron).
+  // Sidebar groups (desktop) default OPEN; toolbar groups (mobile) default CLOSED.
+  document.querySelectorAll('.filter-group__header').forEach(hdr => {
+    const group = hdr.closest('.filter-group');
+    if (!group) return;
+    const items = group.querySelector('.filter-group__items');
+    if (!items) return;
+    // Initial state from data-collapsed attribute (set by CSS media query elsewhere if needed)
+    hdr.style.cursor = 'pointer';
+    hdr.setAttribute('role', 'button');
+    hdr.setAttribute('aria-expanded', 'true');
+    hdr.addEventListener('click', () => {
+      const open = hdr.getAttribute('aria-expanded') === 'true';
+      hdr.setAttribute('aria-expanded', open ? 'false' : 'true');
+      group.classList.toggle('filter-group--collapsed', open);
+    });
+  });
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
