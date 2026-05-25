@@ -79,7 +79,7 @@
   --row-height: 75px;          /* list rows + accordion items + alignItems:center + padding:0 */
   --row-height-spec: 52px;     /* spec rows on product detail (verified jSrAr) */
   --badge-min:  36px;          /* filter counters / badges (errors #no_shrinking_badge) */
-  --header-h-desktop: 96px;
+  --header-h-desktop: 72px;
   --header-h-mobile:  60px;
   --hero-h-desktop:   720px;
   --hero-h-mobile:    480px;

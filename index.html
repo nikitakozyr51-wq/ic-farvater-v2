@@ -1,26 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#F5F3EF">
-  <title>IC Фарватер — поставки электронных компонентов</title>
-  <meta name="description" content="ООО «Айси Фарватер» — поставщик электронной компонентной базы в Санкт-Петербурге. Микросхемы, разъёмы, СВЧ-компоненты, преобразователи напряжения.">
+  <title>IC Р¤Р°СЂРІР°С‚РµСЂ вЂ” РїРѕСЃС‚Р°РІРєРё СЌР»РµРєС‚СЂРѕРЅРЅС‹С… РєРѕРјРїРѕРЅРµРЅС‚РѕРІ</title>
+  <meta name="description" content="РћРћРћ В«РђР№СЃРё Р¤Р°СЂРІР°С‚РµСЂВ» вЂ” РїРѕСЃС‚Р°РІС‰РёРє СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РєРѕРјРїРѕРЅРµРЅС‚РЅРѕР№ Р±Р°Р·С‹ РІ РЎР°РЅРєС‚-РџРµС‚РµСЂР±СѓСЂРіРµ. РњРёРєСЂРѕСЃС…РµРјС‹, СЂР°Р·СЉС‘РјС‹, РЎР’Р§-РєРѕРјРїРѕРЅРµРЅС‚С‹, РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚РµР»Рё РЅР°РїСЂСЏР¶РµРЅРёСЏ.">
 
-  <!-- Font preload (only 500, used in headings — most visible) -->
+  <!-- Font preload (only 500, used in headings вЂ” most visible) -->
   <link rel="preload" href="assets/fonts/Inter-500.woff2" as="font" type="font/woff2" crossorigin>
 
-  <!-- CSS — order matters: reset → tokens → base → layout → components → animations -->
+  <!-- CSS вЂ” order matters: reset в†’ tokens в†’ base в†’ layout в†’ components в†’ animations -->
   <link rel="stylesheet" href="css/reset.css?v=1">
-  <link rel="stylesheet" href="css/tokens.css?v=2">
+  <link rel="stylesheet" href="css/tokens.css?v=3">
   <link rel="stylesheet" href="css/base.css?v=7">
   <link rel="stylesheet" href="css/layout.css?v=1">
-  <link rel="stylesheet" href="css/components.css?v=13">
+  <link rel="stylesheet" href="css/components.css?v=14">
   <link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
 
-  <!-- Page loader — main.js initPageLoader hides on window.load -->
+  <!-- Page loader вЂ” main.js initPageLoader hides on window.load -->
   <div class="page-loader" id="pageLoader" aria-hidden="true">
     <span class="page-loader__logo">ic farvater</span>
     <div class="page-loader__bar"></div>
@@ -31,24 +31,24 @@
     <div class="container header__inner">
       <a href="index.html" class="header__logo">ic farvater</a>
 
-      <nav class="header__nav" aria-label="Главная навигация">
-        <a href="pages/products.html" class="header__nav-link">каталог</a>
-        <a href="#uslugi" class="header__nav-link">услуги</a>
-        <a href="pages/about.html" class="header__nav-link">о компании</a>
-        <a href="pages/contacts.html" class="header__nav-link">контакты</a>
+      <nav class="header__nav" aria-label="Р“Р»Р°РІРЅР°СЏ РЅР°РІРёРіР°С†РёСЏ">
+        <a href="pages/products.html" class="header__nav-link">РєР°С‚Р°Р»РѕРі</a>
+        <a href="#uslugi" class="header__nav-link">СѓСЃР»СѓРіРё</a>
+        <a href="pages/about.html" class="header__nav-link">Рѕ РєРѕРјРїР°РЅРёРё</a>
+        <a href="pages/contacts.html" class="header__nav-link">РєРѕРЅС‚Р°РєС‚С‹</a>
       </nav>
 
       <div class="header__right">
-        <button class="header__search" type="button" aria-label="Поиск по каталогу">
+        <button class="header__search" type="button" aria-label="РџРѕРёСЃРє РїРѕ РєР°С‚Р°Р»РѕРіСѓ">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
             <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
-        <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+        <a href="#" class="header__cta" data-action="open-kp-drawer">Р·Р°РїСЂРѕСЃРёС‚СЊ РљРџ</a>
       </div>
 
-      <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false">
+      <button class="header__burger" type="button" aria-label="РњРµРЅСЋ" aria-expanded="false">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
           <path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
@@ -65,218 +65,218 @@
       <div class="container hero__inner">
         <div class="hero__text">
           <h1 class="hero__title">
-            <span class="hero__title--desktop">поставки электронных<br>компонентов<br>по всей россии</span>
-            <span class="hero__title--mobile">поставки экб<br>по всей<br>россии</span>
+            <span class="hero__title--desktop">РїРѕСЃС‚Р°РІРєРё СЌР»РµРєС‚СЂРѕРЅРЅС‹С…<br>РєРѕРјРїРѕРЅРµРЅС‚РѕРІ<br>РїРѕ РІСЃРµР№ СЂРѕСЃСЃРёРё</span>
+            <span class="hero__title--mobile">РїРѕСЃС‚Р°РІРєРё СЌРєР±<br>РїРѕ РІСЃРµР№<br>СЂРѕСЃСЃРёРё</span>
           </h1>
-          <p class="hero__sub">микросхемы · разъёмы · свч-компоненты · преобразователи напряжения. от склада в санкт-петербурге.</p>
-          <a href="pages/products.html" class="hero__cta">подобрать компоненты</a>
+          <p class="hero__sub">РјРёРєСЂРѕСЃС…РµРјС‹ В· СЂР°Р·СЉС‘РјС‹ В· СЃРІС‡-РєРѕРјРїРѕРЅРµРЅС‚С‹ В· РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚РµР»Рё РЅР°РїСЂСЏР¶РµРЅРёСЏ. РѕС‚ СЃРєР»Р°РґР° РІ СЃР°РЅРєС‚-РїРµС‚РµСЂР±СѓСЂРіРµ.</p>
+          <a href="pages/products.html" class="hero__cta">РїРѕРґРѕР±СЂР°С‚СЊ РєРѕРјРїРѕРЅРµРЅС‚С‹</a>
         </div>
       </div>
     </section>
 
-    <!-- Разъёмы (01) — verified bBLRC desktop / m5SGn4 mobile -->
+    <!-- Р Р°Р·СЉС‘РјС‹ (01) вЂ” verified bBLRC desktop / m5SGn4 mobile -->
     <section class="section section--products" id="razemy">
       <div class="container">
         <header class="section-head">
-          <h2 class="section-head__title">разъёмы<span class="section-head__counter">(01)</span></h2>
+          <h2 class="section-head__title">СЂР°Р·СЉС‘РјС‹<span class="section-head__counter">(01)</span></h2>
         </header>
         <div class="card-grid">
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/products/items/ET_SNC23%201.webp" alt="ЕТ-СНЦ23" loading="lazy">
+              <img src="assets/images/products/items/ET_SNC23%201.webp" alt="Р•Рў-РЎРќР¦23" loading="lazy">
             </div>
             <div class="card__info">
-              <h3 class="card__name">ет–снц23</h3>
-              <p class="card__desc">байонет · до +200°с</p>
+              <h3 class="card__name">РµС‚вЂ“СЃРЅС†23</h3>
+              <p class="card__desc">Р±Р°Р№РѕРЅРµС‚ В· РґРѕ +200В°СЃ</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/products/connectors/et-2rmg.webp" alt="ЕТ-2РМГ" loading="lazy">
+              <img src="assets/images/products/connectors/et-2rmg.webp" alt="Р•Рў-2Р РњР“" loading="lazy">
             </div>
             <div class="card__info">
-              <h3 class="card__name">ет–2рмг</h3>
-              <p class="card__desc">герметичные · до +200°с</p>
+              <h3 class="card__name">РµС‚вЂ“2СЂРјРі</h3>
+              <p class="card__desc">РіРµСЂРјРµС‚РёС‡РЅС‹Рµ В· РґРѕ +200В°СЃ</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/products/connectors/et-2rmt.webp" alt="ЕТ-2РМТ" loading="lazy">
+              <img src="assets/images/products/connectors/et-2rmt.webp" alt="Р•Рў-2Р РњРў" loading="lazy">
             </div>
             <div class="card__info">
-              <h3 class="card__name">ет–2рмт</h3>
-              <p class="card__desc">термостойкие до +150°с</p>
+              <h3 class="card__name">РµС‚вЂ“2СЂРјС‚</h3>
+              <p class="card__desc">С‚РµСЂРјРѕСЃС‚РѕР№РєРёРµ РґРѕ +150В°СЃ</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/products/items/ET_2RMG_D_.webp" alt="ЕТ-2РМД" loading="lazy">
+              <img src="assets/images/products/items/ET_2RMG_D_.webp" alt="Р•Рў-2Р РњР”" loading="lazy">
             </div>
             <div class="card__info">
-              <h3 class="card__name">ет–2рмд</h3>
-              <p class="card__desc">вибростойкие · до 5000 гц</p>
+              <h3 class="card__name">РµС‚вЂ“2СЂРјРґ</h3>
+              <p class="card__desc">РІРёР±СЂРѕСЃС‚РѕР№РєРёРµ В· РґРѕ 5000 РіС†</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- О компании (02) — verified J8otlu desktop (UY 2-col image right) / wj9r3 mobile (UY-stack, image placeholder) -->
+    <!-- Рћ РєРѕРјРїР°РЅРёРё (02) вЂ” verified J8otlu desktop (UY 2-col image right) / wj9r3 mobile (UY-stack, image placeholder) -->
     <section class="section section--about" id="o-kompanii">
       <div class="container">
         <div class="uy-grid">
           <picture class="uy-grid__image">
-            <img src="assets/images/o-kompanii.webp" alt="О компании — испытательная лаборатория и склад ЭКБ" loading="lazy">
+            <img src="assets/images/o-kompanii.webp" alt="Рћ РєРѕРјРїР°РЅРёРё вЂ” РёСЃРїС‹С‚Р°С‚РµР»СЊРЅР°СЏ Р»Р°Р±РѕСЂР°С‚РѕСЂРёСЏ Рё СЃРєР»Р°Рґ Р­РљР‘" loading="lazy">
           </picture>
           <div class="uy-grid__text">
             <div class="uy-grid__head">
-              <p class="section-eyebrow">о&nbsp;компании · (02)</p>
-              <h2 class="uy-grid__title">дистрибьютор&nbsp;экб <br class="is-desktop-only">с&nbsp;партнёрской лабораторией</h2>
+              <p class="section-eyebrow">Рѕ&nbsp;РєРѕРјРїР°РЅРёРё В· (02)</p>
+              <h2 class="uy-grid__title">РґРёСЃС‚СЂРёР±СЊСЋС‚РѕСЂ&nbsp;СЌРєР± <br class="is-desktop-only">СЃ&nbsp;РїР°СЂС‚РЅС‘СЂСЃРєРѕР№ Р»Р°Р±РѕСЂР°С‚РѕСЂРёРµР№</h2>
             </div>
             <div class="uy-grid__body">
-              <p>ооо «айси фарватер» — поставщик электронной компонентной базы в&nbsp;санкт-петербурге. прямые контракты с&nbsp;российскими производителями.</p>
-              <p>работаем с&nbsp;предприятиями опк, авиации, космоса и&nbsp;телекоммуникаций. партнёрская испытательная лаборатория «экб тест». сертификация iso 9001:2015.</p>
-              <p>более 5000 позиций аналогов в&nbsp;базе импортозамещения.</p>
+              <p>РѕРѕРѕ В«Р°Р№СЃРё С„Р°СЂРІР°С‚РµСЂВ» вЂ” РїРѕСЃС‚Р°РІС‰РёРє СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РєРѕРјРїРѕРЅРµРЅС‚РЅРѕР№ Р±Р°Р·С‹ РІ&nbsp;СЃР°РЅРєС‚-РїРµС‚РµСЂР±СѓСЂРіРµ. РїСЂСЏРјС‹Рµ РєРѕРЅС‚СЂР°РєС‚С‹ СЃ&nbsp;СЂРѕСЃСЃРёР№СЃРєРёРјРё РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЏРјРё.</p>
+              <p>СЂР°Р±РѕС‚Р°РµРј СЃ&nbsp;РїСЂРµРґРїСЂРёСЏС‚РёСЏРјРё РѕРїРє, Р°РІРёР°С†РёРё, РєРѕСЃРјРѕСЃР° Рё&nbsp;С‚РµР»РµРєРѕРјРјСѓРЅРёРєР°С†РёР№. РїР°СЂС‚РЅС‘СЂСЃРєР°СЏ РёСЃРїС‹С‚Р°С‚РµР»СЊРЅР°СЏ Р»Р°Р±РѕСЂР°С‚РѕСЂРёСЏ В«СЌРєР± С‚РµСЃС‚В». СЃРµСЂС‚РёС„РёРєР°С†РёСЏ iso 9001:2015.</p>
+              <p>Р±РѕР»РµРµ 5000 РїРѕР·РёС†РёР№ Р°РЅР°Р»РѕРіРѕРІ РІ&nbsp;Р±Р°Р·Рµ РёРјРїРѕСЂС‚РѕР·Р°РјРµС‰РµРЅРёСЏ.</p>
             </div>
-            <a href="pages/about.html" class="btn-pill btn-pill--solid uy-grid__btn">подробнее о&nbsp;нас →</a>
+            <a href="pages/about.html" class="btn-pill btn-pill--solid uy-grid__btn">РїРѕРґСЂРѕР±РЅРµРµ Рѕ&nbsp;РЅР°СЃ в†’</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- СВЧ-компоненты (03) — verified IDw1v desktop / QDGJt mobile -->
+    <!-- РЎР’Р§-РєРѕРјРїРѕРЅРµРЅС‚С‹ (03) вЂ” verified IDw1v desktop / QDGJt mobile -->
     <section class="section section--products" id="svch">
       <div class="container">
         <header class="section-head">
-          <h2 class="section-head__title">свч-компоненты<span class="section-head__counter">(03)</span></h2>
+          <h2 class="section-head__title">СЃРІС‡-РєРѕРјРїРѕРЅРµРЅС‚С‹<span class="section-head__counter">(03)</span></h2>
         </header>
         <div class="card-grid">
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/dR4sr.webp" alt="ARC70 СВЧ-конденсаторы" loading="lazy">
+              <img src="assets/images/dR4sr.webp" alt="ARC70 РЎР’Р§-РєРѕРЅРґРµРЅСЃР°С‚РѕСЂС‹" loading="lazy">
             </div>
             <div class="card__info">
               <h3 class="card__name">arc70</h3>
-              <p class="card__desc">свч-конденсаторы · керамика</p>
+              <p class="card__desc">СЃРІС‡-РєРѕРЅРґРµРЅСЃР°С‚РѕСЂС‹ В· РєРµСЂР°РјРёРєР°</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/RRU1O.webp" alt="LDMOS СВЧ-транзисторы" loading="lazy">
+              <img src="assets/images/RRU1O.webp" alt="LDMOS РЎР’Р§-С‚СЂР°РЅР·РёСЃС‚РѕСЂС‹" loading="lazy">
             </div>
             <div class="card__info">
               <h3 class="card__name">ldmos</h3>
-              <p class="card__desc">транзисторы · до нескольких ггц</p>
+              <p class="card__desc">С‚СЂР°РЅР·РёСЃС‚РѕСЂС‹ В· РґРѕ РЅРµСЃРєРѕР»СЊРєРёС… РіРіС†</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/vrnY9.webp" alt="LDMOS PA усилители" loading="lazy">
+              <img src="assets/images/vrnY9.webp" alt="LDMOS PA СѓСЃРёР»РёС‚РµР»Рё" loading="lazy">
             </div>
             <div class="card__info">
               <h3 class="card__name">ldmos pa</h3>
-              <p class="card__desc">усилители · 100&nbsp;вт</p>
+              <p class="card__desc">СѓСЃРёР»РёС‚РµР»Рё В· 100&nbsp;РІС‚</p>
             </div>
           </article>
           <article class="card">
             <div class="card__img">
-              <img src="assets/images/dAyu8.webp" alt="ARC70-0603 СВЧ-конденсаторы" loading="lazy">
+              <img src="assets/images/dAyu8.webp" alt="ARC70-0603 РЎР’Р§-РєРѕРЅРґРµРЅСЃР°С‚РѕСЂС‹" loading="lazy">
             </div>
             <div class="card__info">
-              <h3 class="card__name">arc70–0603</h3>
-              <p class="card__desc">свч-конденсаторы · корпус 0603</p>
+              <h3 class="card__name">arc70вЂ“0603</h3>
+              <p class="card__desc">СЃРІС‡-РєРѕРЅРґРµРЅСЃР°С‚РѕСЂС‹ В· РєРѕСЂРїСѓСЃ 0603</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Кабельные сборки (04) — verified xT0gh desktop (UY 2-col image right) / g1I2K mobile (UY-stack) -->
+    <!-- РљР°Р±РµР»СЊРЅС‹Рµ СЃР±РѕСЂРєРё (04) вЂ” verified xT0gh desktop (UY 2-col image right) / g1I2K mobile (UY-stack) -->
     <section class="section section--about" id="kabelnye">
       <div class="container">
         <div class="uy-grid uy-grid--image-right">
           <picture class="uy-grid__image">
-            <img src="assets/images/uGwvR.webp" alt="Кабельные сборки — производство по КД заказчика" loading="lazy">
+            <img src="assets/images/uGwvR.webp" alt="РљР°Р±РµР»СЊРЅС‹Рµ СЃР±РѕСЂРєРё вЂ” РїСЂРѕРёР·РІРѕРґСЃС‚РІРѕ РїРѕ РљР” Р·Р°РєР°Р·С‡РёРєР°" loading="lazy">
           </picture>
           <div class="uy-grid__text">
             <div class="uy-grid__head">
-              <p class="section-eyebrow">услуги · (04)</p>
-              <h2 class="uy-grid__title">кабельные сборки</h2>
+              <p class="section-eyebrow">СѓСЃР»СѓРіРё В· (04)</p>
+              <h2 class="uy-grid__title">РєР°Р±РµР»СЊРЅС‹Рµ СЃР±РѕСЂРєРё</h2>
             </div>
             <div class="uy-grid__body">
-              <p>изготовление кабельных сборок и&nbsp;жгутов по&nbsp;конструкторской документации заказчика.</p>
-              <p>контроль качества каждой сборки в&nbsp;партнёрской лаборатории «экб тест». испытания по&nbsp;гост и&nbsp;ту.</p>
+              <p>РёР·РіРѕС‚РѕРІР»РµРЅРёРµ РєР°Р±РµР»СЊРЅС‹С… СЃР±РѕСЂРѕРє Рё&nbsp;Р¶РіСѓС‚РѕРІ РїРѕ&nbsp;РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂСЃРєРѕР№ РґРѕРєСѓРјРµРЅС‚Р°С†РёРё Р·Р°РєР°Р·С‡РёРєР°.</p>
+              <p>РєРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР° РєР°Р¶РґРѕР№ СЃР±РѕСЂРєРё РІ&nbsp;РїР°СЂС‚РЅС‘СЂСЃРєРѕР№ Р»Р°Р±РѕСЂР°С‚РѕСЂРёРё В«СЌРєР± С‚РµСЃС‚В». РёСЃРїС‹С‚Р°РЅРёСЏ РїРѕ&nbsp;РіРѕСЃС‚ Рё&nbsp;С‚Сѓ.</p>
             </div>
-            <a href="pages/contacts.html" class="btn-pill btn-pill--solid uy-grid__btn">запросить расчёт →</a>
+            <a href="pages/contacts.html" class="btn-pill btn-pill--solid uy-grid__btn">Р·Р°РїСЂРѕСЃРёС‚СЊ СЂР°СЃС‡С‘С‚ в†’</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Импортозамещение (05) — verified bwNZI desktop (3-col cards) / GYHok mobile (1-col stack; card3 image hidden mobile) -->
+    <!-- РРјРїРѕСЂС‚РѕР·Р°РјРµС‰РµРЅРёРµ (05) вЂ” verified bwNZI desktop (3-col cards) / GYHok mobile (1-col stack; card3 image hidden mobile) -->
     <section class="section section--promise" id="importozameshchenie">
       <div class="container">
         <header class="section-head">
-          <h2 class="section-head__title">импортозамещение<span class="section-head__counter">(05)</span></h2>
+          <h2 class="section-head__title">РёРјРїРѕСЂС‚РѕР·Р°РјРµС‰РµРЅРёРµ<span class="section-head__counter">(05)</span></h2>
         </header>
         <div class="promise-grid">
           <article class="promise-card">
             <div class="promise-card__img">
-              <img src="assets/images/podbor-analogov-desktop.webp" alt="Подбор аналогов" loading="lazy">
+              <img src="assets/images/podbor-analogov-desktop.webp" alt="РџРѕРґР±РѕСЂ Р°РЅР°Р»РѕРіРѕРІ" loading="lazy">
             </div>
             <div class="promise-card__info">
-              <h3 class="promise-card__name">подбор аналогов</h3>
-              <p class="promise-card__desc">подбор российских аналогов импортной экб. более 5000 верифицированных позиций в&nbsp;базе.</p>
+              <h3 class="promise-card__name">РїРѕРґР±РѕСЂ Р°РЅР°Р»РѕРіРѕРІ</h3>
+              <p class="promise-card__desc">РїРѕРґР±РѕСЂ СЂРѕСЃСЃРёР№СЃРєРёС… Р°РЅР°Р»РѕРіРѕРІ РёРјРїРѕСЂС‚РЅРѕР№ СЌРєР±. Р±РѕР»РµРµ 5000 РІРµСЂРёС„РёС†РёСЂРѕРІР°РЅРЅС‹С… РїРѕР·РёС†РёР№ РІ&nbsp;Р±Р°Р·Рµ.</p>
             </div>
           </article>
           <article class="promise-card">
             <div class="promise-card__img">
-              <img src="assets/images/tehnicheskaya-ekspertiza-desktop.webp" alt="Техническая экспертиза" loading="lazy">
+              <img src="assets/images/tehnicheskaya-ekspertiza-desktop.webp" alt="РўРµС…РЅРёС‡РµСЃРєР°СЏ СЌРєСЃРїРµСЂС‚РёР·Р°" loading="lazy">
             </div>
             <div class="promise-card__info">
-              <h3 class="promise-card__name">техническая экспертиза</h3>
-              <p class="promise-card__desc">анализ применимости, согласование замены и&nbsp;подготовка документации для внесения в&nbsp;кд.</p>
+              <h3 class="promise-card__name">С‚РµС…РЅРёС‡РµСЃРєР°СЏ СЌРєСЃРїРµСЂС‚РёР·Р°</h3>
+              <p class="promise-card__desc">Р°РЅР°Р»РёР· РїСЂРёРјРµРЅРёРјРѕСЃС‚Рё, СЃРѕРіР»Р°СЃРѕРІР°РЅРёРµ Р·Р°РјРµРЅС‹ Рё&nbsp;РїРѕРґРіРѕС‚РѕРІРєР° РґРѕРєСѓРјРµРЅС‚Р°С†РёРё РґР»СЏ РІРЅРµСЃРµРЅРёСЏ РІ&nbsp;РєРґ.</p>
             </div>
           </article>
           <article class="promise-card">
             <div class="promise-card__img">
-              <img src="assets/images/ispytaniya-gost-desktop.webp" alt="Испытания по ГОСТ" loading="lazy">
+              <img src="assets/images/ispytaniya-gost-desktop.webp" alt="РСЃРїС‹С‚Р°РЅРёСЏ РїРѕ Р“РћРЎРў" loading="lazy">
             </div>
             <div class="promise-card__info">
-              <h3 class="promise-card__name">испытания по&nbsp;гост</h3>
-              <p class="promise-card__desc">электрические, климатические и&nbsp;механические испытания в&nbsp;партнёрской лаборатории «экб тест».</p>
+              <h3 class="promise-card__name">РёСЃРїС‹С‚Р°РЅРёСЏ РїРѕ&nbsp;РіРѕСЃС‚</h3>
+              <p class="promise-card__desc">СЌР»РµРєС‚СЂРёС‡РµСЃРєРёРµ, РєР»РёРјР°С‚РёС‡РµСЃРєРёРµ Рё&nbsp;РјРµС…Р°РЅРёС‡РµСЃРєРёРµ РёСЃРїС‹С‚Р°РЅРёСЏ РІ&nbsp;РїР°СЂС‚РЅС‘СЂСЃРєРѕР№ Р»Р°Р±РѕСЂР°С‚РѕСЂРёРё В«СЌРєР± С‚РµСЃС‚В».</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Услуги (06) — verified lzD1I desktop (service-split horizontal) / P3ABWo mobile (vertical accordion stack) -->
+    <!-- РЈСЃР»СѓРіРё (06) вЂ” verified lzD1I desktop (service-split horizontal) / P3ABWo mobile (vertical accordion stack) -->
     <section class="section section--services" id="uslugi">
       <div class="container">
         <div class="services-grid">
           <div class="services-grid__head">
             <header class="section-head">
-              <h2 class="section-head__title">услуги<span class="section-head__counter">(06)</span></h2>
+              <h2 class="section-head__title">СѓСЃР»СѓРіРё<span class="section-head__counter">(06)</span></h2>
             </header>
-            <p class="services-grid__desc">работаем с&nbsp;предприятиями опк, авиации, космоса и&nbsp;телекоммуникаций. поставки со&nbsp;склада в&nbsp;санкт-петербурге, изготовление кабельных сборок и&nbsp;испытания экб по&nbsp;гост.</p>
-            <a href="pages/contacts.html" class="btn-pill btn-pill--solid services-grid__cta">связаться</a>
+            <p class="services-grid__desc">СЂР°Р±РѕС‚Р°РµРј СЃ&nbsp;РїСЂРµРґРїСЂРёСЏС‚РёСЏРјРё РѕРїРє, Р°РІРёР°С†РёРё, РєРѕСЃРјРѕСЃР° Рё&nbsp;С‚РµР»РµРєРѕРјРјСѓРЅРёРєР°С†РёР№. РїРѕСЃС‚Р°РІРєРё СЃРѕ&nbsp;СЃРєР»Р°РґР° РІ&nbsp;СЃР°РЅРєС‚-РїРµС‚РµСЂР±СѓСЂРіРµ, РёР·РіРѕС‚РѕРІР»РµРЅРёРµ РєР°Р±РµР»СЊРЅС‹С… СЃР±РѕСЂРѕРє Рё&nbsp;РёСЃРїС‹С‚Р°РЅРёСЏ СЌРєР± РїРѕ&nbsp;РіРѕСЃС‚.</p>
+            <a href="pages/contacts.html" class="btn-pill btn-pill--solid services-grid__cta">СЃРІСЏР·Р°С‚СЊСЃСЏ</a>
           </div>
           <ul class="services-list">
             <li class="services-list__item">
-              <span class="services-list__name">поставка экб</span>
+              <span class="services-list__name">РїРѕСЃС‚Р°РІРєР° СЌРєР±</span>
               <span class="services-list__icon" aria-hidden="true">+</span>
             </li>
             <li class="services-list__item">
-              <span class="services-list__name">кабельные сборки</span>
+              <span class="services-list__name">РєР°Р±РµР»СЊРЅС‹Рµ СЃР±РѕСЂРєРё</span>
               <span class="services-list__icon" aria-hidden="true">+</span>
             </li>
             <li class="services-list__item">
-              <span class="services-list__name">лабораторные испытания</span>
+              <span class="services-list__name">Р»Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РёСЃРїС‹С‚Р°РЅРёСЏ</span>
               <span class="services-list__icon" aria-hidden="true">+</span>
             </li>
             <li class="services-list__item">
-              <span class="services-list__name">импортозамещение</span>
+              <span class="services-list__name">РёРјРїРѕСЂС‚РѕР·Р°РјРµС‰РµРЅРёРµ</span>
               <span class="services-list__icon" aria-hidden="true">+</span>
             </li>
           </ul>
@@ -285,79 +285,79 @@
     </section>
   </main>
 
-  <!-- Footer Custo-style — verified UGNxO desktop (4-col top + bottom row) / YsYD7 mobile (vertical stack) -->
+  <!-- Footer Custo-style вЂ” verified UGNxO desktop (4-col top + bottom row) / YsYD7 mobile (vertical stack) -->
   <footer class="footer">
     <div class="container">
       <div class="footer__top">
         <!-- Block 1: logo + tagline -->
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
-          <p class="footer__tagline">поставки экб от&nbsp;склада в&nbsp;санкт-петербурге. подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
+          <p class="footer__tagline">РїРѕСЃС‚Р°РІРєРё СЌРєР± РѕС‚&nbsp;СЃРєР»Р°РґР° РІ&nbsp;СЃР°РЅРєС‚-РїРµС‚РµСЂР±СѓСЂРіРµ. РїРѕРґР±РµСЂС‘Рј РєРѕРјРїРѕРЅРµРЅС‚С‹ РёР·&nbsp;РєР°С‚Р°Р»РѕРіР° Рё&nbsp;РїСЂРёС€Р»С‘Рј РїСЂР°Р№СЃ СЃРѕ&nbsp;СЃСЂРѕРєР°РјРё РїРѕСЃС‚Р°РІРєРё.</p>
         </div>
         <!-- Block 2: newsletter (Pencil mobile order #2) -->
         <div class="footer__newsletter">
-          <h3 class="footer__newsletter-title">хотите запросить расчёт?</h3>
-          <p class="footer__newsletter-desc">подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
+          <h3 class="footer__newsletter-title">С…РѕС‚РёС‚Рµ Р·Р°РїСЂРѕСЃРёС‚СЊ СЂР°СЃС‡С‘С‚?</h3>
+          <p class="footer__newsletter-desc">РїРѕРґР±РµСЂС‘Рј РєРѕРјРїРѕРЅРµРЅС‚С‹ РёР·&nbsp;РєР°С‚Р°Р»РѕРіР° Рё&nbsp;РїСЂРёС€Р»С‘Рј РїСЂР°Р№СЃ СЃРѕ&nbsp;СЃСЂРѕРєР°РјРё РїРѕСЃС‚Р°РІРєРё.</p>
           <form class="footer__email-form" action="#">
-            <input type="email" placeholder="ваш email" aria-label="Email для расчёта" required>
-            <button type="submit" aria-label="Отправить">→</button>
+            <input type="email" placeholder="РІР°С€ email" aria-label="Email РґР»СЏ СЂР°СЃС‡С‘С‚Р°" required>
+            <button type="submit" aria-label="РћС‚РїСЂР°РІРёС‚СЊ">в†’</button>
           </form>
-          <p class="footer__disclaimer">отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.</p>
+          <p class="footer__disclaimer">РѕС‚РїСЂР°РІР»СЏСЏ С„РѕСЂРјСѓ, РІС‹&nbsp;СЃРѕРіР»Р°С€Р°РµС‚РµСЃСЊ СЃ&nbsp;РїРѕР»РёС‚РёРєРѕР№ РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё Рё&nbsp;РѕР±СЂР°Р±РѕС‚РєРѕР№ РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹С… РґР°РЅРЅС‹С….</p>
         </div>
         <!-- Block 3: 2-col navs (products LEFT, site RIGHT per Pencil pU5mo / M2CqjP order) -->
         <div class="footer__navs">
           <ul class="footer__nav footer__nav--products">
-            <li><a href="pages/products.html#razemy">разъёмы</a></li>
-            <li><a href="pages/products.html#microchips">микросхемы</a></li>
-            <li><a href="pages/products.html#converters">преобразователи</a></li>
-            <li><a href="pages/products.html#capacitors">свч-конденсаторы</a></li>
-            <li><a href="pages/products.html#transistors">свч-транзисторы</a></li>
+            <li><a href="pages/products.html#razemy">СЂР°Р·СЉС‘РјС‹</a></li>
+            <li><a href="pages/products.html#microchips">РјРёРєСЂРѕСЃС…РµРјС‹</a></li>
+            <li><a href="pages/products.html#converters">РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚РµР»Рё</a></li>
+            <li><a href="pages/products.html#capacitors">СЃРІС‡-РєРѕРЅРґРµРЅСЃР°С‚РѕСЂС‹</a></li>
+            <li><a href="pages/products.html#transistors">СЃРІС‡-С‚СЂР°РЅР·РёСЃС‚РѕСЂС‹</a></li>
           </ul>
           <ul class="footer__nav footer__nav--site">
-            <li><a href="index.html">главная</a></li>
-            <li><a href="pages/about.html">о&nbsp;компании</a></li>
-            <li><a href="pages/products.html">продукция</a></li>
-            <li><a href="#uslugi">услуги</a></li>
-            <li><a href="pages/contacts.html">контакты</a></li>
-            <li><a href="#">вопросы-ответы</a></li>
+            <li><a href="index.html">РіР»Р°РІРЅР°СЏ</a></li>
+            <li><a href="pages/about.html">Рѕ&nbsp;РєРѕРјРїР°РЅРёРё</a></li>
+            <li><a href="pages/products.html">РїСЂРѕРґСѓРєС†РёСЏ</a></li>
+            <li><a href="#uslugi">СѓСЃР»СѓРіРё</a></li>
+            <li><a href="pages/contacts.html">РєРѕРЅС‚Р°РєС‚С‹</a></li>
+            <li><a href="#">РІРѕРїСЂРѕСЃС‹-РѕС‚РІРµС‚С‹</a></li>
           </ul>
         </div>
         <!-- Block 4: contact (with eyebrow label, AFTER navs per Pencil) -->
         <div class="footer__contact">
-          <p class="footer__label">контакты</p>
-          <address class="footer__address">ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406</address>
+          <p class="footer__label">РєРѕРЅС‚Р°РєС‚С‹</p>
+          <address class="footer__address">СѓР». Р‘РµСЂРёРЅРіР°, Рґ. 1-Рђ, РѕС„. 46-Рќ<br>Рі. РЎР°РЅРєС‚-РџРµС‚РµСЂР±СѓСЂРі, 199406</address>
           <a href="tel:+79967788842" class="footer__phone">+7 996 778-88-42</a>
           <a href="mailto:info@ic-farvater.ru" class="footer__email">info@ic-farvater.ru</a>
         </div>
       </div>
       <div class="footer__bottom">
         <div class="footer__copyright-group">
-          <p class="footer__copyright">© 2026 ооо «айси фарватер»</p>
-          <p class="footer__copyright footer__copyright--tertiary">ИНН 7801709112 · ОГРН 1227800016993</p>
+          <p class="footer__copyright">В© 2026 РѕРѕРѕ В«Р°Р№СЃРё С„Р°СЂРІР°С‚РµСЂВ»</p>
+          <p class="footer__copyright footer__copyright--tertiary">РРќРќ 7801709112 В· РћР“Р Рќ 1227800016993</p>
         </div>
         <div class="footer__legal">
-          <a href="pages/privacy-policy.html">политика конфиденциальности</a>
-          <a href="pages/consent.html">согласие на&nbsp;обработку персональных данных</a>
+          <a href="pages/privacy-policy.html">РїРѕР»РёС‚РёРєР° РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё</a>
+          <a href="pages/consent.html">СЃРѕРіР»Р°СЃРёРµ РЅР°&nbsp;РѕР±СЂР°Р±РѕС‚РєСѓ РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹С… РґР°РЅРЅС‹С…</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Cookie banner — Pencil rMkUS mobile / ZHi2k desktop. Hidden initially; main.js initCookieBanner shows on first visit. -->
-  <div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="Использование cookie">
+  <!-- Cookie banner вЂ” Pencil rMkUS mobile / ZHi2k desktop. Hidden initially; main.js initCookieBanner shows on first visit. -->
+  <div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ cookie">
     <div class="container cookie-banner__inner">
       <div class="cookie-banner__text">
-        <p class="cookie-banner__title">мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости.</p>
-        <a href="pages/privacy-policy.html" class="cookie-banner__link">подробнее в&nbsp;политике конфиденциальности →</a>
+        <p class="cookie-banner__title">РјС‹&nbsp;РёСЃРїРѕР»СЊР·СѓРµРј cookie РґР»СЏ&nbsp;РєРѕСЂСЂРµРєС‚РЅРѕР№ СЂР°Р±РѕС‚С‹ СЃР°Р№С‚Р° Рё&nbsp;Р°РЅР°Р»РёР·Р° РїРѕСЃРµС‰Р°РµРјРѕСЃС‚Рё.</p>
+        <a href="pages/privacy-policy.html" class="cookie-banner__link">РїРѕРґСЂРѕР±РЅРµРµ РІ&nbsp;РїРѕР»РёС‚РёРєРµ РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё в†’</a>
       </div>
       <div class="cookie-banner__actions">
-        <button class="cookie-banner__btn cookie-banner__btn--reject" type="button" data-cookie-action="reject">отклонить</button>
-        <button class="cookie-banner__btn cookie-banner__btn--accept" type="button" data-cookie-action="accept">принять</button>
+        <button class="cookie-banner__btn cookie-banner__btn--reject" type="button" data-cookie-action="reject">РѕС‚РєР»РѕРЅРёС‚СЊ</button>
+        <button class="cookie-banner__btn cookie-banner__btn--accept" type="button" data-cookie-action="accept">РїСЂРёРЅСЏС‚СЊ</button>
       </div>
     </div>
   </div>
 
-  <!-- JS — vendor first, then app, then animations -->
+  <!-- JS вЂ” vendor first, then app, then animations -->
   <script src="js/vendor/lenis.min.js" defer></script>
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>

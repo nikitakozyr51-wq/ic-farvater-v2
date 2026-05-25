@@ -765,7 +765,9 @@ function initCatalog() {
 
   const state = { search: '', cat: 'all', series: null, seriesType: 'all', view: 'grid' };
   let searchTimer = null;
-  const viewBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-view]');
+  // Both desktop sidebar filter-items[data-view] AND mobile toolbar view-link[data-view] —
+  // single selector handles both, JS toggles state.view on click.
+  const viewBtns = document.querySelectorAll('.filter-item[data-view], .catalog__view-link[data-view]');
 
   // Render arbitrary items list with search-results header
   function renderSearchResults(query) {
@@ -1088,11 +1090,13 @@ function initCatalog() {
     });
     pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
 
-    // View toggle (сетка/список) — applies class to list grid
+    // View toggle (сетка/список) — applies class to list grid. Active state on
+    // both desktop sidebar (.filter-item--active) and mobile toolbar (.catalog__view-link--active).
     listGrid.classList.toggle('catalog__list-grid--list', state.view === 'list');
     viewBtns.forEach(b => {
       const isActive = b.dataset.view === state.view;
       b.classList.toggle('filter-item--active', isActive);
+      b.classList.toggle('catalog__view-link--active', isActive);
       const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
       b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
     });
