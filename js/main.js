@@ -508,12 +508,14 @@ function initCatalog() {
   // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
   // filtered grid, leads to category landing page (#cat-X). PCB skipped:
   // it navigates direct to landing from the 6-card grid.
+  // Pencil zCPAQ — current version dropped sub-name suffixes (ЕТ-серии/ARC70/LDMOS).
+  // Titles now match Pencil literals 1:1.
   const ENTRY_CARDS = {
     microchips:  { title: 'о&nbsp;микро&shy;схемах',         sub: 'аналоги&nbsp;· корпуса&nbsp;· применение' },
-    razemy:      { title: 'о&nbsp;разъёмах<br>ЕТ-серии',      sub: 'приборные&nbsp;· кабельные&nbsp;· MIL-spec' },
+    razemy:      { title: 'о&nbsp;разъёмах',                  sub: 'приборные&nbsp;· кабельные&nbsp;· MIL-spec' },
     converters:  { title: 'о&nbsp;преобра&shy;зова&shy;телях', sub: 'ИРТЫШ&nbsp;· ВОЛГА&nbsp;· ЕНИСЕЙ&nbsp;· КАМА' },
-    capacitors:  { title: 'о&nbsp;конден&shy;саторах<br>ARC70', sub: 'СВЧ&nbsp;· 0,1–500&nbsp;пФ' },
-    transistors: { title: 'о&nbsp;транзис&shy;торах<br>LDMOS',  sub: 'S-&nbsp;· L-&nbsp;· X-диапазоны' }
+    capacitors:  { title: 'о&nbsp;конден&shy;саторах',        sub: 'СВЧ&nbsp;· 0,1–500&nbsp;пФ' },
+    transistors: { title: 'о&nbsp;транзис&shy;торах',         sub: 'S-&nbsp;· L-&nbsp;· X-диапазоны' }
   };
   const PAGE_SIZE = 12;
 
@@ -693,7 +695,7 @@ function initCatalog() {
     return count;
   }
 
-  const state = { search: '', cat: 'all', series: null, view: 'grid' };
+  const state = { search: '', cat: 'all', series: null, seriesType: 'all', view: 'grid' };
   let searchTimer = null;
   const viewBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-view]');
 
@@ -789,23 +791,28 @@ function initCatalog() {
     }
     if (!series) return 0;
     const seriesName = cyrillize(series.name);
-    const items = series.items || [];
+    const allItems = series.items || [];
+    // Series-view sidebar gets a Type filter (вилка/розетка/…). Filter active selection
+    // narrows the rendered cards. state.seriesType === 'all' means all types.
+    const activeType = (state.seriesType && state.seriesType !== 'all') ? state.seriesType : null;
+    const items = activeType ? allItems.filter(it => (it.type || '').toLowerCase() === activeType.toLowerCase()) : allItems;
     const count = items.length;
-    // Breadcrumb header
-    listHeader.innerHTML = `
-      <a class="catalog__list-cat catalog__list-back" href="#${cat}">← ${catLabel}</a>
-      <span class="catalog__list-count">${count} ${pluralize(count, 'вариант', 'варианта', 'вариантов')}</span>
-    `;
+    // Header: series name (left) + variant count (right) — same .catalog__list-subheader pattern
+    // as the category view ("разъёмы — 24 серии"). No back-arrow; sidebar navigation moves the
+    // user back to the category list via the active category filter.
+    listHeader.innerHTML = '';
     listGrid.innerHTML = '';
-    // Big series title as subheader (matches "ОСНОВНЫЕ СЕРИИ" style)
     const titleHdr = document.createElement('div');
     titleHdr.className = 'catalog__list-subheader';
-    titleHdr.textContent = seriesName;
+    titleHdr.innerHTML = `<span class="catalog__list-subheader__title">${seriesName}</span><span class="catalog__list-subheader__count">${count} ${pluralize(count, 'вариант', 'варианта', 'вариантов')}</span>`;
     listGrid.appendChild(titleHdr);
-    function makeVariantCard(it, idx) {
+    function makeVariantCard(it) {
       const card = document.createElement('a');
       card.className = 'cat-card cat-card--small';
-      card.href = `product-detail.html#v-${slug}:${idx}`;
+      // idx is the position in the UNFILTERED items[] — preserves correct variant page link
+      // regardless of type filter ("вилка" / "розетка") narrowing the rendered list.
+      const origIdx = allItems.indexOf(it);
+      card.href = `product-detail.html#v-${slug}:${origIdx}`;
       const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
       card.innerHTML = `
         <div class="cat-card__img">
@@ -818,15 +825,14 @@ function initCatalog() {
       `;
       return card;
     }
-    items.slice(0, PAGE_SIZE).forEach((it, idx) => listGrid.appendChild(makeVariantCard(it, idx)));
+    items.slice(0, PAGE_SIZE).forEach(it => listGrid.appendChild(makeVariantCard(it)));
     if (items.length > PAGE_SIZE) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
         page++;
-        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach((it, sliceIdx) => {
-          const idx = (page - 1) * PAGE_SIZE + sliceIdx;
-          listGrid.appendChild(makeVariantCard(it, idx));
+        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => {
+          listGrid.appendChild(makeVariantCard(it));
         });
         if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
       };
@@ -834,6 +840,56 @@ function initCatalog() {
       listMore.hidden = true;
     }
     return count;
+  }
+
+  // Render sidebar Type filter (вилка / розетка / …) — populated from the active series' items[].
+  // Hidden when not in a series view. Clicking an item updates state.seriesType and re-applies.
+  function renderTypeFilter(cat, slug) {
+    const group = document.getElementById('typeFilterGroup');
+    const itemsEl = document.getElementById('typeFilterItems');
+    if (!group || !itemsEl) return;
+    let series = null;
+    if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
+      series = CONNECTOR_SERIES.find(s => s.slug === slug);
+    } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
+      series = CONVERTER_SERIES.find(s => s.slug === slug);
+    } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
+      series = CAPACITOR_SERIES.find(s => s.slug === slug);
+    }
+    if (!series || !Array.isArray(series.items)) {
+      group.hidden = true;
+      return;
+    }
+    const types = [...new Set(series.items.map(i => (i.type || '').toLowerCase()).filter(Boolean))];
+    if (types.length < 2) {
+      // Only one type (or none) — filter not useful.
+      group.hidden = true;
+      return;
+    }
+    group.hidden = false;
+    itemsEl.innerHTML = '';
+    const all = document.createElement('button');
+    all.type = 'button';
+    all.className = 'filter-item' + (state.seriesType === 'all' ? ' filter-item--active' : '');
+    all.dataset.type = 'all';
+    all.textContent = (state.seriesType === 'all' ? '(•) ' : '( ) ') + 'все';
+    itemsEl.appendChild(all);
+    types.forEach(t => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isActive = state.seriesType === t;
+      btn.className = 'filter-item' + (isActive ? ' filter-item--active' : '');
+      btn.dataset.type = t;
+      btn.textContent = (isActive ? '(•) ' : '( ) ') + t;
+      itemsEl.appendChild(btn);
+    });
+    // Wire clicks (delegated via fresh handler each render — innerHTML wipes previous listeners)
+    itemsEl.querySelectorAll('.filter-item').forEach(b => {
+      b.addEventListener('click', () => {
+        state.seriesType = b.dataset.type || 'all';
+        apply();
+      });
+    });
   }
 
   function apply() {
@@ -848,6 +904,7 @@ function initCatalog() {
       listWrap.hidden = false;
       renderSeriesVariants(state.cat, state.series);
       if (emptyMsg) emptyMsg.hidden = true;
+      renderTypeFilter(state.cat, state.series);
     } else if (inSearchMode) {
       // Global search mode: hide cat-cards, render matches across ALL data
       grid.hidden = true;
@@ -879,6 +936,13 @@ function initCatalog() {
       listWrap.hidden = true;
       cards.forEach(card => { card.hidden = false; });
       if (emptyMsg) emptyMsg.hidden = true;
+    }
+
+    // Type filter visibility — only when drilled into a specific series.
+    if (!inSeriesMode) {
+      const tg = document.getElementById('typeFilterGroup');
+      if (tg) tg.hidden = true;
+      state.seriesType = 'all';
     }
 
     // Update active state on sidebar + pills
@@ -929,8 +993,8 @@ function initCatalog() {
   });
 
   // Clicking sidebar/pill clears any series sub-state too
-  sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
-  pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
+  sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; state.seriesType = 'all'; setCat(btn.dataset.cat); }));
+  pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; state.seriesType = 'all'; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
   // Application filter — visual radio selection (data not tagged with applications;
@@ -993,6 +1057,8 @@ function initCatalog() {
     // Support sub-hash: #razemy/et-2rmg (category + series slug)
     const [hCat, hSeries] = h.split('/');
     if (hCat && hCat !== 'search' && validCats.includes(hCat)) {
+      // Series changed (or left) → reset type filter so it doesn't carry between series.
+      if (state.series !== (hSeries || null)) state.seriesType = 'all';
       state.cat = hCat;
       state.series = hSeries || null;
       apply();
@@ -1000,6 +1066,7 @@ function initCatalog() {
     } else if (!h || h === 'search') {
       state.cat = 'all';
       state.series = null;
+      state.seriesType = 'all';
       apply();
     }
   }

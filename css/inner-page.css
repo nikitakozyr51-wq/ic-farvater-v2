@@ -1641,10 +1641,11 @@
 
 /* Entry card (Pencil zCPAQ "entry-cards-6cats · short copy"):
    text-only first card in filtered grid that links to category landing.
-   Pencil G5Una: outer width 228, vertical gap 8.
-   Top frame eGfCQ: HEIGHT 228 FIXED, vertical gap 10, padding [2,0].
-   Caption, title, spacer (fill_container = flex:1), sub.
-   Bottom frame cBPoU: padding [4,0,0,0], CTA. */
+   Pencil G5Una: outer card, vertical gap 8.
+   Top frame eGfCQ: vertical gap 10, padding [2,0]. Caption, title, spacer, sub.
+   Bottom frame cBPoU: padding [12,0,0,0], stroke top 1px D7D3CB, CTA.
+   Top-frame height 226 (Pencil 228 minus 2) so the CTA top border lands at y=234 —
+   exact match with neighbor cat-card--small image bottom (1:1 aspect at 234w). */
 .cat-card--entry {
   display: flex;
   flex-direction: column;
@@ -1657,7 +1658,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 228px;        /* fixed per Pencil eGfCQ */
+  height: 226px;
   padding: 2px 0;
 }
 .cat-card--entry__caption {
@@ -1687,7 +1688,8 @@
   line-height: 1.55;
   color: var(--c-text-muted);
 }
-/* Bottom row — Pencil cBPoU: flex space-between, padding [12,0,0,0], top border 1px D7D3CB. */
+/* Bottom row — Pencil cBPoU: flex space-between, padding [12,0,0,0], top border 1px D7D3CB.
+   line-height: 1 keeps the CTA box height tight (15px) — matches Pencil pCEEd typography exactly. */
 .cat-card--entry__cta {
   display: flex;
   align-items: center;
@@ -1697,9 +1699,11 @@
   border-top: 1px solid var(--c-border);
   font-size: 15px;
   font-weight: 500;
+  line-height: 1;
   color: var(--c-text);
   transition: opacity 0.15s ease;
 }
+.cat-card--entry__cta-label { line-height: 1; }
 .cat-card--entry__cta-arrow { font-size: 15px; line-height: 1; }
 .cat-card--entry:hover .cat-card--entry__cta { opacity: 0.7; }
 

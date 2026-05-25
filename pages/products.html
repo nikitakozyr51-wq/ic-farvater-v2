@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
   <link rel="stylesheet" href="../css/components.css?v=10">
-  <link rel="stylesheet" href="../css/inner-page.css?v=44">
+  <link rel="stylesheet" href="../css/inner-page.css?v=45">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -109,6 +109,16 @@
               <button class="filter-item" type="button" data-app="medical">( ) медицина</button>
               <button class="filter-item" type="button" data-app="industry">( ) промышленность</button>
             </div>
+          </div>
+          <!-- Type filter — only rendered when user has drilled into a specific series (#cat/slug).
+               JS populates items based on the series' available types (вилка / розетка / …).
+               Hidden by default; toggled visible by initCatalog when state.series is set. -->
+          <div class="filter-group filter-group--type" id="typeFilterGroup" hidden>
+            <div class="filter-group__header">
+              <span class="filter-group__label">тип</span>
+              <span class="filter-group__icon" aria-hidden="true">⌄</span>
+            </div>
+            <div class="filter-group__items" id="typeFilterItems"></div>
           </div>
           <div class="filter-clear">
             <span class="filter-clear__badge" aria-label="Количество активных фильтров">0</span>
@@ -303,7 +313,7 @@
   <script src="../js/connectors-data.js" defer></script>
   <script src="../js/converters-data.js" defer></script>
   <script src="../js/capacitors-data.js" defer></script>
-  <script src="../js/main.js?v=32" defer></script>
+  <script src="../js/main.js?v=33" defer></script>
   <script src="../js/animations.js?v=1" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
