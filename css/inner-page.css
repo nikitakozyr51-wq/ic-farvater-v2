@@ -530,6 +530,9 @@
     max-width: 984px;
     border-top: none;
     padding-block: 0 80px;  /* Pencil: lqezi y=0 same as J1dha sidebar — search bottom aligns with filter-header bottom at y=43 */
+    /* Ensure grid-wrap fills enough vertical space so footer doesn't crowd short content
+       (e.g. 4 converters / 3 capacitors). Uses viewport math to avoid hardcoded heights. */
+    min-height: calc(100vh - 220px);
     gap: 48px;
   }
   .catalog__search--desktop { display: flex; height: 43px; }

@@ -662,15 +662,10 @@ function initCatalog() {
     titleHdr.className = 'catalog__list-subheader';
     titleHdr.textContent = seriesName;
     listGrid.appendChild(titleHdr);
-    // Variant cards
-    items.slice(0, PAGE_SIZE).forEach(it => {
+    function makeVariantCard(it, idx) {
       const card = document.createElement('a');
       card.className = 'cat-card cat-card--small';
-      card.href = '#';
-      card.setAttribute('data-action', 'open-kp-drawer');
-      card.setAttribute('data-kp-product', it.name);
-      card.setAttribute('data-kp-category', series.name);
-      // Variant image: prefer imageByType[type], else series image
+      card.href = `product-detail.html#v-${slug}:${idx}`;
       const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
       card.innerHTML = `
         <div class="cat-card__img">
@@ -681,32 +676,17 @@ function initCatalog() {
           ${it.type ? `<p class="cat-card__desc">${cyrillize(it.type).toLowerCase()}</p>` : ''}
         </div>
       `;
-      listGrid.appendChild(card);
-    });
-    // Pagination
+      return card;
+    }
+    items.slice(0, PAGE_SIZE).forEach((it, idx) => listGrid.appendChild(makeVariantCard(it, idx)));
     if (items.length > PAGE_SIZE) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
         page++;
-        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => {
-          const card = document.createElement('a');
-          card.className = 'cat-card cat-card--small';
-          card.href = '#';
-          card.setAttribute('data-action', 'open-kp-drawer');
-          card.setAttribute('data-kp-product', it.name);
-          card.setAttribute('data-kp-category', series.name);
-          const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
-          card.innerHTML = `
-            <div class="cat-card__img">
-              ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
-            </div>
-            <div class="cat-card__info">
-              <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
-              ${it.type ? `<p class="cat-card__desc">${cyrillize(it.type).toLowerCase()}</p>` : ''}
-            </div>
-          `;
-          listGrid.appendChild(card);
+        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach((it, sliceIdx) => {
+          const idx = (page - 1) * PAGE_SIZE + sliceIdx;
+          listGrid.appendChild(makeVariantCard(it, idx));
         });
         if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
       };
@@ -974,6 +954,38 @@ function initProductDetail() {
     data = CAPACITOR_SERIES.find(s => s.slug === hash.slice(5));
     kind = 'capacitor-series';
     catSlug = 'capacitors'; catLabel = 'свч-конденсаторы';
+  } else if (hash.startsWith('#v-')) {
+    // Variant: #v-<seriesSlug>:<itemIdx>
+    const [seriesSlug, idxStr] = hash.slice(3).split(':');
+    const idx = parseInt(idxStr, 10);
+    let series = null;
+    if (typeof CONNECTOR_SERIES !== 'undefined') {
+      series = CONNECTOR_SERIES.find(s => s.slug === seriesSlug);
+      if (series) { catSlug = 'razemy'; catLabel = 'разъёмы'; }
+    }
+    if (!series && typeof CONVERTER_SERIES !== 'undefined') {
+      series = CONVERTER_SERIES.find(s => s.slug === seriesSlug);
+      if (series) { catSlug = 'converters'; catLabel = 'преобразователи'; }
+    }
+    if (!series && typeof CAPACITOR_SERIES !== 'undefined') {
+      series = CAPACITOR_SERIES.find(s => s.slug === seriesSlug);
+      if (series) { catSlug = 'capacitors'; catLabel = 'свч-конденсаторы'; }
+    }
+    if (series && Array.isArray(series.items) && series.items[idx]) {
+      const item = series.items[idx];
+      const itemImage = (series.imageByType && item.type && series.imageByType[item.type]) || series.image || '';
+      data = {
+        name: item.name,
+        description: series.description || '',
+        image: itemImage,
+        specs: series.specs || {},
+        tu: item.tu || series.tu || '',
+        subcategory: item.type ? item.type.toLowerCase() : '',
+        seriesName: series.name,
+        seriesSlug: series.slug
+      };
+      kind = 'variant';
+    }
   } else if (hash.startsWith('#cat-')) {
     const landingKey = hash.slice(5);
     const landing = CATEGORY_LANDINGS[landingKey];
