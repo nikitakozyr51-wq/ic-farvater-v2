@@ -445,6 +445,48 @@ function initProductCarousels() {
 }
 
 
+// Compact one-sentence series descriptions for catalog cards + related cards across pages.
+// Lead with WHAT it is + key spec or differentiator. ~40–70 chars, lowercase, search-friendly.
+// shortDesc() falls back to description.split('.')[0] when slug isn't in the map.
+const SERIES_SHORT_DESC = {
+  // Connectors (23)
+  'et-2rmg':    'блочные герметичные вилки и розетки, до 200 °с',
+  'et-2rmt':    'малогабаритные резьбовые соединители, 4–50 контактов',
+  'et-2rtt':    'силовые соединители для повышенных токов, до 850 в',
+  'et-ek-ep':   'технологические заглушки для розеток и вилок',
+  'et-mr1':     'малогабаритные для сигнальных цепей в компактной рэа',
+  'et-onc-bs':  'быстросъёмные одноконтактные с байонетом',
+  'et-rrs':     'радиочастотные соединители до 3 мгц, до 200 в',
+  'et-rsg':     'радиочастотные для свч-цепей, герметичные',
+  'et-shr':     'штепсельные цилиндрические для бортовой аппаратуры',
+  'et-snc144':  'высокоплотные круглые, mil-dtl-38999 series iii',
+  'et-snc23':   'электрические соединители для приборов и радиоустановок',
+  'et-snc28':   'цилиндрические для силовых и сигнальных цепей',
+  'et-2rmp':    'цилиндрические с резьбой, упрощённый корпус',
+  'et-onc-bm':  'малогабаритные байонетные, до 3 мгц',
+  'et-rbm4':    'высокочастотные резьбовые 75 ом, импортозамещение',
+  'et-rbn2':    'высокочастотные резьбовые 75 ом, импортозамещение',
+  'et-rvn1':    'высокочастотные резьбовые 75 ом',
+  'et-rvn2':    'высокочастотные для больших токов и частот',
+  'et-snc127':  'цилиндрические для электроцепей в приборах',
+  'et-snc13':   'прямоугольные серии снц13 для рэа',
+  'et-snc146':  'цилиндрические резьбовые, импортозамещение',
+  'et-snc147':  'цилиндрические резьбовые, передача сигналов',
+  'et-snc233':  'цилиндрические резьбовые для рэа с повышенными требованиями',
+  // Converters (4)
+  'irtysh':     'dc/dc-преобразователи, pin-to-pin замена vicor',
+  'volga':      'ac/dc-преобразователи, авиационная сеть 115 в / 400 гц',
+  'enisei':     'dc/dc-преобразователи 27 в, гальваноизолированные',
+  'kama':       'ac/dc-преобразователи 230 в, 50–1000 гц',
+  // Capacitors (3)
+  'arc70a':     'mlcc-конденсаторы, аналог atc 100a',
+  'arc70c':     'mlcc-конденсаторы 2225, аналог atc 100c',
+  'arc70e':     'mlcc-конденсаторы, аналог atc 100e'
+};
+function shortDesc(slug, fallback) {
+  return SERIES_SHORT_DESC[slug] || (fallback ? String(fallback).split('.')[0] + '.' : '');
+}
+
 /** Catalog — search + category filter + hash routing + product list rendering.
  *  Only activates on products.html (#catalogGrid).
  *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic).
@@ -505,6 +547,7 @@ function initCatalog() {
     transistors: 'свч-транзисторы',
     pcb: 'печатные платы'
   };
+
   // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
   // filtered grid, leads to category landing page (#cat-X). PCB skipped:
   // it navigates direct to landing from the 6-card grid.
@@ -544,21 +587,21 @@ function initCatalog() {
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
-        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        desc: shortDesc(s.slug, s.description),
         image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`,
         seriesTypes: collectTypes(s)
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
-        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        desc: shortDesc(s.slug, s.description),
         image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`,
         seriesTypes: collectTypes(s)
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
-        desc: s.description ? s.description.split('.')[0] + '.' : '',
+        desc: shortDesc(s.slug, s.description),
         image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`,
         seriesTypes: collectTypes(s)
       }));
@@ -1667,17 +1710,17 @@ function initProductDetail() {
       }
     } else if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       pool = CONNECTOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
-        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        name: s.name, desc: shortDesc(s.slug, s.description),
         image: s.image, href: `products.html#razemy/${s.slug}`
       }));
     } else if (catSlug === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       pool = CONVERTER_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
-        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        name: s.name, desc: shortDesc(s.slug, s.description),
         image: s.image, href: `products.html#converters/${s.slug}`
       }));
     } else if (catSlug === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       pool = CAPACITOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
-        name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
+        name: s.name, desc: shortDesc(s.slug, s.description),
         image: s.image, href: `products.html#capacitors/${s.slug}`
       }));
     } else if ((catSlug === 'microchips' || catSlug === 'transistors') && typeof PRODUCTS !== 'undefined') {

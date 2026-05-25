@@ -771,7 +771,8 @@
 .header {
   background: var(--c-bg);
   border-bottom: var(--border-thin);
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 50;
 }
 
