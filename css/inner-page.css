@@ -1704,14 +1704,20 @@
   line-height: 1.55;
   color: var(--c-text-muted);
 }
+/* Bottom row — Pencil cBPoU: flex space-between, padding [12,0,0,0], top border 1px D7D3CB. */
 .cat-card--entry__cta {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-border);
   font-size: 15px;
   font-weight: 500;
   color: var(--c-text);
-  padding-top: 4px;
   transition: opacity 0.15s ease;
 }
+.cat-card--entry__cta-arrow { font-size: 15px; line-height: 1; }
 .cat-card--entry:hover .cat-card--entry__cta { opacity: 0.7; }
 
 @media (min-width: 1024px) {

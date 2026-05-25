@@ -757,6 +757,8 @@ function initCatalog() {
     const a = document.createElement('a');
     a.className = 'cat-card cat-card--entry';
     a.href = `product-detail.html#cat-${cat}`;
+    // Pencil zCPAQ bottom row cBPoU: flex space-between, top border 1px D7D3CB, padding [12,0,0,0],
+    // "перейти к описанию" LEFT and "→" RIGHT — both 15/500 #112F6E.
     a.innerHTML = `
       <div class="cat-card--entry__top">
         <span class="cat-card--entry__caption">обзор раздела</span>
@@ -764,7 +766,10 @@ function initCatalog() {
         <div class="cat-card--entry__spacer"></div>
         <span class="cat-card--entry__sub">${entry.sub}</span>
       </div>
-      <span class="cat-card--entry__cta">перейти к&nbsp;описанию <span aria-hidden="true">→</span></span>
+      <span class="cat-card--entry__cta">
+        <span class="cat-card--entry__cta-label">перейти к&nbsp;описанию</span>
+        <span class="cat-card--entry__cta-arrow" aria-hidden="true">→</span>
+      </span>
     `;
     return a;
   }

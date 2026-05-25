@@ -604,7 +604,7 @@
   padding: var(--pill-py-sm) 20px; /* Pencil [10,20] verified sdDBg/Y5D2oT */
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .uy-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -627,7 +627,7 @@
   .uy-grid__image {
     grid-column: 1;
     grid-row: 1;                    /* EXPLICIT — pair with text grid-row:1 to keep both in same row */
-    aspect-ratio: 600 / 480;
+    aspect-ratio: 1 / 1;            /* 1:1 at narrow viewport — image tall enough so text < image */
     align-self: center;
     order: initial;
   }
@@ -637,6 +637,13 @@
   /* Modifier: image RIGHT (Cables) — flip columns */
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
   .uy-grid--image-right .uy-grid__text  { grid-column: 1; }
+}
+
+/* At wide viewport, restore Pencil-exact 600/480 aspect */
+@media (min-width: 1280px) {
+  .uy-grid__image {
+    aspect-ratio: 600 / 480;
+  }
 }
 
 /* ============================================================
