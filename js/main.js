@@ -1492,7 +1492,6 @@ function initProductDetail() {
     if (variantsSection) variantsSection.hidden = true;
   } else if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
     variantsSection.hidden = false;
-    if (specsBlock) specsBlock.hidden = false;
 
     // Series detail — title is "варианты исполнения"
     const variantsTitleEl = document.querySelector('.pd-variants__title');
@@ -1564,7 +1563,6 @@ function initProductDetail() {
     });
   } else if (variantsSection) {
     variantsSection.hidden = true;
-    if (specsBlock) specsBlock.hidden = false;
   }
 
   // Re-fire on hash change (clicking related-card or browser back/forward)

@@ -1351,6 +1351,9 @@
     flex: 1 1 auto;
     gap: 40px; /* Pencil UwOGg: block→block 40 */
   }
+  /* Series Detail (qYQC0): pd-image 580×480 (4:3) instead of square; pd-summary fills remainder. */
+  body[data-pd-kind="series"] .pd-image { flex: 0 0 580px; }
+  body[data-pd-kind="series"] .pd-image__placeholder { aspect-ratio: 580 / 480; }
   /* Desktop: no border between description+specs; specs has top border only above row 1 */
   .pd-block {
     padding-top: 0;
