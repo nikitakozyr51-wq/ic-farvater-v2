@@ -468,19 +468,19 @@ function initCatalog() {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-c-${s.slug}`
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-v-${s.slug}`
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `product-detail.html#s-k-${s.slug}`
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
@@ -1191,8 +1191,8 @@ function initProductDetail() {
       variantsTable.innerHTML = '';
       const filtered = filterType === 'все' ? data.items : data.items.filter(i => i.type === filterType);
       filtered.forEach((it, i) => {
-        // Landing nomenclature (microchips/transistors/series in landings) → CLICKABLE row navigates to product page.
-        // Series-internal variants (Вилка/Розетка) → STATIC row (no individual product page exists).
+        // Landing nomenclature (microchips/transistors/series in landings) → navigates to product/series page.
+        // Series-internal variants → navigates to variant page (#v-<seriesSlug>:<idx>).
         let isClickable = false, href = null;
         if (kind === 'landing' && /^\d+$/.test(String(it.partnumber))) {
           isClickable = true;
@@ -1201,6 +1201,11 @@ function initProductDetail() {
           isClickable = true;
           const prefix = catSlug === 'razemy' ? 's-c' : catSlug === 'converters' ? 's-v' : 's-k';
           href = `product-detail.html#${prefix}-${it.partnumber}`;
+        } else if ((kind === 'connector-series' || kind === 'converter-series' || kind === 'capacitor-series') && data.slug) {
+          isClickable = true;
+          // Find original idx in unfiltered list (pill may have filtered)
+          const origIdx = data.items.indexOf(it);
+          href = `product-detail.html#v-${data.slug}:${origIdx}`;
         }
         const row = document.createElement(isClickable ? 'a' : 'div');
         row.className = 'pd-variants__row' + (isClickable ? '' : ' pd-variants__row--static');
