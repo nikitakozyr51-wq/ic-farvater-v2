@@ -70,11 +70,29 @@ function initHeaderSearch() {
   }
 }
 
-/** Mobile burger menu toggle */
+/** Mobile burger menu toggle. Also surfaces the КП CTA + search trigger inside the open menu
+    (in desktop they live in .header__right which is hidden on mobile). */
 function initMobileMenu() {
   const burger = document.querySelector('.header__burger');
   const nav = document.querySelector('.header__nav');
   if (!burger || !nav) return;
+
+  // Inject mobile-only КП + search row at the bottom of the nav (rendered once).
+  if (!nav.querySelector('.header__nav-extras')) {
+    const extras = document.createElement('div');
+    extras.className = 'header__nav-extras';
+    extras.innerHTML = `
+      <a href="#" class="header__nav-cta" data-action="open-kp-drawer">запросить КП</a>
+      <button type="button" class="header__nav-search" aria-label="Поиск по каталогу">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>поиск по&nbsp;каталогу</span>
+      </button>
+    `;
+    nav.appendChild(extras);
+  }
 
   function setOpen(open) {
     nav.classList.toggle('header__nav--open', open);
@@ -87,10 +105,20 @@ function initMobileMenu() {
     setOpen(!nav.classList.contains('header__nav--open'));
   });
 
-  // Close menu on nav link click (v2 uses .header__nav-link)
-  nav.querySelectorAll('.header__nav-link, .header__link').forEach(link => {
+  // Close menu on nav link click (v2 uses .header__nav-link) — and on the injected КП/search row.
+  nav.querySelectorAll('.header__nav-link, .header__link, .header__nav-cta, .header__nav-search').forEach(link => {
     link.addEventListener('click', () => setOpen(false));
   });
+
+  // Route the mobile search button to catalog#search.
+  const mobileSearchBtn = nav.querySelector('.header__nav-search');
+  if (mobileSearchBtn) {
+    mobileSearchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const onCatalog = /\/products\.html(\?|#|$)/.test(window.location.pathname + window.location.search);
+      window.location.href = onCatalog ? (window.location.pathname + '#search') : 'products.html#search';
+    });
+  }
 }
 
 /** Highlight nav link matching current page or hash (v2 .header__nav-link + v1 .header__link) */
@@ -98,17 +126,21 @@ function initActiveNavLink() {
   const links = document.querySelectorAll('.header__nav-link, .header__link');
   if (!links.length) return;
 
-  function syncHash() {
+  function syncActive() {
     const hash = window.location.hash;
-    if (!hash) return;
+    const path = window.location.pathname;
     links.forEach(link => {
-      const href = link.getAttribute('href');
-      link.classList.toggle('header__nav-link--active', href === hash || href.endsWith(hash));
+      const href = link.getAttribute('href') || '';
+      // Match either: exact href = current hash, OR same pathname with matching hash.
+      // Avoids false positives where href.endsWith('#consent') matched 'consent.html'.
+      const isHashMatch = hash && (href === hash || href === path + hash);
+      const isPathMatch = !hash && (href === path || href === path.replace(/^.*\/(.*)$/, '$1'));
+      link.classList.toggle('header__nav-link--active', !!(isHashMatch || isPathMatch));
     });
   }
 
-  syncHash();
-  window.addEventListener('hashchange', syncHash);
+  syncActive();
+  window.addEventListener('hashchange', syncActive);
 }
 
 /** Contact form → /scripts/send.php */
@@ -537,11 +569,16 @@ function initCatalog() {
       ...getItems('transistors')
     ];
     // Also index individual SKU variants inside each series.items[]
+    // Index variant SKU codes — partnumber + displayName + displaySub all included so user can find
+    // exact items by typing "0R5" (capacitor partnumber) or short codes.
+    const variantDesc = (it) => [
+      it.type, it.tu, it.partnumber, it.displayName, it.displaySub
+    ].filter(Boolean).join(' · ').toLowerCase();
     if (typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
         id: `${s.slug}:${idx}`, name: it.name,
-        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        desc: variantDesc(it),
         image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
@@ -550,7 +587,7 @@ function initCatalog() {
       CONVERTER_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'converter-variant', cat: 'converters',
         id: `${s.slug}:${idx}`, name: it.name,
-        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        desc: variantDesc(it),
         image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
@@ -559,7 +596,7 @@ function initCatalog() {
       CAPACITOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'capacitor-variant', cat: 'capacitors',
         id: `${s.slug}:${idx}`, name: it.name,
-        desc: ((it.type || '') + (it.tu ? ' · ' + it.tu : '')).toLowerCase(),
+        desc: variantDesc(it),
         image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
@@ -1221,7 +1258,8 @@ function initProductDetail() {
         tu: item.tu || series.tu || '',
         subcategory: item.type ? item.type.toLowerCase() : '',
         seriesName: series.name,
-        seriesSlug: series.slug
+        seriesSlug: series.slug,
+        variantIdx: idx
       };
       kind = 'variant';
     }
@@ -1267,6 +1305,29 @@ function initProductDetail() {
     }
   }
 
+  // Invalid hash → render an empty state instead of leaving stale ЕТ-СНЦ23 static content.
+  // Triggers when a known prefix was used but no data lookup succeeded (e.g. #cat-foo, #v-xyz:99, #p-99999).
+  const hashLooksRoutable = /^#(cat-|p-|v-|s-[cvk]-)/.test(hash);
+  if (!data && hashLooksRoutable) {
+    const main = document.querySelector('.product-detail') || document.querySelector('main');
+    if (main) {
+      const eyebrow = document.querySelector('.product-top__eyebrow');
+      if (eyebrow) eyebrow.innerHTML = `<a href="products.html">каталог</a>`;
+      const title = document.querySelector('.product-top__title');
+      if (title) {
+        title.textContent = 'товар не найден';
+        const c = title.querySelector('.product-top__counter');
+        if (c) c.hidden = true;
+      }
+      const subtitle = document.querySelector('.product-top__subtitle');
+      if (subtitle) subtitle.textContent = 'проверьте ссылку или вернитесь в каталог.';
+      // Hide all content sections except product-top.
+      document.querySelectorAll('.section--pd-content, .section--pd-variants, .section--pd-nomenclature, .section--pd-related').forEach(s => s.hidden = true);
+      document.title = 'товар не найден — IC Фарватер';
+      document.body.dataset.pdKind = '';
+    }
+    return;
+  }
   if (!data) return;
 
   // Title — UPPERCASE for product codes (ЕТ1310РН1У), preserve original case for category landing names (микросхемы/разъёмы — already lowercase).
@@ -1276,15 +1337,28 @@ function initProductDetail() {
     const rawName = data.name || data.displayName || '';
     // Landings have lowercase Russian names ("микросхемы"); products/series have UPPERCASE codes ("ET1310PN1U" / "ЕТ-2РМГ(Д)")
     titleEl.textContent = kind === 'landing' ? rawName : cyrillize(rawName);
-    if (counter) titleEl.appendChild(counter);
+    // Variant counter — reflect 1-based index within parent series (Pencil JbcyB "(NN)").
+    // Landings have no counter on H1 (counter shown as section markers below).
+    if (counter) {
+      if (kind === 'variant' && data.variantIdx != null) {
+        counter.textContent = `(${String(data.variantIdx + 1).padStart(2, '0')})`;
+        counter.hidden = false;
+      } else if (kind === 'landing') {
+        counter.hidden = true;
+      } else {
+        counter.textContent = '(01)';
+        counter.hidden = false;
+      }
+      titleEl.appendChild(counter);
+    }
   }
 
-  // Eyebrow breadcrumb: каталог · <category> · <type>
+  // Eyebrow breadcrumb: каталог / <category> / <type> — Pencil v4 uses slash separator (HxV1w/WxsJU/nCPVW).
   const eyebrowEl = document.querySelector('.product-top__eyebrow');
   if (eyebrowEl) {
     const trail = data.subcategory || (kind && kind.includes('series') ? (data.slug || '') : '');
-    eyebrowEl.innerHTML = `<a href="products.html">каталог</a> · <a href="products.html#${catSlug}">${catLabel}</a>` +
-      (trail ? ` · <span>${String(trail).toLowerCase()}</span>` : '');
+    eyebrowEl.innerHTML = `<a href="products.html">каталог</a>&nbsp;/&nbsp;<a href="products.html#${catSlug}">${catLabel}</a>` +
+      (trail ? `&nbsp;/&nbsp;<span>${String(trail).toLowerCase()}</span>` : '');
   }
 
   // Subtitle (short description)
@@ -1412,6 +1486,13 @@ function initProductDetail() {
   // Update page title (browser tab) — cyrillize product code
   document.title = `${cyrillize((data.name || '').toUpperCase())} — IC Фарватер`;
 
+  // Wire data-kp-product / data-kp-category onto the primary CTA so the КП drawer pre-fills correctly.
+  const primaryCta = document.querySelector('.pd-actions__primary[data-action="open-kp-drawer"]');
+  if (primaryCta) {
+    primaryCta.dataset.kpProduct = cyrillize((data.name || '').toUpperCase());
+    primaryCta.dataset.kpCategory = catLabel || '';
+  }
+
   // === RELATED cards — dynamic per category. For LANDINGS → "другие категории" (3 other cats).
   // For variants/series → 4 sibling items in same category. ===
   const relatedGrid = document.getElementById('pdRelatedGrid');
@@ -1493,32 +1574,41 @@ function initProductDetail() {
   } else if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
     variantsSection.hidden = false;
 
-    // Series detail — title is "варианты исполнения"
+    // Series detail — title is "варианты исполнений" (Pencil N9CMCO genitive plural).
     const variantsTitleEl = document.querySelector('.pd-variants__title');
     if (variantsTitleEl) {
       const counter = variantsTitleEl.querySelector('.pd-variants__counter');
-      variantsTitleEl.textContent = 'варианты исполнения';
+      variantsTitleEl.textContent = 'варианты исполнений';
       if (counter) variantsTitleEl.appendChild(counter);
     }
 
-    // Build unique types (Вилка / Розетка / etc); for landings the type filter is hidden
+    // Build unique types (Вилка / Розетка / etc); for landings the type filter is hidden.
+    // Pencil qYQC0 pills: "(•) все (NN)" active / "( ) вилка (NN)" inactive — marker prefix + count suffix.
     const types = ['все', ...new Set(data.items.map(i => i.type).filter(Boolean))];
+    const countFor = (t) => t === 'все' ? data.items.length : data.items.filter(i => i.type === t).length;
     variantsPills.innerHTML = '';
-    // Skip pills for landings (too many subcategory types, not useful as filter)
     if (kind !== 'landing' && types.length > 1) {
       types.forEach((t, idx) => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'pd-variants__pill' + (idx === 0 ? ' pd-variants__pill--active' : '');
+        const isActive = idx === 0;
+        btn.className = 'pd-variants__pill' + (isActive ? ' pd-variants__pill--active' : '');
         btn.dataset.type = t;
-        btn.textContent = t.toLowerCase();
+        const marker = isActive ? '(•)' : '( )';
+        const count = String(countFor(t)).padStart(2, '0');
+        btn.innerHTML = `<span class="pd-variants__pill-label">${marker} ${cyrillize(t.toLowerCase())}</span><span class="pd-variants__pill-count">(${count})</span>`;
         variantsPills.appendChild(btn);
       });
     }
 
-    // Render rows
+    // Render rows — Pencil qYQC0 NBX48: thead row above first variant row.
     function renderRows(filterType) {
       variantsTable.innerHTML = '';
+      // Header row (column labels) — desktop only via CSS; hidden on mobile.
+      const thead = document.createElement('div');
+      thead.className = 'pd-variants__thead';
+      thead.innerHTML = `<span>наименование</span><span>тип</span><span>ту</span><span></span>`;
+      variantsTable.appendChild(thead);
       const filtered = filterType === 'все' ? data.items : data.items.filter(i => i.type === filterType);
       filtered.forEach((it, i) => {
         // Landing nomenclature (microchips/transistors/series in landings) → navigates to product/series page.
@@ -1553,11 +1643,17 @@ function initProductDetail() {
     }
     renderRows('все');
 
-    // Pill click handler
+    // Pill click handler — also swap "(•)"/"( )" marker on label.
     variantsPills.querySelectorAll('.pd-variants__pill').forEach(btn => {
       btn.addEventListener('click', () => {
-        variantsPills.querySelectorAll('.pd-variants__pill').forEach(b => b.classList.remove('pd-variants__pill--active'));
+        variantsPills.querySelectorAll('.pd-variants__pill').forEach(b => {
+          b.classList.remove('pd-variants__pill--active');
+          const lbl = b.querySelector('.pd-variants__pill-label');
+          if (lbl) lbl.textContent = lbl.textContent.replace(/^\(•\)\s/, '( ) ');
+        });
         btn.classList.add('pd-variants__pill--active');
+        const lbl = btn.querySelector('.pd-variants__pill-label');
+        if (lbl) lbl.textContent = lbl.textContent.replace(/^\( \)\s/, '(•) ');
         renderRows(btn.dataset.type);
       });
     });

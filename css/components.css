@@ -604,10 +604,10 @@
   padding: var(--pill-py-sm) 20px; /* Pencil [10,20] verified sdDBg/Y5D2oT */
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .uy-grid {
     display: grid;
-    grid-template-columns: 600px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 80px;
     align-items: center;
   }
@@ -634,8 +634,7 @@
   .uy-grid__head { gap: 22px; }  /* eyebrow → h2 = 22 (Pencil FbYhd) */
   .uy-grid__body { gap: 22px; }  /* p → p → p = 22 (Pencil rhythm) */
   .uy-grid__btn { padding-inline: 0; margin-inline: 0; }  /* no extra inset, padding from .btn-pill itself */
-  /* Modifier: image RIGHT (Cables) — flip template so image=600 is col 2, text=1fr is col 1 */
-  .uy-grid--image-right { grid-template-columns: minmax(0, 1fr) 600px; }
+  /* Modifier: image RIGHT (Cables) — flip columns */
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
   .uy-grid--image-right .uy-grid__text  { grid-column: 1; }
 }
@@ -819,6 +818,45 @@
   font-size: 18px;
   color: var(--c-text-muted);
   margin-left: 16px;
+}
+/* Mobile-only extras row injected by JS at the bottom of the open menu — КП CTA + search.
+   Desktop hides these because .header__right already provides them. */
+.header__nav-extras { display: none; }
+.header__nav--open .header__nav-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 32px;
+  margin-top: auto;
+}
+.header__nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 24px;
+  background: var(--c-text);
+  color: var(--c-bg);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+.header__nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 24px;
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text);
+  cursor: pointer;
 }
 body.menu-open {
   overflow: hidden;

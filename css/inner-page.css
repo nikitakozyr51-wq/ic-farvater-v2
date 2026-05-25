@@ -1326,18 +1326,25 @@
 }
 
 @media (min-width: 1024px) {
-  /* Desktop product-top — Pencil x6QVgU: eyebrow y=60 → title y=100 (gap 24) → subtitle y=186 (gap 24) */
+  /* Desktop product-top — Pencil x6QVgU (variant): padding [60,60,80,60]. */
   .product-top { padding-block: 60px 80px; }
+  /* Series qYQC0 K7DoAq: padding [60,60,40,60] — shorter bottom gap. */
+  body[data-pd-kind="series"] .product-top { padding-block: 60px 40px; }
   .product-top__inner { gap: 24px; }
   .product-top__title {
     font-size: var(--t-hero);
     line-height: var(--lh-hero);
     letter-spacing: -1.5px; /* Pencil v4 desktop H1 (W3oj8 vMHI6/o22m62): -1.5px */
   }
-  .product-top__subtitle { font-size: 16px; max-width: 760px; }
+  /* Series Detail H1 — Pencil qYQC0 vMHI6: 56/500/-1.5/lh1.1 (not hero 72). */
+  body[data-pd-kind="series"] .product-top__title { font-size: 56px; line-height: 1.1; }
+  .product-top__subtitle { font-size: 16px; max-width: 760px; line-height: 1.55; }
 
-  /* Desktop pd-content — Pencil xUELh: image 648 + gap 24 + info 648, padding [60,60] */
+  /* Desktop pd-content — Pencil xUELh (variant W3oj8): padding 60 all sides.
+     Landings (fh0MA) + Series (qYQC0 PfgIc): top 0 (pd-top owns the gap above). */
   .section--pd-content { padding-block: 60px; }
+  body[data-pd-kind="landing"] .section--pd-content { padding-block: 0 80px; }
+  body[data-pd-kind="series"] .section--pd-content { padding-block: 0 60px; }
   .pd-content {
     flex-direction: row;
     gap: 24px;
@@ -1351,9 +1358,13 @@
     flex: 1 1 auto;
     gap: 40px; /* Pencil UwOGg: block→block 40 */
   }
-  /* Series Detail (qYQC0): pd-image 580×480 (4:3) instead of square; pd-summary fills remainder. */
+  /* Series Detail (qYQC0 gagFk): 580×480 (4:3). */
   body[data-pd-kind="series"] .pd-image { flex: 0 0 580px; }
   body[data-pd-kind="series"] .pd-image__placeholder { aspect-ratio: 580 / 480; }
+  /* Landing (fh0MA+5 siblings): 580×580 square fixed. */
+  body[data-pd-kind="landing"] .pd-image { flex: 0 0 580px; }
+  /* Series Detail (qYQC0) has only primary CTA; secondary "вернуться в каталог" is not in Pencil. */
+  body[data-pd-kind="series"] .pd-actions__secondary { display: none; }
   /* Desktop: no border between description+specs; specs has top border only above row 1 */
   .pd-block {
     padding-top: 0;
@@ -1364,8 +1375,8 @@
   .pd-block__title { font-size: 30px; line-height: 1.15; }
   .pd-block__body p { font-size: 16px; }
 
-  /* Specs rows compact on desktop — Pencil Cin6V h=384 / 8 rows = 48 each */
-  .pd-specs__row { height: 48px; }
+  /* Specs rows compact on desktop — Pencil W3oj8 mnlsk/mIx3O: height 42 */
+  .pd-specs__row { height: 42px; }
   .pd-specs__label, .pd-specs__value { font-size: 14px; }
 
   /* Actions inline, auto-width pills — Pencil WrNDs h=41 */
@@ -1387,18 +1398,26 @@
   .section--pd-related { padding-block: 100px; }
   .pd-related { gap: 32px; }
   .pd-related__title { font-size: 30px; }
+  /* Variant page (W3oj8 itBTB): rel-header has padding [0,0,24,0] + bottom border 1px D7D3CB.
+     Landing/series use simple header style. */
+  body[data-pd-kind="variant"] .pd-related__title,
+  body[data-pd-kind="landing"] .pd-related__title {
+    width: 100%;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+  }
   .pd-related__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px;
   }
-  /* Desktop cards — Pencil I4cwln: 312×344, image 312×312, compact caption ~32h.
+  /* Desktop cards — Pencil I4cwln: 312×344, image 312×312, gap 16 image→caption.
      Restores 2D card layout (override mobile vertical-list rules). */
   .pd-card {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 16px;
     padding: 0;
     border-bottom: 0;
   }
@@ -1750,21 +1769,26 @@
 .pd-block[hidden],
 .section--pd-variants[hidden] { display: none; }
 
-.section--pd-variants { padding-block: 48px; }
+/* Series Detail (qYQC0 iRFS3): stroke top 1px D7D3CB separates pd-variants from pd-summary. */
+.section--pd-variants { padding-block: 48px; border-top: 1px solid var(--c-border); }
 .pd-variants {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
+/* Pencil qYQC0 hF5rr: section-header has padding [0,0,24,0] + bottom border 1px D7D3CB. */
 .pd-variants__title {
   font-size: 22px;
   font-weight: 500;
   letter-spacing: var(--ls-section);
   color: var(--c-text);
-  display: inline-flex;
+  display: flex;
   align-items: flex-start;
   gap: 4px;
   line-height: 1;
+  width: 100%;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--c-border);
 }
 .pd-variants__counter {
   font-size: var(--t-label);
@@ -1778,30 +1802,60 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+/* Pencil qYQC0 vvsnv (active) / GJHXL (inactive): pill padding [10,18], gap 6 between label + count.
+   Active prefix "(•)", inactive prefix "( )" — no fill change, just marker swap. */
 .pd-variants__pill {
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
   background: transparent;
   border: 1px solid var(--c-border);
   border-radius: 100px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
-  letter-spacing: var(--ls-label);
+  letter-spacing: 0;
   color: var(--c-text-muted);
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 .pd-variants__pill:hover { color: var(--c-text); border-color: var(--c-text); }
 .pd-variants__pill--active {
-  background: var(--c-text);
-  color: var(--c-bg);
+  color: var(--c-text);
   border-color: var(--c-text);
 }
+.pd-variants__pill-count {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.45px;
+  color: var(--c-text-muted);
+}
+.pd-variants__pill--active .pd-variants__pill-count { color: var(--c-text); }
 
 .pd-variants__table {
   display: flex;
   flex-direction: column;
-  border-top: var(--border-thin);
+}
+/* Pencil qYQC0 NBX48: thead row 56h, label 13/500/+0.45 muted, top+bottom border. */
+.pd-variants__thead {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .pd-variants__thead {
+    display: grid;
+    grid-template-columns: 1fr 200px 320px 32px;
+    align-items: center;
+    gap: 24px;
+    height: 56px;
+    padding: 0 16px;
+    border-top: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.45px;
+    color: var(--c-text-muted);
+  }
 }
 .pd-variants__row {
   display: grid;
@@ -1849,12 +1903,16 @@
 @media (min-width: 1024px) {
   .section--pd-variants { padding-block: 80px; }
   .pd-variants__title { font-size: 30px; line-height: 1.15; }
+  /* Pencil qYQC0 trow: 75h, padding [0,16], name fill / type 200 / tu 320 / arrow 32. */
   .pd-variants__row {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr) minmax(0, 1fr) auto;
-    padding: 24px 0; /* Pencil 75h - text 27h = 48 padding split */
+    grid-template-columns: 1fr 200px 320px 32px;
+    height: 75px;
+    padding: 0 16px;
     gap: 24px;
   }
-  .pd-variants__name { font-size: 15px; }
+  .pd-variants__name { font-size: 16px; }
+  .pd-variants__type { font-size: 13px; }
+  .pd-variants__tu { font-size: 15px; color: var(--c-text); font-weight: 400; }
 }
 
 
