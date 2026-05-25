@@ -607,7 +607,7 @@
 @media (min-width: 1024px) {
   .uy-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 600px minmax(0, 1fr);
     column-gap: 80px;
     align-items: center;
   }
@@ -634,7 +634,8 @@
   .uy-grid__head { gap: 22px; }  /* eyebrow → h2 = 22 (Pencil FbYhd) */
   .uy-grid__body { gap: 22px; }  /* p → p → p = 22 (Pencil rhythm) */
   .uy-grid__btn { padding-inline: 0; margin-inline: 0; }  /* no extra inset, padding from .btn-pill itself */
-  /* Modifier: image RIGHT (Cables) — flip columns */
+  /* Modifier: image RIGHT (Cables) — flip template so image=600 is col 2, text=1fr is col 1 */
+  .uy-grid--image-right { grid-template-columns: minmax(0, 1fr) 600px; }
   .uy-grid--image-right .uy-grid__image { grid-column: 2; }
   .uy-grid--image-right .uy-grid__text  { grid-column: 1; }
 }

@@ -1309,9 +1309,24 @@ function initProductDetail() {
     imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
   }
 
+  // Page kind marker → CSS uses this to swap layout (Series Detail vs Variant Page vs Landing).
+  // Series detail (qYQC0) uses "о серии" caption style instead of H2 "описание",
+  // hides specs + related, image is 4:3 (580×480 in Pencil).
+  const isSeriesKind = !!(kind && kind.includes('series'));
+  document.body.dataset.pdKind = isSeriesKind ? 'series' : (kind || '');
+
   // Description counter (02) — show only for landings (Pencil v4 W7BuW7/aagoV)
   const descCounter = document.querySelector('.pd-block__counter--landing');
   if (descCounter) descCounter.hidden = (kind !== 'landing');
+
+  // Description H2 title swap — Series Detail uses "о серии" caption label, not H2 "описание".
+  const descTitleEl = document.querySelector('.pd-block--description .pd-block__title');
+  if (descTitleEl) {
+    const counter = descTitleEl.querySelector('.pd-block__counter--landing');
+    descTitleEl.textContent = isSeriesKind ? 'о серии' : 'описание';
+    if (counter) descTitleEl.appendChild(counter);
+    descTitleEl.classList.toggle('pd-block__title--caption', isSeriesKind);
+  }
 
   // Description — can be string (single para) or array (multi-para per Pencil v4 landings)
   const descBody = document.querySelector('.pd-block--description .pd-block__body');
@@ -1325,9 +1340,12 @@ function initProductDetail() {
     descBody.innerHTML = paras.map(s => `<p>${String(s).trim()}</p>`).join('');
   }
 
-  // Specs table — variants/series only (landings show specs via Nomenclature section instead)
+  // Specs table — Variant page only.
+  // - Landing → hidden (specs surface via Nomenclature section instead).
+  // - Series Detail → hidden (qYQC0 has no characteristics column — variant table covers it).
+  // - Variant page (W3oj8) → shown with parsed item-level specs.
   const specsBlockEl = document.querySelector('.pd-block--specs');
-  if (kind === 'landing') {
+  if (kind === 'landing' || isSeriesKind) {
     if (specsBlockEl) specsBlockEl.hidden = true;
   } else {
     if (specsBlockEl) specsBlockEl.hidden = false;
@@ -1354,10 +1372,11 @@ function initProductDetail() {
     }
   }
 
-  // Bullets section (Pencil v4 — landings only). 4-row "что мы поставляем" list.
-  const bulletsSection = document.getElementById('pdBulletsSection');
+  // Bullets block (Pencil v4 — landings only). 4-row "что мы поставляем" list.
+  // Lives INSIDE pd-info between description and actions (NOT a separate full-width section).
+  const bulletsBlock = document.getElementById('pdBulletsBlock');
   const bulletsList = document.getElementById('pdBulletsList');
-  if (bulletsSection && bulletsList) {
+  if (bulletsBlock && bulletsList) {
     if (kind === 'landing' && Array.isArray(data.bullets)) {
       bulletsList.innerHTML = '';
       data.bullets.forEach(([label, value]) => {
@@ -1366,9 +1385,9 @@ function initProductDetail() {
         row.innerHTML = `<span class="pd-bullets__label">${label}</span><span class="pd-bullets__value">${value}</span>`;
         bulletsList.appendChild(row);
       });
-      bulletsSection.hidden = false;
+      bulletsBlock.hidden = false;
     } else {
-      bulletsSection.hidden = true;
+      bulletsBlock.hidden = true;
     }
   }
 
@@ -1398,7 +1417,10 @@ function initProductDetail() {
   const relatedGrid = document.getElementById('pdRelatedGrid');
   const relatedSection = document.querySelector('.section--pd-related');
   const relatedTitleEl = document.querySelector('.pd-related__title');
-  if (relatedGrid) {
+  // Series Detail (qYQC0) doesn't have pd-related — variants table covers it.
+  if (isSeriesKind) {
+    if (relatedSection) relatedSection.hidden = true;
+  } else if (relatedGrid) {
     let pool = [];
     if (kind === 'landing' && Array.isArray(RELATED_CATS[catSlug])) {
       // Other categories — 3 cards linking to other landings

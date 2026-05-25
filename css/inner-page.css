@@ -1069,6 +1069,15 @@
   align-items: flex-start;
   gap: 4px;
 }
+/* Series Detail (qYQC0): description block uses "о серии" caption style instead of H2.
+   13/500 muted +0.45 letter-spacing per Pencil jSVH4. */
+.pd-block__title--caption {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  line-height: 1.4;
+  color: var(--c-text-muted);
+}
 .pd-block__counter {
   font-size: var(--t-label);
   font-weight: 500;
@@ -1220,37 +1229,11 @@
   .pd-nomenclature__value { font-size: 16px; text-align: right; }
 }
 
-/* PD Bullets — "что мы поставляем" — Pencil v4 mobile D4VTOr / desktop No6xx.
-   Mobile: 4 vertical rows of label (15/500 deep) + value (13 muted), padding [16,0] border-bottom.
-   Desktop: 4 rows × 75h, label col 200w + value flex. */
-.section--pd-bullets {
-  padding-block: 32px;
-  border-top: var(--border-thin);
-}
-.pd-bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.pd-bullets__header {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-}
-.pd-bullets__title {
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.4px;
-  line-height: 1.15;
-  color: var(--c-text);
-}
-.pd-bullets__counter {
-  font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: var(--ls-label);
-  color: var(--c-text-muted);
-}
-.pd-bullets__list {
+/* PD Bullets "что мы поставляем" — Pencil v4 inside pd-info right column.
+   Lives between description and CTA actions (NOT a separate section).
+   Mobile (D4VTOr): vertical 4 rows label/value, padding [16,0] border-bottom.
+   Desktop (No6xx): 4 rows × 75h, label col 200w + value flex. */
+.pd-block--bullets .pd-bullets__list {
   display: flex;
   flex-direction: column;
 }
@@ -1273,9 +1256,6 @@
   color: var(--c-text-muted);
 }
 @media (min-width: 1024px) {
-  .section--pd-bullets { padding-block: 80px; }
-  .pd-bullets { gap: 32px; }
-  .pd-bullets__title { font-size: 30px; letter-spacing: -0.5px; }
   .pd-bullets__row {
     flex-direction: row;
     align-items: center;

@@ -125,6 +125,13 @@
             </dl>
           </div>
 
+          <!-- Bullets "что мы поставляем" — landings only (Pencil v4 No6xx inside pd-info).
+               Lives INSIDE pd-info between desc and actions, NOT as separate full-width section. -->
+          <div class="pd-block pd-block--bullets" id="pdBulletsBlock" hidden>
+            <h2 class="pd-block__title pd-block__title--bullets">что мы&nbsp;поставляем<sup class="pd-block__counter pd-block__counter--bullets">(03)</sup></h2>
+            <div class="pd-bullets__list" id="pdBulletsList"></div>
+          </div>
+
           <!-- CTA actions: primary "запросить расчёт" + secondary "вернуться в каталог" -->
           <div class="pd-actions">
             <a href="#" class="pd-actions__primary" data-action="open-kp-drawer">
@@ -147,18 +154,6 @@
         <h2 class="pd-variants__title">варианты исполнения<sup class="pd-variants__counter" id="pdVariantsCounter">(02)</sup></h2>
         <div class="pd-variants__pills" id="pdVariantsPills" role="tablist"></div>
         <div class="pd-variants__table" id="pdVariantsTable"></div>
-      </div>
-    </section>
-
-    <!-- Bullets (Pencil v4 mobile D4VTOr / desktop No6xx): "что мы поставляем" — 4-row label+value list.
-         Shown for category landings only. -->
-    <section class="section section--pd-bullets" id="pdBulletsSection" hidden>
-      <div class="container pd-bullets">
-        <div class="pd-bullets__header">
-          <h2 class="pd-bullets__title">что мы&nbsp;поставляем</h2>
-          <sup class="pd-bullets__counter">(03)</sup>
-        </div>
-        <div class="pd-bullets__list" id="pdBulletsList"></div>
       </div>
     </section>
 
