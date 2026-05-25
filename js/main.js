@@ -519,29 +519,48 @@ function initCatalog() {
   };
   const PAGE_SIZE = 12;
 
+  // Connector type data is messy (typos like "роозетка", qualified variants like "вилка блочная",
+  // accessories like "заглушка для снц144"). Bucket everything into 4 primary types so the
+  // Type filter UI stays tight (без 17 опечаток).
+  function normalizeType(raw) {
+    const t = (raw || '').toLowerCase().trim();
+    if (!t) return null;
+    if (/заглушк/.test(t)) return 'заглушка';
+    if (/кожух/.test(t))   return 'кожух';
+    if (/вилк/.test(t))    return 'вилка';
+    if (/розетк|роозетк/.test(t)) return 'розетка';
+    return t; // fallback for clean types (e.g. "dc/dc" / "ac/dc" in converters)
+  }
+
   // Get items for a single category (used by category-filter view).
   // Series items carry a `group` field (main / additional / dev) so renderList
   // can emit subsection headers (e.g. "основные серии" / "в разработке").
   // Series cards link to in-page sub-hash #cat/slug (stay on catalog, no separate Series Detail).
   function getItems(cat) {
     const out = [];
+    // seriesTypes — Set of normalized variant types this series contains. Used by Type-filter
+    // at category level to narrow visible series to those matching the selected type.
+    const collectTypes = (s) => new Set((s.items || []).map(i => normalizeType(i.type)).filter(Boolean));
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`,
+        seriesTypes: collectTypes(s)
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`,
+        seriesTypes: collectTypes(s)
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`,
+        seriesTypes: collectTypes(s)
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
@@ -612,6 +631,12 @@ function initCatalog() {
     if (search) {
       const q = search.trim();
       items = items.filter(it => fuzzyMatch(it.name + ' ' + (it.desc || ''), q));
+    }
+    // Type filter at category level — narrow series to those containing at least one variant
+    // of the selected type. Only applies to series (razemy / converters / capacitors).
+    if (state.seriesType && state.seriesType !== 'all') {
+      const t = state.seriesType.toLowerCase();
+      items = items.filter(it => it.seriesTypes && it.seriesTypes.has(t));
     }
     const count = items.length;
     const catLabel = CAT_NAMES[cat] || cat;
@@ -793,9 +818,9 @@ function initCatalog() {
     const seriesName = cyrillize(series.name);
     const allItems = series.items || [];
     // Series-view sidebar gets a Type filter (вилка/розетка/…). Filter active selection
-    // narrows the rendered cards. state.seriesType === 'all' means all types.
+    // narrows the rendered cards (match against normalized type buckets).
     const activeType = (state.seriesType && state.seriesType !== 'all') ? state.seriesType : null;
-    const items = activeType ? allItems.filter(it => (it.type || '').toLowerCase() === activeType.toLowerCase()) : allItems;
+    const items = activeType ? allItems.filter(it => normalizeType(it.type) === activeType) : allItems;
     const count = items.length;
     // Header: series name (left) + variant count (right) — same .catalog__list-subheader pattern
     // as the category view ("разъёмы — 24 серии"). No back-arrow; sidebar navigation moves the
@@ -842,25 +867,36 @@ function initCatalog() {
     return count;
   }
 
-  // Render sidebar Type filter (вилка / розетка / …) — populated from the active series' items[].
-  // Hidden when not in a series view. Clicking an item updates state.seriesType and re-applies.
+  // Render sidebar Type filter (вилка / розетка / …).
+  // Two modes:
+  //   - Series view (cat + slug): types come from that series' items[]. Narrows variant cards.
+  //   - Category view (cat only): types are the union across all series in the category.
+  //     Narrows the rendered series cards (keep those with at least one variant of that type).
+  // Hidden for categories without a series structure (microchips / transistors / pcb).
   function renderTypeFilter(cat, slug) {
     const group = document.getElementById('typeFilterGroup');
     const itemsEl = document.getElementById('typeFilterItems');
     if (!group || !itemsEl) return;
-    let series = null;
-    if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
-      series = CONNECTOR_SERIES.find(s => s.slug === slug);
-    } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
-      series = CONVERTER_SERIES.find(s => s.slug === slug);
-    } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
-      series = CAPACITOR_SERIES.find(s => s.slug === slug);
-    }
-    if (!series || !Array.isArray(series.items)) {
+    const seriesSource = cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined' ? CONNECTOR_SERIES
+                       : cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined' ? CONVERTER_SERIES
+                       : cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined' ? CAPACITOR_SERIES
+                       : null;
+    if (!seriesSource) {
       group.hidden = true;
       return;
     }
-    const types = [...new Set(series.items.map(i => (i.type || '').toLowerCase()).filter(Boolean))];
+    let types;
+    if (slug) {
+      // Series mode — types from this series only (normalized).
+      const series = seriesSource.find(s => s.slug === slug);
+      if (!series || !Array.isArray(series.items)) { group.hidden = true; return; }
+      types = [...new Set(series.items.map(i => normalizeType(i.type)).filter(Boolean))];
+    } else {
+      // Category mode — union of normalized types across all series in this category.
+      const allTypes = new Set();
+      seriesSource.forEach(s => (s.items || []).forEach(it => { const n = normalizeType(it.type); if (n) allTypes.add(n); }));
+      types = [...allTypes];
+    }
     if (types.length < 2) {
       // Only one type (or none) — filter not useful.
       group.hidden = true;
@@ -930,6 +966,8 @@ function initCatalog() {
         if (listMore) listMore.hidden = true;
       }
       if (emptyMsg) emptyMsg.hidden = true;
+      // Type filter at category level — visible for series-based cats (razemy/converters/capacitors).
+      renderTypeFilter(state.cat, null);
     } else {
       // Default view: 6 cat-cards visible
       grid.hidden = false;
@@ -938,8 +976,12 @@ function initCatalog() {
       if (emptyMsg) emptyMsg.hidden = true;
     }
 
-    // Type filter visibility — only when drilled into a specific series.
-    if (!inSeriesMode) {
+    // Hide Type filter when leaving series-based categories (microchips/transistors/pcb/all).
+    if (!inSeriesMode && !inListMode) {
+      const tg = document.getElementById('typeFilterGroup');
+      if (tg) tg.hidden = true;
+      state.seriesType = 'all';
+    } else if (inListMode && !['razemy', 'converters', 'capacitors'].includes(state.cat)) {
       const tg = document.getElementById('typeFilterGroup');
       if (tg) tg.hidden = true;
       state.seriesType = 'all';
@@ -964,7 +1006,7 @@ function initCatalog() {
       b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
     });
 
-    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0);
+    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0) + (state.seriesType && state.seriesType !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
 
     let hash = '';
@@ -1018,6 +1060,7 @@ function initCatalog() {
     const q = link.getAttribute('data-global-search') || '';
     state.cat = 'all';
     state.series = null;
+    state.seriesType = 'all';
     state.search = q;
     searchInputs.forEach(i => i.value = q);
     history.replaceState(null, '', '#all');
@@ -1046,6 +1089,8 @@ function initCatalog() {
     clearBtn.addEventListener('click', () => {
       state.search = '';
       state.cat = 'all';
+      state.series = null;
+      state.seriesType = 'all';
       searchInputs.forEach(i => i.value = '');
       apply();
     });
@@ -1057,10 +1102,12 @@ function initCatalog() {
     // Support sub-hash: #razemy/et-2rmg (category + series slug)
     const [hCat, hSeries] = h.split('/');
     if (hCat && hCat !== 'search' && validCats.includes(hCat)) {
-      // Series changed (or left) → reset type filter so it doesn't carry between series.
-      if (state.series !== (hSeries || null)) state.seriesType = 'all';
+      // Reset type filter when category OR series changes — selected type may not exist
+      // in the new context (e.g. "заглушка" set at #razemy but next series has only вилка/розетка).
+      const newSeries = hSeries || null;
+      if (state.cat !== hCat || state.series !== newSeries) state.seriesType = 'all';
       state.cat = hCat;
-      state.series = hSeries || null;
+      state.series = newSeries;
       apply();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (!h || h === 'search') {
