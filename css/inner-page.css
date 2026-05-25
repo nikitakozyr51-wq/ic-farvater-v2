@@ -518,7 +518,9 @@
   .catalog {
     flex-direction: row;
     gap: 96px;        /* Pencil J1dha sidebar ends x=300, lqezi grid-wrap starts x=396 → gap=96 */
-    padding-block: 0;
+    /* Fixed bottom gap before footer — guards against sidebar height dictating .catalog height
+       (which happens when filters are expanded and grid-wrap has few cards). */
+    padding-block: 0 120px;
     align-items: flex-start;
   }
   .catalog__sidebar {
