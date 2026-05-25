@@ -456,6 +456,16 @@ function initCatalog() {
     transistors: 'свч-транзисторы',
     pcb: 'печатные платы'
   };
+  // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
+  // filtered grid, leads to category landing page (#cat-X). PCB skipped:
+  // it navigates direct to landing from the 6-card grid.
+  const ENTRY_CARDS = {
+    microchips:  { title: 'о&nbsp;микросхемах',         sub: 'аналоги&nbsp;· корпуса&nbsp;· применение' },
+    razemy:      { title: 'о&nbsp;разъёмах<br>ЕТ-серии', sub: 'приборные&nbsp;· кабельные&nbsp;· MIL-spec' },
+    converters:  { title: 'о&nbsp;преобразователях',    sub: 'ИРТЫШ&nbsp;· ВОЛГА&nbsp;· ЕНИСЕЙ&nbsp;· КАМА' },
+    capacitors:  { title: 'о&nbsp;конденсаторах ARC70', sub: 'СВЧ&nbsp;· 0,1–500&nbsp;пФ' },
+    transistors: { title: 'о&nbsp;транзисторах LDMOS',  sub: 'S-&nbsp;· L-&nbsp;· X-диапазоны' }
+  };
   const PAGE_SIZE = 12;
 
   // Get items for a single category (used by category-filter view).
@@ -547,6 +557,8 @@ function initCatalog() {
     }
     function renderSlice(slice, isFirst) {
       let lastGroup = null;
+      let entryInserted = false;
+      const entry = ENTRY_CARDS[cat];
       slice.forEach((it, idx) => {
         if (singleGroup && isFirst && idx === 0) {
           // Single-group cat: use cat name as the only header
@@ -555,6 +567,12 @@ function initCatalog() {
         } else if (!singleGroup && it.group && it.group !== lastGroup) {
           listGrid.appendChild(makeSubheader(GROUP_LABELS[it.group] || it.group, groupCounts[it.group]));
           lastGroup = it.group;
+        }
+        // Entry card sits FIRST (before any product card) per Pencil zCPAQ.
+        // Once per render, only for first slice, only if this cat has an entry card.
+        if (isFirst && entry && !entryInserted) {
+          listGrid.appendChild(makeEntryCard(cat, entry));
+          entryInserted = true;
         }
         listGrid.appendChild(buildCard(it));
       });
@@ -630,6 +648,24 @@ function initCatalog() {
         <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
         ${it.desc ? `<p class="cat-card__desc">${cyrillize(it.desc).toLowerCase()}</p>` : ''}
       </div>
+    `;
+    return a;
+  }
+
+  // Entry card (Pencil zCPAQ): text-only first card linking to category landing.
+  // Structure per spec: 228w outer, top 228h block (caption + title + spacer + sub),
+  // bottom CTA "перейти к описанию →".
+  function makeEntryCard(cat, entry) {
+    const a = document.createElement('a');
+    a.className = 'cat-card cat-card--entry';
+    a.href = `product-detail.html#cat-${cat}`;
+    a.innerHTML = `
+      <div class="cat-card--entry__top">
+        <span class="cat-card--entry__caption">обзор раздела</span>
+        <h3 class="cat-card--entry__title">${entry.title}</h3>
+        <span class="cat-card--entry__sub">${entry.sub}</span>
+      </div>
+      <span class="cat-card--entry__cta">перейти к&nbsp;описанию <span aria-hidden="true">→</span></span>
     `;
     return a;
   }
