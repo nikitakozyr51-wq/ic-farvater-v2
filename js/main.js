@@ -1204,6 +1204,10 @@ function initProductDetail() {
     imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
   }
 
+  // Description counter (02) — show only for landings (Pencil v4 W7BuW7/aagoV)
+  const descCounter = document.querySelector('.pd-block__counter--landing');
+  if (descCounter) descCounter.hidden = (kind !== 'landing');
+
   // Description — can be string (single para) or array (multi-para per Pencil v4 landings)
   const descBody = document.querySelector('.pd-block--description .pd-block__body');
   if (descBody && data.description) {
@@ -1245,6 +1249,24 @@ function initProductDetail() {
     }
   }
 
+  // Bullets section (Pencil v4 — landings only). 4-row "что мы поставляем" list.
+  const bulletsSection = document.getElementById('pdBulletsSection');
+  const bulletsList = document.getElementById('pdBulletsList');
+  if (bulletsSection && bulletsList) {
+    if (kind === 'landing' && Array.isArray(data.bullets)) {
+      bulletsList.innerHTML = '';
+      data.bullets.forEach(([label, value]) => {
+        const row = document.createElement('div');
+        row.className = 'pd-bullets__row';
+        row.innerHTML = `<span class="pd-bullets__label">${label}</span><span class="pd-bullets__value">${value}</span>`;
+        bulletsList.appendChild(row);
+      });
+      bulletsSection.hidden = false;
+    } else {
+      bulletsSection.hidden = true;
+    }
+  }
+
   // Nomenclature section (Pencil v4 — landings only). 9-row spec table.
   const nomSection = document.getElementById('pdNomenclatureSection');
   const nomTable = document.getElementById('pdNomenclatureTable');
@@ -1281,6 +1303,7 @@ function initProductDetail() {
       }).filter(Boolean);
       if (relatedTitleEl) {
         const counter = relatedTitleEl.querySelector('.pd-related__counter');
+        if (counter) counter.textContent = '(05)';
         relatedTitleEl.textContent = 'другие категории';
         if (counter) relatedTitleEl.appendChild(counter);
       }

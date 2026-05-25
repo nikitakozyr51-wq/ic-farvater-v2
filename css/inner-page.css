@@ -996,10 +996,10 @@
 }
 .product-top__eyebrow a:hover { color: var(--c-text); }
 .product-top__title {
-  font-size: 32px; /* mobile Pencil JZJFB 32px */
+  font-size: 36px; /* mobile Pencil u2XyY blwPP: 36px weight 500 -0.8 lh 1.1 */
   font-weight: 500;
-  letter-spacing: var(--ls-hero);
-  line-height: 1.15;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
   color: var(--c-text);
   display: inline-flex;
   align-items: flex-start;
@@ -1054,14 +1054,14 @@
   border-top: var(--border-thin);
 }
 .pd-block__title {
-  font-size: 22px;
+  font-size: 24px; /* mobile Pencil W7BuW7 DLBaE: 24/500/-0.4/lh 1.15 */
   font-weight: 500;
-  letter-spacing: var(--ls-section);
+  letter-spacing: -0.4px;
+  line-height: 1.15;
   color: var(--c-text);
   display: inline-flex;
   align-items: flex-start;
   gap: 4px;
-  line-height: 1;
 }
 .pd-block__counter {
   font-size: var(--t-label);
@@ -1160,9 +1160,9 @@
   border-bottom: var(--border-thin);
 }
 .pd-nomenclature__title {
-  font-size: 22px;
+  font-size: 24px; /* mobile Pencil Vvzef: 24/500/-0.4 */
   font-weight: 500;
-  letter-spacing: var(--ls-section);
+  letter-spacing: -0.4px;
   line-height: 1.15;
   color: var(--c-text);
 }
@@ -1176,36 +1176,112 @@
   display: flex;
   flex-direction: column;
 }
+/* Mobile (Pencil ECy7Z): label 12/500/+0.45 ON TOP, value 15/normal BELOW.
+   Vertical stack, padding [12,0] border-bottom. */
 .pd-nomenclature__row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 56px;
-  padding: 14px 0;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 0;
   border-bottom: var(--border-thin);
 }
 .pd-nomenclature__label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.45px;
+  color: var(--c-text-muted);
+}
+.pd-nomenclature__value {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--c-text);
+}
+@media (min-width: 1024px) {
+  /* Desktop (Pencil KaCjY): row 56h horizontal, label LEFT + value RIGHT. */
+  .section--pd-nomenclature { padding-block: 80px; }
+  .pd-nomenclature { gap: 32px; }
+  .pd-nomenclature__title { font-size: 30px; letter-spacing: -0.5px; }
+  .pd-nomenclature__row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    padding: 0;
+    gap: 16px;
+  }
+  .pd-nomenclature__label { font-size: 13px; flex: 0 0 auto; }
+  .pd-nomenclature__value { font-size: 16px; text-align: right; }
+}
+
+/* PD Bullets — "что мы поставляем" — Pencil v4 mobile D4VTOr / desktop No6xx.
+   Mobile: 4 vertical rows of label (15/500 deep) + value (13 muted), padding [16,0] border-bottom.
+   Desktop: 4 rows × 75h, label col 200w + value flex. */
+.section--pd-bullets {
+  padding-block: 32px;
+  border-top: var(--border-thin);
+}
+.pd-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pd-bullets__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.pd-bullets__title {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+  color: var(--c-text);
+}
+.pd-bullets__counter {
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
   color: var(--c-text-muted);
-  flex: 0 0 auto;
 }
-.pd-nomenclature__value {
-  font-size: 16px;
-  font-weight: 400;
+.pd-bullets__list {
+  display: flex;
+  flex-direction: column;
+}
+.pd-bullets__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 0;
+  border-bottom: var(--border-thin);
+}
+.pd-bullets__label {
+  font-size: 15px;
+  font-weight: 500;
   color: var(--c-text);
-  text-align: right;
+}
+.pd-bullets__value {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--c-text-muted);
 }
 @media (min-width: 1024px) {
-  .section--pd-nomenclature { padding-block: 80px; }
-  .pd-nomenclature { gap: 32px; }
-  .pd-nomenclature__title { font-size: 30px; letter-spacing: -0.5px; }
-  .pd-nomenclature__row { min-height: 56px; padding: 0; }
+  .section--pd-bullets { padding-block: 80px; }
+  .pd-bullets { gap: 32px; }
+  .pd-bullets__title { font-size: 30px; letter-spacing: -0.5px; }
+  .pd-bullets__row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 75px;
+    padding: 0;
+    gap: 24px;
+  }
+  .pd-bullets__label { flex: 0 0 200px; font-size: 16px; }
+  .pd-bullets__value { font-size: 15px; }
 }
 
-/* PD Related — "другие исполнения" — Pencil I4cwln desktop / x0Ycp mobile */
+/* PD Related — Pencil v4 desktop I4cwln (4-col grid) / mobile RcMLj (vertical list w/ arrow) */
 .section--pd-related { padding-block: 48px; }
 .pd-related {
   display: flex;
@@ -1213,14 +1289,14 @@
   gap: 24px;
 }
 .pd-related__title {
-  font-size: 22px;
+  font-size: 24px; /* mobile Pencil RcMLj GK7o2: 24/500/-0.4 */
   font-weight: 500;
-  letter-spacing: var(--ls-section);
+  letter-spacing: -0.4px;
+  line-height: 1.15;
   color: var(--c-text);
   display: inline-flex;
   align-items: flex-start;
-  gap: 4px;
-  line-height: 1;
+  gap: 6px;
 }
 .pd-related__counter {
   font-size: var(--t-label);
@@ -1228,34 +1304,40 @@
   color: var(--c-text-muted);
   letter-spacing: 0;
 }
+/* Mobile (Pencil RcMLj): related grid becomes vertical list — each card is a row
+   with name+desc LEFT and → arrow RIGHT, padding [16,0] border-bottom, no image. */
 .pd-related__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
 }
 .pd-card {
   display: flex;
-  flex-direction: column;
-  gap: 12px; /* mobile Pencil: cards have larger captions */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: var(--border-thin);
   text-decoration: none;
   color: inherit;
 }
-.pd-card__image {
-  aspect-ratio: 1 / 1;
-  background: var(--c-bg-alt);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.pd-card__image { display: none; } /* hidden on mobile per Pencil RcMLj */
 .pd-card__image-label {
   font-size: 12px;
   color: var(--c-text-muted);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
-.pd-card__info { display: flex; flex-direction: column; gap: 4px; }
+.pd-card__info { display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; }
 .pd-card__name { font-size: 15px; font-weight: 500; line-height: 1.3; color: var(--c-text); }
 .pd-card__desc { font-size: 13px; color: var(--c-text-muted); line-height: 1.35; }
+.pd-card::after {
+  content: '→';
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--c-text);
+  flex: 0 0 auto;
+}
 
 @media (min-width: 1024px) {
   /* Desktop product-top — Pencil x6QVgU: eyebrow y=60 → title y=100 (gap 24) → subtitle y=186 (gap 24) */
@@ -1316,11 +1398,28 @@
   .pd-related { gap: 32px; }
   .pd-related__title { font-size: 30px; }
   .pd-related__grid {
+    display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px;
   }
-  /* Desktop cards — Pencil I4cwln: 312×344, image 312×312, compact caption ~32h */
-  .pd-card { gap: 8px; }
+  /* Desktop cards — Pencil I4cwln: 312×344, image 312×312, compact caption ~32h.
+     Restores 2D card layout (override mobile vertical-list rules). */
+  .pd-card {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0;
+    border-bottom: 0;
+  }
+  .pd-card::after { content: none; } /* hide arrow on desktop */
+  .pd-card__image {
+    display: flex;
+    aspect-ratio: 1 / 1;
+    background: var(--c-bg-alt);
+    align-items: center;
+    justify-content: center;
+  }
   .pd-card__info { gap: 2px; }
   .pd-card__name { font-size: 13px; line-height: 1.25; }
   .pd-card__desc { font-size: 12px; line-height: 1.3; }

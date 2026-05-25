@@ -161,7 +161,7 @@
 }
 .footer__tagline {
   font-size: var(--t-paragraph);
-  color: var(--c-muted-on-dark);
+  color: var(--c-label-on-dark);
   line-height: var(--lh-body);
 }
 
@@ -170,13 +170,13 @@
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
-  color: var(--c-tertiary-on-dark); /* Pencil 40% white (#F5F3EF66), not 70% */
+  color: var(--c-tertiary-on-dark);
   line-height: 1.4;
 }
 .footer__address {
   font-style: normal;
   font-size: 14px;
-  color: var(--c-muted-on-dark);
+  color: var(--c-label-on-dark);
   line-height: var(--lh-body);
 }
 .footer__phone {
@@ -184,19 +184,19 @@
   font-weight: 500;
   letter-spacing: var(--ls-sub);
   color: var(--c-text-on-dark);
-  line-height: 19px;  /* Pencil eFt4U h=19 at 16px (was line-height 1.55 → 24.8) */
+  line-height: 19px;
 }
 .footer__email {
   font-size: 14px;
   color: var(--c-text-on-dark);
-  line-height: 17px;  /* Pencil n5FlEI h=17 at 14px */
+  line-height: 17px;
 }
 
 .footer__nav { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a {
   font-size: 14px;
   color: var(--c-text-on-dark);
-  line-height: 20px;  /* Pencil mobile li step = 32 (font 20h + gap 12). Was 24.8 → step 36.8 (off) */
+  line-height: 20px;
   transition: opacity 0.2s ease;
 }
 .footer__nav a:hover { opacity: 0.7; }
@@ -211,7 +211,7 @@
 }
 .footer__newsletter-desc {
   font-size: var(--t-paragraph);
-  color: var(--c-muted-on-dark);
+  color: var(--c-label-on-dark);
   line-height: var(--lh-row);
   display: none; /* mobile: Pencil tqbXr has NO desc — only title + email-pill + disclaimer */
 }
@@ -229,9 +229,10 @@
   border: none;
   outline: none;
   font-size: 14px;
-  color: var(--c-text-muted);
+  color: var(--c-text);
   font-family: var(--font-primary);
 }
+.footer__email-form input::placeholder { color: var(--c-text); }
 .footer__email-form button {
   background: transparent;
   color: var(--c-text);
@@ -240,7 +241,7 @@
 }
 .footer__disclaimer {
   font-size: 11px;
-  color: var(--c-tertiary-on-dark);
+  color: #F5F3EF66; /* Pencil z46ZAu 40% on dark */
   line-height: 1.5;
 }
 
@@ -248,10 +249,11 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin-top: 40px;       /* Pencil YsYD7 gap=40 between footer__top last child and bottom block */
-  padding-top: 24px;      /* Pencil JUKlU padding-top 24 (inside bottom, below border) */
+  margin-top: 40px;
+  padding-top: 24px;
   border-top: 1px solid var(--c-border-on-dark);
 }
+.footer__copyright-group { display: flex; flex-direction: column; gap: 8px; }
 .footer__copyright {
   font-size: 13px;
   color: var(--c-tertiary-on-dark);
@@ -260,14 +262,14 @@
 }
 .footer__copyright--tertiary {
   font-size: 12px;
-  margin-top: 8px;        /* Pencil bottom gap=8 between © and ИНН */
+  color: #F5F3EF66; /* Pencil bPmBt 40% on dark */
 }
 .footer__legal {
   display: flex;
   flex-direction: column;
-  gap: 6px;               /* Pencil jcK4O gap=6 */
-  padding-top: 8px;       /* Pencil legal-row padding-top=8 */
-  margin-top: 8px;        /* Pencil bottom gap=8 to prev (ИНН) */
+  gap: 6px;
+  padding-top: 8px;
+  margin-top: 8px;
 }
 .footer__legal a {
   font-size: 12px;
@@ -279,36 +281,43 @@
   .footer { padding-block: 76px 32px; }
   .footer__top {
     display: grid;
-    /* Pencil dLwWj 4×312 cols at 1440 viewport (1320 container = 1248 + 3*24 gap = 1320 exact).
-       Below 1440 → fluid 1fr columns prevent overflow. minmax(0,312px) caps each at Pencil width. */
+    /* Pencil UGNxO 4×312 cols @1440 (1320 container = 1248 + 3×24 = 1320 exact). */
     grid-template-columns: repeat(4, minmax(0, 312px));
     grid-template-rows: auto auto;
-    gap: var(--s-5);
+    column-gap: var(--s-5);
+    row-gap: var(--s-5);                              /* Pencil ftCo internal gap=24 between logo and address (via row gap) */
     padding-bottom: 76px;
     justify-content: space-between;
   }
   .footer__navs { display: contents; }
-  /* Explicit grid placement: col1 logo+contact stacked, col2 products, col3 site, col4 newsletter */
-  .footer__logo-block { grid-column: 1; grid-row: 1; }
-  .footer__contact    { grid-column: 1; grid-row: 2; }
-  .footer__nav--products { grid-column: 2; grid-row: 1 / span 2; }
-  .footer__nav--site     { grid-column: 3; grid-row: 1 / span 2; }
+  /* Pencil UGNxO order: col1 = ic farvater + address + phone + email (single brand stack),
+                        col2 = ftN1 site nav (главная … вопросы-ответы),
+                        col3 = ftN2 products nav (разъёмы … свч-транзисторы),
+                        col4 = ftContact-CTA newsletter. */
+  .footer__logo-block    { grid-column: 1; grid-row: 1; }
+  .footer__contact       { grid-column: 1; grid-row: 2; }
+  .footer__nav--site     { grid-column: 2; grid-row: 1 / span 2; }
+  .footer__nav--products { grid-column: 3; grid-row: 1 / span 2; }
   .footer__newsletter    { grid-column: 4; grid-row: 1 / span 2; }
-  /* Desktop: site/products nav prefix with "( ) " per Pencil */
   .footer__nav a::before { content: "( ) "; }
-  .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; }
-  .footer__logo-block { gap: var(--s-3); }
+  .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; line-height: 1.42; }
+  .footer__logo-block { gap: var(--s-5); }              /* Pencil ftCo gap=24 */
   .footer__tagline { display: none; }
-  .footer__contact { gap: var(--s-3); margin-top: var(--s-5); }
-  .footer__address { font-size: 15px; line-height: 1.62; max-width: 280px; }
-  .footer__phone { font-size: 19px; font-weight: 400; letter-spacing: 0; }
-  .footer__email { font-size: 15px; }
+  .footer__contact { gap: var(--s-5); margin-top: 0; }  /* row gap (24) уже разделяет logo→address */
+  .footer__address { font-size: 15px; line-height: 1.62; max-width: 280px; color: var(--c-label-on-dark); }
+  .footer__phone { font-size: 19px; font-weight: 400; letter-spacing: 0; line-height: 1.42; color: var(--c-text-on-dark); }
+  .footer__email { font-size: 15px; line-height: 1.55; color: var(--c-text-on-dark); }
   .footer__label { display: none; }
-  .footer__nav { gap: var(--s-5); }
-  .footer__nav a { font-size: 16px; }
-  .footer__newsletter-title { font-size: 19px; font-weight: 400; letter-spacing: 0; }
+  .footer__nav { gap: var(--s-5); }                     /* Pencil ftN1/ftN2 gap=24 */
+  .footer__nav a { font-size: 16px; line-height: 1.43; }
+  .footer__newsletter { gap: var(--s-5); }              /* Pencil Qg0T3 gap=24 */
+  .footer__newsletter-title { font-size: 19px; font-weight: 400; letter-spacing: 0; line-height: 1.42; }
+  .footer__newsletter-desc { display: block; color: var(--c-label-on-dark); line-height: var(--lh-row); }
   .footer__email-form { height: 40px; padding: 0 16px; max-width: 312px; }
-  .footer__disclaimer { font-size: 12px; }
+  .footer__email-form input { font-size: 12px; color: var(--c-text); }
+  .footer__email-form input::placeholder { color: var(--c-text); }
+  .footer__email-form button { font-size: 14px; font-weight: 500; }
+  .footer__disclaimer { font-size: 12px; color: #F5F3EF66; line-height: 1.5; }
   .footer__bottom {
     flex-direction: row;
     justify-content: space-between;
@@ -317,9 +326,11 @@
     padding-top: 28px;
     gap: var(--s-5);
   }
-  .footer__copyright p { font-size: 15px; }
-  .footer__legal { flex-direction: row; gap: var(--s-5); padding-top: 0; }
-  .footer__legal a { font-size: 15px; }
+  .footer__copyright-group { gap: 8px; }                /* Pencil O8pLOI gap=8 */
+  .footer__copyright { font-size: 15px; color: var(--c-tertiary-on-dark); }
+  .footer__copyright--tertiary { font-size: 15px; color: #F5F3EF66; }
+  .footer__legal { flex-direction: row; gap: var(--s-5); padding-top: 0; margin-top: 0; }
+  .footer__legal a { font-size: 15px; color: var(--c-tertiary-on-dark); }
 }
 
 /* ============================================================
