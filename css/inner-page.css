@@ -1720,34 +1720,92 @@
   .cat-card--small .cat-card__info { padding-top: 12px; gap: 4px; }
 }
 
-/* List view (вид: список) — single column, horizontal card layout */
+/* List view (вид: список) — Pencil rN0pk desktop + CyFMy mobile.
+   Each row: height 75, alignItems center, justify space-between, bottom border 1px D7D3CB.
+   Desktop: name 300w + desc fills + → (3 horizontal cols, gap 32).
+   Mobile: name + desc stacked (label-col vertical gap 2) + → (gap 16). No image. */
 .catalog__list-grid--list {
   grid-template-columns: 1fr !important;
-  row-gap: 12px;
+  row-gap: 0;
 }
-.catalog__list-grid--list .cat-card {
+/* Row container border-top on first child gives the top divider per Pencil o1y3j stroke. */
+.catalog__list-grid--list { border-top: 1px solid var(--c-border); }
+.catalog__list-grid--list .cat-card,
+.catalog__list-grid--list .catalog__list-subheader {
+  /* Override grid-card defaults */
+  display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  border-bottom: var(--border-thin);
-  padding-bottom: 12px;
+  min-height: 75px;
+  padding: 0;
+  border-bottom: 1px solid var(--c-border);
+  border-top: 0;
+  margin-bottom: 0;
 }
-.catalog__list-grid--list .cat-card__img {
-  flex: 0 0 80px;
-  aspect-ratio: 1 / 1;
-}
+.catalog__list-grid--list .cat-card__img { display: none; } /* no image per Pencil */
 .catalog__list-grid--list .cat-card__info {
   flex: 1;
-  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
   justify-content: center;
+  min-width: 0;
 }
 .catalog__list-grid--list .cat-card__name {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.catalog__list-grid--list .cat-card__desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
   -webkit-line-clamp: 1;
   line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.catalog__list-grid--list .cat-card::after {
+  /* Right-aligned arrow per Pencil abpj9. Reuses cat-card existing ::after pattern. */
+  content: '→';
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--c-text);
+  flex: 0 0 auto;
+}
+/* Entry card and subheader styling tweaks for list mode */
+.catalog__list-grid--list .cat-card--entry { display: none; } /* no "обзор раздела" row in list mode */
+.catalog__list-grid--list .catalog__list-subheader {
+  border-bottom: 1px solid var(--c-border);
+  font-size: 16px;
 }
 @media (min-width: 1024px) {
-  .catalog__list-grid--list .cat-card__img { flex: 0 0 120px; }
-  .catalog__list-grid--list .cat-card__desc { -webkit-line-clamp: 1; line-clamp: 1; }
+  /* Desktop rN0pk: name 300w fixed + desc fills + arrow. Side-by-side row.
+     Higher specificity (.cat-card.cat-card--small) needed to beat .cat-card--small
+     desktop rules that set font-size 14 on the same element. */
+  .catalog__list-grid--list .cat-card.cat-card--small { gap: 32px; }
+  .catalog__list-grid--list .cat-card.cat-card--small .cat-card__info {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+  .catalog__list-grid--list .cat-card.cat-card--small .cat-card__name {
+    flex: 0 0 300px;
+    font-size: 18px;
+  }
+  .catalog__list-grid--list .cat-card.cat-card--small .cat-card__desc {
+    flex: 1;
+    font-size: 15px;
+  }
 }
 
 

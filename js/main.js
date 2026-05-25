@@ -838,7 +838,17 @@ function initCatalog() {
       // regardless of type filter ("вилка" / "розетка") narrowing the rendered list.
       const origIdx = allItems.indexOf(it);
       card.href = `product-detail.html#v-${slug}:${origIdx}`;
-      const img = (series.imageByType && it.type && series.imageByType[it.type]) || series.image || '';
+      // Image lookup: try exact match first, then normalized (so "Вилка приборная" still hits "Вилка" key).
+      let img = '';
+      if (series.imageByType && it.type) {
+        img = series.imageByType[it.type];
+        if (!img) {
+          const norm = normalizeType(it.type);
+          const entry = Object.entries(series.imageByType).find(([k]) => normalizeType(k) === norm);
+          if (entry) img = entry[1];
+        }
+      }
+      img = img || series.image || '';
       card.innerHTML = `
         <div class="cat-card__img">
           ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
