@@ -1352,6 +1352,7 @@
   .product-top__title {
     font-size: var(--t-hero);
     line-height: var(--lh-hero);
+    letter-spacing: -1.5px; /* Pencil v4 desktop H1 (W3oj8 vMHI6/o22m62): -1.5px */
   }
   .product-top__subtitle { font-size: 16px; max-width: 760px; }
 

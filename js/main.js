@@ -437,8 +437,25 @@ function initCatalog() {
   const HOMOGLYPH = {
     'a':'а','c':'с','e':'е','o':'о','p':'р','x':'х','y':'у','b':'в','h':'н','k':'к','m':'м','t':'т'
   };
+  // Normalize: lowercase, Latin homoglyphs → Cyrillic, ё→е fold.
   function normalize(s) {
-    return s.toLowerCase().split('').map(ch => HOMOGLYPH[ch] || ch).join('');
+    s = String(s == null ? '' : s).toLowerCase().replace(/ё/g, 'е');
+    s = s.split('').map(ch => HOMOGLYPH[ch] || ch).join('');
+    return s;
+  }
+  // Fuzzy substring match — handles Russian morphology by progressively
+  // stripping last 1–3 chars of query (covers "микросхема"→"микросхем",
+  // "разъёма"→"разъём"→"разъем"). Both sides go through normalize() first.
+  function fuzzyMatch(haystack, query) {
+    if (!query) return true;
+    const h = normalize(haystack);
+    const q = normalize(query);
+    if (h.includes(q)) return true;
+    if (q.length >= 5) {
+      if (h.includes(q.slice(0, -1))) return true; // -1 ending
+      if (h.includes(q.slice(0, -2))) return true; // -2 ending (e.g. "ой" "ая")
+    }
+    return false;
   }
   // cyrillize() defined at module level (top of file)
   function pluralize(n, one, two, many) {
@@ -554,8 +571,8 @@ function initCatalog() {
     if (!listWrap || !listGrid) return 0;
     let items = getItems(cat);
     if (search) {
-      const q = normalize(search.trim());
-      items = items.filter(it => normalize(it.name + ' ' + (it.desc || '')).includes(q));
+      const q = search.trim();
+      items = items.filter(it => fuzzyMatch(it.name + ' ' + (it.desc || ''), q));
     }
     const count = items.length;
     const catLabel = CAT_NAMES[cat] || cat;
@@ -607,6 +624,20 @@ function initCatalog() {
         listGrid.appendChild(buildCard(it));
       });
     }
+    // Empty state when filter+search yields nothing — show message + offer global search.
+    if (count === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'catalog__list-empty';
+      const q = search ? search.trim() : '';
+      if (q) {
+        empty.innerHTML = `ничего не&nbsp;найдено по&nbsp;запросу «${q}» в&nbsp;«${catLabel}». попробуйте <a href="#all" data-global-search="${q}">поискать во&nbsp;всех категориях</a>.`;
+      } else {
+        empty.innerHTML = `в&nbsp;разделе «${catLabel}» пока нет товаров.`;
+      }
+      listGrid.appendChild(empty);
+      if (listMore) listMore.hidden = true;
+      return 0;
+    }
     // Sort items by group (main → additional → dev)
     const groupOrder = { main: 0, additional: 1, dev: 2 };
     items.sort((a, b) => (groupOrder[a.group] ?? 9) - (groupOrder[b.group] ?? 9));
@@ -631,9 +662,9 @@ function initCatalog() {
 
   // Render arbitrary items list with search-results header
   function renderSearchResults(query) {
-    const q = normalize(query.trim());
+    const q = query.trim();
     const all = getAllItems();
-    const matched = all.filter(it => normalize(it.name + ' ' + (it.desc || '')).includes(q));
+    const matched = all.filter(it => fuzzyMatch(it.name + ' ' + (it.desc || ''), q));
     const count = matched.length;
     listHeader.innerHTML = `
       <span class="catalog__list-cat">результаты поиска</span>
@@ -785,17 +816,16 @@ function initCatalog() {
       if (existingBanner) existingBanner.remove();
       if (emptyMsg) emptyMsg.hidden = true;
     } else if (inListMode) {
-      // List view: hide cat-cards, render category items
+      // List view: hide cat-cards, render category items.
+      // renderList() handles its own empty-state UI (contextual message + global-search fallback link).
+      // Special case: pcb has no products → keep showing landing link.
       grid.hidden = true;
       listWrap.hidden = false;
       const count = renderList(state.cat, state.search);
-      // Empty-state for categories without data (e.g. pcb)
-      if (count === 0) {
+      if (count === 0 && state.cat === 'pcb' && !state.search) {
         const empty = document.createElement('div');
         empty.className = 'catalog__list-empty';
-        empty.innerHTML = state.cat === 'pcb'
-          ? `<a href="product-detail.html#cat-pcb" class="catalog__list-empty-link">печатные платы&nbsp;— перейти к&nbsp;описанию категории →</a>`
-          : 'ничего не&nbsp;найдено';
+        empty.innerHTML = `<a href="product-detail.html#cat-pcb" class="catalog__list-empty-link">печатные платы&nbsp;— перейти к&nbsp;описанию категории →</a>`;
         listGrid.innerHTML = '';
         listGrid.appendChild(empty);
         if (listMore) listMore.hidden = true;
@@ -860,6 +890,21 @@ function initCatalog() {
   sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
+
+  // Global-search fallback link inside empty-state (delegated to listGrid).
+  // Clicking "поискать во всех категориях" clears filter + keeps query.
+  listGrid.addEventListener('click', (e) => {
+    const link = e.target.closest('[data-global-search]');
+    if (!link) return;
+    e.preventDefault();
+    const q = link.getAttribute('data-global-search') || '';
+    state.cat = 'all';
+    state.series = null;
+    state.search = q;
+    searchInputs.forEach(i => i.value = q);
+    history.replaceState(null, '', '#all');
+    apply();
+  });
 
   // Collapsible filter groups — click on header toggles items below (Pencil J1dha chevron).
   // Sidebar groups (desktop) default OPEN; toolbar groups (mobile) default CLOSED.
