@@ -1485,29 +1485,31 @@
 
 /* Entry card (Pencil zCPAQ "entry-cards-6cats · short copy"):
    text-only first card in filtered grid that links to category landing.
-   Outer: 228w in 4-col grid (uses cell), vertical layout, gap 8.
-   Top 228h block: caption / title 22px / spacer / sub line.
-   Bottom: CTA "перейти к описанию →" 15px weight 500. */
+   Pencil G5Una: outer width 228, vertical gap 8.
+   Top frame eGfCQ: HEIGHT 228 FIXED, vertical gap 10, padding [2,0].
+   Caption, title, spacer (fill_container = flex:1), sub.
+   Bottom frame cBPoU: padding [4,0,0,0], CTA. */
 .cat-card--entry {
   display: flex;
   flex-direction: column;
   gap: 8px;
   text-decoration: none;
   color: inherit;
-  padding: 2px 0;
+  align-self: start; /* don't stretch to row height */
 }
 .cat-card--entry__top {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 1 1 auto;
-  min-height: 200px;
+  height: 228px;        /* fixed per Pencil eGfCQ */
+  padding: 2px 0;
 }
 .cat-card--entry__caption {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.45px;
   color: var(--c-text-muted);
+  line-height: 1.4;
 }
 .cat-card--entry__title {
   font-size: 22px;
@@ -1515,16 +1517,22 @@
   letter-spacing: -0.4px;
   line-height: 1.1;
   color: var(--c-text);
-  margin-top: 0;
-  margin-bottom: auto;
+  /* prevent ugly mid-word break (Russian long words) */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+.cat-card--entry__spacer {
+  flex: 1 1 auto;
 }
 .cat-card--entry__sub {
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.55;
   color: var(--c-text-muted);
-  margin-top: auto;
 }
 .cat-card--entry__cta {
+  display: block;
   font-size: 15px;
   font-weight: 500;
   color: var(--c-text);

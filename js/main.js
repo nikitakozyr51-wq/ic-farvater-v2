@@ -460,11 +460,11 @@ function initCatalog() {
   // filtered grid, leads to category landing page (#cat-X). PCB skipped:
   // it navigates direct to landing from the 6-card grid.
   const ENTRY_CARDS = {
-    microchips:  { title: 'о&nbsp;микросхемах',         sub: 'аналоги&nbsp;· корпуса&nbsp;· применение' },
-    razemy:      { title: 'о&nbsp;разъёмах<br>ЕТ-серии', sub: 'приборные&nbsp;· кабельные&nbsp;· MIL-spec' },
-    converters:  { title: 'о&nbsp;преобразователях',    sub: 'ИРТЫШ&nbsp;· ВОЛГА&nbsp;· ЕНИСЕЙ&nbsp;· КАМА' },
-    capacitors:  { title: 'о&nbsp;конденсаторах ARC70', sub: 'СВЧ&nbsp;· 0,1–500&nbsp;пФ' },
-    transistors: { title: 'о&nbsp;транзисторах LDMOS',  sub: 'S-&nbsp;· L-&nbsp;· X-диапазоны' }
+    microchips:  { title: 'о&nbsp;микро&shy;схемах',         sub: 'аналоги&nbsp;· корпуса&nbsp;· применение' },
+    razemy:      { title: 'о&nbsp;разъёмах<br>ЕТ-серии',      sub: 'приборные&nbsp;· кабельные&nbsp;· MIL-spec' },
+    converters:  { title: 'о&nbsp;преобра&shy;зова&shy;телях', sub: 'ИРТЫШ&nbsp;· ВОЛГА&nbsp;· ЕНИСЕЙ&nbsp;· КАМА' },
+    capacitors:  { title: 'о&nbsp;конден&shy;саторах<br>ARC70', sub: 'СВЧ&nbsp;· 0,1–500&nbsp;пФ' },
+    transistors: { title: 'о&nbsp;транзис&shy;торах<br>LDMOS',  sub: 'S-&nbsp;· L-&nbsp;· X-диапазоны' }
   };
   const PAGE_SIZE = 12;
 
@@ -663,6 +663,7 @@ function initCatalog() {
       <div class="cat-card--entry__top">
         <span class="cat-card--entry__caption">обзор раздела</span>
         <h3 class="cat-card--entry__title">${entry.title}</h3>
+        <div class="cat-card--entry__spacer"></div>
         <span class="cat-card--entry__sub">${entry.sub}</span>
       </div>
       <span class="cat-card--entry__cta">перейти к&nbsp;описанию <span aria-hidden="true">→</span></span>
