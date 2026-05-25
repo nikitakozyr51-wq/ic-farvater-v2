@@ -891,6 +891,18 @@ function initCatalog() {
   pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
+  // Application filter — visual radio selection (data not tagged with applications;
+  // matches v1 site UX: groups are presented but don't narrow the grid).
+  const appBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-app]');
+  appBtns.forEach(btn => btn.addEventListener('click', () => {
+    appBtns.forEach(b => {
+      const isActive = b === btn;
+      b.classList.toggle('filter-item--active', isActive);
+      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
+      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
+    });
+  }));
+
   // Global-search fallback link inside empty-state (delegated to listGrid).
   // Clicking "поискать во всех категориях" clears filter + keeps query.
   listGrid.addEventListener('click', (e) => {
