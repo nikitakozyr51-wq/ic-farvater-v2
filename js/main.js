@@ -527,19 +527,19 @@ function initCatalog() {
       CONNECTOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-c-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`
       }));
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => out.push({
         type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-v-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`
       }));
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => out.push({
         type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
         desc: s.description ? s.description.split('.')[0] + '.' : '',
-        image: s.image, group: s.group || 'main', href: `product-detail.html#s-k-${s.slug}`
+        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`
       }));
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
@@ -1223,18 +1223,6 @@ function initProductDetail() {
       };
       [catSlug, catLabel] = map[data.category] || ['', (data.category || '').toLowerCase()];
     }
-  } else if (hash.startsWith('#s-c-') && typeof CONNECTOR_SERIES !== 'undefined') {
-    data = CONNECTOR_SERIES.find(s => s.slug === hash.slice(5));
-    kind = 'connector-series';
-    catSlug = 'razemy'; catLabel = 'разъёмы';
-  } else if (hash.startsWith('#s-v-') && typeof CONVERTER_SERIES !== 'undefined') {
-    data = CONVERTER_SERIES.find(s => s.slug === hash.slice(5));
-    kind = 'converter-series';
-    catSlug = 'converters'; catLabel = 'преобразователи';
-  } else if (hash.startsWith('#s-k-') && typeof CAPACITOR_SERIES !== 'undefined') {
-    data = CAPACITOR_SERIES.find(s => s.slug === hash.slice(5));
-    kind = 'capacitor-series';
-    catSlug = 'capacitors'; catLabel = 'свч-конденсаторы';
   } else if (hash.startsWith('#v-')) {
     // Variant: #v-<seriesSlug>:<itemIdx>
     const [seriesSlug, idxStr] = hash.slice(3).split(':');
@@ -1361,7 +1349,7 @@ function initProductDetail() {
   // Eyebrow breadcrumb: каталог / <category> / <type> — Pencil v4 uses slash separator (HxV1w/WxsJU/nCPVW).
   const eyebrowEl = document.querySelector('.product-top__eyebrow');
   if (eyebrowEl) {
-    const trail = data.subcategory || (kind && kind.includes('series') ? (data.slug || '') : '');
+    const trail = data.subcategory || '';
     eyebrowEl.innerHTML = `<a href="products.html">каталог</a>&nbsp;/&nbsp;<a href="products.html#${catSlug}">${catLabel}</a>` +
       (trail ? `&nbsp;/&nbsp;<span>${String(trail).toLowerCase()}</span>` : '');
   }
@@ -1391,8 +1379,7 @@ function initProductDetail() {
   // Page kind marker → CSS uses this to swap layout (Series Detail vs Variant Page vs Landing).
   // Series detail (qYQC0) uses "о серии" caption style instead of H2 "описание",
   // hides specs + related, image is 4:3 (580×480 in Pencil).
-  const isSeriesKind = !!(kind && kind.includes('series'));
-  document.body.dataset.pdKind = isSeriesKind ? 'series' : (kind || '');
+  document.body.dataset.pdKind = kind || '';
 
   // Description counter (02) — show only for landings (Pencil v4 W7BuW7/aagoV)
   const descCounter = document.querySelector('.pd-block__counter--landing');
@@ -1402,9 +1389,8 @@ function initProductDetail() {
   const descTitleEl = document.querySelector('.pd-block--description .pd-block__title');
   if (descTitleEl) {
     const counter = descTitleEl.querySelector('.pd-block__counter--landing');
-    descTitleEl.textContent = isSeriesKind ? 'о серии' : 'описание';
+    descTitleEl.textContent = 'описание';
     if (counter) descTitleEl.appendChild(counter);
-    descTitleEl.classList.toggle('pd-block__title--caption', isSeriesKind);
   }
 
   // Description — can be string (single para) or array (multi-para per Pencil v4 landings)
@@ -1424,7 +1410,7 @@ function initProductDetail() {
   // - Series Detail → hidden (qYQC0 has no characteristics column — variant table covers it).
   // - Variant page (W3oj8) → shown with parsed item-level specs.
   const specsBlockEl = document.querySelector('.pd-block--specs');
-  if (kind === 'landing' || isSeriesKind) {
+  if (kind === 'landing') {
     if (specsBlockEl) specsBlockEl.hidden = true;
   } else {
     if (specsBlockEl) specsBlockEl.hidden = false;
@@ -1433,7 +1419,7 @@ function initProductDetail() {
       let specsObj = {};
       if (data.specs) {
         specsObj = data.specs;
-      } else if (kind && kind.includes('series')) {
+      } else if (kind === 'variant') {
         if (data.tu) specsObj['ту'] = data.tu;
         if (data.count) specsObj['количество позиций'] = String(data.count);
         if (data.group) specsObj['группа'] = data.group === 'main' ? 'основные серии' : (data.group === 'additional' ? 'дополнительные серии' : 'в разработке');
@@ -1503,10 +1489,7 @@ function initProductDetail() {
   const relatedGrid = document.getElementById('pdRelatedGrid');
   const relatedSection = document.querySelector('.section--pd-related');
   const relatedTitleEl = document.querySelector('.pd-related__title');
-  // Series Detail (qYQC0) doesn't have pd-related — variants table covers it.
-  if (isSeriesKind) {
-    if (relatedSection) relatedSection.hidden = true;
-  } else if (relatedGrid) {
+  if (relatedGrid) {
     let pool = [];
     if (kind === 'landing' && Array.isArray(RELATED_CATS[catSlug])) {
       // Other categories — 3 cards linking to other landings
@@ -1523,17 +1506,17 @@ function initProductDetail() {
     } else if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       pool = CONNECTOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
-        image: s.image, href: `product-detail.html#s-c-${s.slug}`
+        image: s.image, href: `products.html#razemy/${s.slug}`
       }));
     } else if (catSlug === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       pool = CONVERTER_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
-        image: s.image, href: `product-detail.html#s-v-${s.slug}`
+        image: s.image, href: `products.html#converters/${s.slug}`
       }));
     } else if (catSlug === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       pool = CAPACITOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: s.description ? s.description.split(/[.,]/)[0] : '',
-        image: s.image, href: `product-detail.html#s-k-${s.slug}`
+        image: s.image, href: `products.html#capacitors/${s.slug}`
       }));
     } else if ((catSlug === 'microchips' || catSlug === 'transistors') && typeof PRODUCTS !== 'undefined') {
       const catName = catSlug === 'microchips' ? 'Микросхемы' : 'СВЧ-транзисторы';
@@ -1567,104 +1550,9 @@ function initProductDetail() {
     }
   }
 
-  // === VARIANTS section — only for series with items[] (connector/converter/capacitor) ===
+  // Variants section was used by the (now removed) Series Detail page. Always hidden here.
   const variantsSection = document.getElementById('pdVariantsSection');
-  const variantsPills = document.getElementById('pdVariantsPills');
-  const variantsTable = document.getElementById('pdVariantsTable');
-  const specsBlock = document.querySelector('.pd-block--specs');
-
-  // Landings render Nomenclature instead — hide old pd-variants pills/table for landings.
-  if (kind === 'landing') {
-    if (variantsSection) variantsSection.hidden = true;
-  } else if (variantsSection && Array.isArray(data.items) && data.items.length > 0) {
-    variantsSection.hidden = false;
-
-    // Series detail — title is "варианты исполнений" (Pencil N9CMCO genitive plural).
-    const variantsTitleEl = document.querySelector('.pd-variants__title');
-    if (variantsTitleEl) {
-      const counter = variantsTitleEl.querySelector('.pd-variants__counter');
-      variantsTitleEl.textContent = 'варианты исполнений';
-      if (counter) variantsTitleEl.appendChild(counter);
-    }
-
-    // Build unique types (Вилка / Розетка / etc); for landings the type filter is hidden.
-    // Pencil qYQC0 pills: "(•) все (NN)" active / "( ) вилка (NN)" inactive — marker prefix + count suffix.
-    const types = ['все', ...new Set(data.items.map(i => i.type).filter(Boolean))];
-    const countFor = (t) => t === 'все' ? data.items.length : data.items.filter(i => i.type === t).length;
-    variantsPills.innerHTML = '';
-    if (kind !== 'landing' && types.length > 1) {
-      types.forEach((t, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        const isActive = idx === 0;
-        btn.className = 'pd-variants__pill' + (isActive ? ' pd-variants__pill--active' : '');
-        btn.dataset.type = t;
-        const marker = isActive ? '(•)' : '( )';
-        const count = String(countFor(t)).padStart(2, '0');
-        btn.innerHTML = `<span class="pd-variants__pill-label">${marker} ${cyrillize(t.toLowerCase())}</span><span class="pd-variants__pill-count">(${count})</span>`;
-        variantsPills.appendChild(btn);
-      });
-    }
-
-    // Render rows — Pencil qYQC0 NBX48: thead row above first variant row.
-    function renderRows(filterType) {
-      variantsTable.innerHTML = '';
-      // Header row (column labels) — desktop only via CSS; hidden on mobile.
-      const thead = document.createElement('div');
-      thead.className = 'pd-variants__thead';
-      thead.innerHTML = `<span>наименование</span><span>тип</span><span>ту</span><span></span>`;
-      variantsTable.appendChild(thead);
-      const filtered = filterType === 'все' ? data.items : data.items.filter(i => i.type === filterType);
-      filtered.forEach((it, i) => {
-        // Landing nomenclature (microchips/transistors/series in landings) → navigates to product/series page.
-        // Series-internal variants → navigates to variant page (#v-<seriesSlug>:<idx>).
-        let isClickable = false, href = null;
-        if (kind === 'landing' && /^\d+$/.test(String(it.partnumber))) {
-          isClickable = true;
-          href = `product-detail.html#p-${it.partnumber}`;
-        } else if (kind === 'landing' && it.partnumber && !/^\d+$/.test(String(it.partnumber))) {
-          isClickable = true;
-          const prefix = catSlug === 'razemy' ? 's-c' : catSlug === 'converters' ? 's-v' : 's-k';
-          href = `product-detail.html#${prefix}-${it.partnumber}`;
-        } else if ((kind === 'connector-series' || kind === 'converter-series' || kind === 'capacitor-series') && data.slug) {
-          isClickable = true;
-          // Find original idx in unfiltered list (pill may have filtered)
-          const origIdx = data.items.indexOf(it);
-          href = `product-detail.html#v-${data.slug}:${origIdx}`;
-        }
-        const row = document.createElement(isClickable ? 'a' : 'div');
-        row.className = 'pd-variants__row' + (isClickable ? '' : ' pd-variants__row--static');
-        if (isClickable) row.href = href;
-        // Name in UPPERCASE (product code convention — "ET1310PN1U" / "ЕТ-2РМГ14Б4Ш1В2")
-        const cyrName = cyrillize((it.displayName || it.name).toUpperCase());
-        row.innerHTML = `
-          <span class="pd-variants__name">${cyrName}</span>
-          ${it.type ? `<span class="pd-variants__type">${cyrillize(it.type.toLowerCase())}</span>` : ''}
-          <span class="pd-variants__tu">${cyrillize((it.tu || '').toUpperCase())}</span>
-          ${isClickable ? `<span class="pd-variants__arrow" aria-hidden="true">→</span>` : `<span class="pd-variants__arrow" aria-hidden="true"></span>`}
-        `;
-        variantsTable.appendChild(row);
-      });
-    }
-    renderRows('все');
-
-    // Pill click handler — also swap "(•)"/"( )" marker on label.
-    variantsPills.querySelectorAll('.pd-variants__pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        variantsPills.querySelectorAll('.pd-variants__pill').forEach(b => {
-          b.classList.remove('pd-variants__pill--active');
-          const lbl = b.querySelector('.pd-variants__pill-label');
-          if (lbl) lbl.textContent = lbl.textContent.replace(/^\(•\)\s/, '( ) ');
-        });
-        btn.classList.add('pd-variants__pill--active');
-        const lbl = btn.querySelector('.pd-variants__pill-label');
-        if (lbl) lbl.textContent = lbl.textContent.replace(/^\( \)\s/, '(•) ');
-        renderRows(btn.dataset.type);
-      });
-    });
-  } else if (variantsSection) {
-    variantsSection.hidden = true;
-  }
+  if (variantsSection) variantsSection.hidden = true;
 
   // Re-fire on hash change (clicking related-card or browser back/forward)
   if (!window.__pdHashWired) {

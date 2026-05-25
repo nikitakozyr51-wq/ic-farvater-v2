@@ -1071,15 +1071,6 @@
   align-items: flex-start;
   gap: 4px;
 }
-/* Series Detail (qYQC0): description block uses "о серии" caption style instead of H2.
-   13/500 muted +0.45 letter-spacing per Pencil jSVH4. */
-.pd-block__title--caption {
-  font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: var(--ls-label);
-  line-height: 1.4;
-  color: var(--c-text-muted);
-}
 .pd-block__counter {
   font-size: var(--t-label);
   font-weight: 500;
@@ -1330,23 +1321,18 @@
 @media (min-width: 1024px) {
   /* Desktop product-top — Pencil x6QVgU (variant): padding [60,60,80,60]. */
   .product-top { padding-block: 60px 80px; }
-  /* Series qYQC0 K7DoAq: padding [60,60,40,60] — shorter bottom gap. */
-  body[data-pd-kind="series"] .product-top { padding-block: 60px 40px; }
   .product-top__inner { gap: 24px; }
   .product-top__title {
     font-size: var(--t-hero);
     line-height: var(--lh-hero);
     letter-spacing: -1.5px; /* Pencil v4 desktop H1 (W3oj8 vMHI6/o22m62): -1.5px */
   }
-  /* Series Detail H1 — Pencil qYQC0 vMHI6: 56/500/-1.5/lh1.1 (not hero 72). */
-  body[data-pd-kind="series"] .product-top__title { font-size: 56px; line-height: 1.1; }
   .product-top__subtitle { font-size: 16px; max-width: 760px; line-height: 1.55; }
 
   /* Desktop pd-content — Pencil xUELh (variant W3oj8): padding 60 all sides.
-     Landings (fh0MA) + Series (qYQC0 PfgIc): top 0 (pd-top owns the gap above). */
+     Landings (fh0MA): top 0 (pd-top owns the gap above). */
   .section--pd-content { padding-block: 60px; }
   body[data-pd-kind="landing"] .section--pd-content { padding-block: 0 80px; }
-  body[data-pd-kind="series"] .section--pd-content { padding-block: 0 60px; }
   .pd-content {
     flex-direction: row;
     gap: 24px;
@@ -1360,13 +1346,8 @@
     flex: 1 1 auto;
     gap: 40px; /* Pencil UwOGg: block→block 40 */
   }
-  /* Series Detail (qYQC0 gagFk): 580×480 (4:3). */
-  body[data-pd-kind="series"] .pd-image { flex: 0 0 580px; }
-  body[data-pd-kind="series"] .pd-image__placeholder { aspect-ratio: 580 / 480; }
   /* Landing (fh0MA+5 siblings): 580×580 square fixed. */
   body[data-pd-kind="landing"] .pd-image { flex: 0 0 580px; }
-  /* Series Detail (qYQC0) has only primary CTA; secondary "вернуться в каталог" is not in Pencil. */
-  body[data-pd-kind="series"] .pd-actions__secondary { display: none; }
   /* Desktop: no border between description+specs; specs has top border only above row 1 */
   .pd-block {
     padding-top: 0;
