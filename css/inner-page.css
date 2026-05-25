@@ -1001,6 +1001,7 @@
   display: inline-flex;
   align-items: flex-start;
   gap: 4px;
+  text-transform: uppercase;
 }
 .product-top__counter {
   font-size: var(--t-label);
@@ -1059,6 +1060,7 @@
   align-items: flex-start;
   gap: 4px;
   line-height: 1;
+  text-transform: uppercase;
 }
 .pd-block__counter {
   font-size: var(--t-label);
@@ -1153,6 +1155,7 @@
   align-items: flex-start;
   gap: 4px;
   line-height: 1;
+  text-transform: uppercase;
 }
 .pd-related__counter {
   font-size: var(--t-label);
@@ -1414,11 +1417,14 @@
   background: var(--c-bg-alt);
 }
 
-/* Sub-section divider inside list view ("ОСНОВНЫЕ СЕРИИ" / "В РАЗРАБОТКЕ") —
-   these are the PRIMARY headers (cat name is small breadcrumb above). */
+/* Primary header inside list view — either category name ("МИКРОСХЕМЫ") or
+   group label ("ОСНОВНЫЕ СЕРИИ", "В РАЗРАБОТКЕ"). Count inline on right. */
 .catalog__list-subheader {
   grid-column: 1 / -1;
-  font-size: 22px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
   font-weight: 500;
   letter-spacing: var(--ls-section);
   color: var(--c-text);
@@ -1429,8 +1435,17 @@
   text-transform: uppercase;
 }
 .catalog__list-subheader:first-child { padding-top: 4px; }
+.catalog__list-subheader__title { font-size: 22px; }
+.catalog__list-subheader__count {
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--c-text-muted);
+  text-transform: none;
+}
 @media (min-width: 1024px) {
-  .catalog__list-subheader { font-size: 30px; padding: 32px 0 16px; }
+  .catalog__list-subheader { padding: 32px 0 16px; }
+  .catalog__list-subheader__title { font-size: 30px; }
 }
 
 /* Compact product card variant (Pencil jugib UoFcS card 234×270, mobile 165×195).
@@ -1539,6 +1554,7 @@
   align-items: flex-start;
   gap: 4px;
   line-height: 1;
+  text-transform: uppercase;
 }
 .pd-variants__counter {
   font-size: var(--t-label);

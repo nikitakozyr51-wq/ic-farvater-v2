@@ -519,30 +519,41 @@ function initCatalog() {
     }
     const count = items.length;
     const catLabel = CAT_NAMES[cat] || cat;
-    const itemWord = items.length && items[0].type === 'series'
-      ? pluralize(count, 'серия', 'серии', 'серий')
-      : pluralize(count, 'товар', 'товара', 'товаров');
-    const hasLanding = !!(typeof CATEGORY_LANDINGS !== 'undefined' && CATEGORY_LANDINGS[cat]);
-    listHeader.innerHTML = `
-      <span class="catalog__list-cat">${catLabel}</span>
-      <span class="catalog__list-count">${count} ${itemWord}</span>
-    `;
-    // Landing entry block — disabled, pending Pencil design.
+    // listHeader (cat-breadcrumb + count) hidden — subheaders are primary headings now.
+    listHeader.innerHTML = '';
     // Remove any leftover banner from previous renders.
     const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
     if (existingBanner) existingBanner.remove();
     listGrid.innerHTML = '';
-    // Render items with group sub-headers (series groups: main / additional / dev)
+    // Group headers logic:
+    // - If category has multiple groups (e.g. razemy main+dev) → subheaders per group
+    //   ("ОСНОВНЫЕ СЕРИИ (12)" / "В РАЗРАБОТКЕ (11)")
+    // - If single group → one main header with category name ("МИКРОСХЕМЫ — 51 ТОВАР")
     const GROUP_LABELS = { main: 'основные серии', additional: 'дополнительные серии', dev: 'в разработке' };
-    function renderSlice(slice) {
+    const itemWord = (n, asSeries) => asSeries
+      ? pluralize(n, 'серия', 'серии', 'серий')
+      : pluralize(n, 'товар', 'товара', 'товаров');
+    // Count items per group
+    const groupCounts = {};
+    items.forEach(it => { groupCounts[it.group || 'main'] = (groupCounts[it.group || 'main'] || 0) + 1; });
+    const groupKeys = Object.keys(groupCounts);
+    const singleGroup = groupKeys.length <= 1;
+    const itemsAreSeries = items.length && items[0].type === 'series';
+    function makeSubheader(label, count) {
+      const hdr = document.createElement('div');
+      hdr.className = 'catalog__list-subheader';
+      hdr.innerHTML = `<span class="catalog__list-subheader__title">${label}</span><span class="catalog__list-subheader__count">${count} ${itemWord(count, itemsAreSeries)}</span>`;
+      return hdr;
+    }
+    function renderSlice(slice, isFirst) {
       let lastGroup = null;
-      slice.forEach(it => {
-        if (it.group && it.group !== lastGroup) {
-          // Insert group divider (full-width grid header)
-          const hdr = document.createElement('div');
-          hdr.className = 'catalog__list-subheader';
-          hdr.textContent = GROUP_LABELS[it.group] || it.group;
-          listGrid.appendChild(hdr);
+      slice.forEach((it, idx) => {
+        if (singleGroup && isFirst && idx === 0) {
+          // Single-group cat: use cat name as the only header
+          listGrid.appendChild(makeSubheader(catLabel, count));
+          lastGroup = it.group || 'main';
+        } else if (!singleGroup && it.group && it.group !== lastGroup) {
+          listGrid.appendChild(makeSubheader(GROUP_LABELS[it.group] || it.group, groupCounts[it.group]));
           lastGroup = it.group;
         }
         listGrid.appendChild(buildCard(it));
@@ -551,13 +562,13 @@ function initCatalog() {
     // Sort items by group (main → additional → dev)
     const groupOrder = { main: 0, additional: 1, dev: 2 };
     items.sort((a, b) => (groupOrder[a.group] ?? 9) - (groupOrder[b.group] ?? 9));
-    renderSlice(items.slice(0, PAGE_SIZE));
+    renderSlice(items.slice(0, PAGE_SIZE), true);
     if (items.length > PAGE_SIZE) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
         page++;
-        renderSlice(items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE));
+        renderSlice(items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE), false);
         if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
       };
     } else {
