@@ -877,6 +877,38 @@ function initCatalog() {
     return count;
   }
 
+  // Render 6 category rows for list view at cat=all (Pencil rN0pk default state).
+  // Each row: name + short desc + → arrow. Click navigates to that category.
+  const CAT_LIST_DESC = {
+    microchips:  'цифровые и аналоговые микросхемы',
+    razemy:      '23 серии ЕТ для ответственных применений',
+    converters:  'преобразователи напряжения dc/dc · ac/dc',
+    capacitors:  'свч-конденсаторы arc70 · аналог atc',
+    transistors: 'свч-транзисторы ldmos для усилителей мощности',
+    pcb:         'печатные платы одно- · двух- · многослойные'
+  };
+  function renderCategoryListRows() {
+    if (!listGrid) return;
+    listHeader.innerHTML = '';
+    const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
+    if (existingBanner) existingBanner.remove();
+    listGrid.innerHTML = '';
+    if (listMore) listMore.hidden = true;
+    ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'].forEach(cat => {
+      const row = document.createElement('a');
+      row.className = 'cat-card cat-card--small';
+      row.href = `#${cat}`;
+      row.innerHTML = `
+        <div class="cat-card__img"></div>
+        <div class="cat-card__info">
+          <h3 class="cat-card__name">${CAT_NAMES[cat]}</h3>
+          <p class="cat-card__desc">${CAT_LIST_DESC[cat]}</p>
+        </div>
+      `;
+      listGrid.appendChild(row);
+    });
+  }
+
   // Render sidebar Type filter (вилка / розетка / …).
   // Two modes:
   //   - Series view (cat + slug): types come from that series' items[]. Narrows variant cards.
@@ -978,6 +1010,12 @@ function initCatalog() {
       if (emptyMsg) emptyMsg.hidden = true;
       // Type filter at category level — visible for series-based cats (razemy/converters/capacitors).
       renderTypeFilter(state.cat, null);
+    } else if (state.view === 'list') {
+      // Default (cat=all, no search) + list view → 6 category rows per Pencil rN0pk.
+      grid.hidden = true;
+      listWrap.hidden = false;
+      renderCategoryListRows();
+      if (emptyMsg) emptyMsg.hidden = true;
     } else {
       // Default view: 6 cat-cards visible
       grid.hidden = false;

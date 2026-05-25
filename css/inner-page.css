@@ -1727,9 +1727,14 @@
 .catalog__list-grid--list {
   grid-template-columns: 1fr !important;
   row-gap: 0;
+  /* min-width:0 on grid container lets flex children inside (cat-card__info) shrink below
+     their intrinsic content width, enabling text-overflow:ellipsis on long descriptions. */
+  min-width: 0;
 }
-/* Row container border-top on first child gives the top divider per Pencil o1y3j stroke. */
-.catalog__list-grid--list { border-top: 1px solid var(--c-border); }
+/* Top border only when first child is a data row (no subheader above) — Pencil rN0pk o1y3j
+   stroke. When a subheader is the first child, it already provides visual separation, so
+   no extra line. */
+.catalog__list-grid--list > .cat-card:first-child { border-top: 1px solid var(--c-border); }
 .catalog__list-grid--list .cat-card,
 .catalog__list-grid--list .catalog__list-subheader {
   /* Override grid-card defaults */
@@ -1743,16 +1748,19 @@
   border-bottom: 1px solid var(--c-border);
   border-top: 0;
   margin-bottom: 0;
+  /* Allow inner flex items to shrink (so long desc truncates with ellipsis). */
+  min-width: 0;
 }
 .catalog__list-grid--list .cat-card__img { display: none; } /* no image per Pencil */
 .catalog__list-grid--list .cat-card__info {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 0;
   justify-content: center;
   min-width: 0;
+  overflow: hidden;
 }
 .catalog__list-grid--list .cat-card__name {
   font-size: 16px;
@@ -1763,16 +1771,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 .catalog__list-grid--list .cat-card__desc {
   font-size: 14px;
   line-height: 1.5;
   color: var(--c-text-muted);
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 .catalog__list-grid--list .cat-card::after {
   /* Right-aligned arrow per Pencil abpj9. Reuses cat-card existing ::after pattern. */
