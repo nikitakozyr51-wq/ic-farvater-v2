@@ -108,22 +108,22 @@
     });
   });
 
-  // Smaller-distance variant — used for grids near scroll edges (e.g. pd-related 4 cards).
-  // Softer than default fade-up-stagger: less travel + gentler ease, so the reveal feels
-  // graceful instead of either sluggish (1.2s) or jerky (rapid 0.5s + power2).
+  // Pure opacity fade (no vertical travel) — used for grids where translateY motion
+  // distracts (e.g. pd-related 4 cards). Soft sine ease + small stagger reads as one
+  // gentle reveal instead of "cards jumping up from below".
   gsap.utils.toArray('[data-animate="fade-up-fast"]').forEach((container) => {
     const children = gsap.utils.toArray(container.children);
-    gsap.set(children, { y: 14, opacity: 0 });
+    gsap.set(children, { opacity: 0 });
     ScrollTrigger.create({
       trigger: container,
       start: 'top 92%',
       once: true,
       onEnter: () => {
         gsap.to(children, {
-          y: 0, opacity: 1,
-          duration: 0.7,
-          stagger: 0.09,
-          ease: 'power3.out',
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: 'sine.out',
           force3D: true,
           overwrite: true,
           onComplete: () => container.removeAttribute('data-animate'),
