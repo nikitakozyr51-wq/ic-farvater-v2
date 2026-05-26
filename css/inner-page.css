@@ -1798,30 +1798,30 @@
   text-decoration: none;
   color: inherit;
   align-self: start; /* don't stretch to row height */
-  grid-column: 1 / -1; /* mobile: span full width — fixed in desktop @media below */
 }
 .cat-card--entry__top {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  /* Mobile: height auto so card sizes to content (caption + title + sub + CTA).
-     Desktop fixed height 226px set in @media (min-width: 1024px) below. */
+  gap: 8px;
+  /* Mobile: 165px so CTA border-top aligns with neighbour cat-card--small image bottom
+     (image is 1:1 at card width ~165px). Desktop overrides to 226px in @media below. */
+  height: 165px;
   padding: 2px 0;
 }
 .cat-card--entry__caption {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.45px;
   color: var(--c-text-muted);
   line-height: 1.4;
 }
 .cat-card--entry__title {
-  font-size: 22px;
+  /* Mobile: 18px so 1-2 line title fits in 165×165 frame. Desktop overrides to 22px below. */
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
   line-height: 1.1;
   color: var(--c-text);
-  /* prevent ugly mid-word break (Russian long words) */
   overflow-wrap: normal;
   word-break: normal;
   hyphens: manual;
@@ -1830,9 +1830,9 @@
   flex: 1 1 auto;
 }
 .cat-card--entry__sub {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--c-text-muted);
 }
 /* Bottom row — Pencil cBPoU: flex space-between, padding [12,0,0,0], top border 1px D7D3CB.
@@ -1865,9 +1865,11 @@
   .cat-card--small .cat-card__name { font-size: 14px; }
   .cat-card--small .cat-card__desc { font-size: 12px; }
   .cat-card--small .cat-card__info { padding-top: 12px; gap: 4px; }
-  /* Entry card returns to single column on desktop (Pencil zCPAQ 234w in 4-col grid). */
-  .cat-card--entry { grid-column: auto; }
-  .cat-card--entry__top { height: 226px; }
+  /* Desktop entry card: Pencil zCPAQ 234w in 4-col grid, top frame 226h, larger type. */
+  .cat-card--entry__top { height: 226px; gap: 10px; }
+  .cat-card--entry__caption { font-size: 13px; }
+  .cat-card--entry__title { font-size: 22px; letter-spacing: -0.4px; }
+  .cat-card--entry__sub { font-size: 13px; line-height: 1.55; }
 }
 
 /* List view (вид: список) — Pencil rN0pk desktop + CyFMy mobile.

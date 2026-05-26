@@ -82,27 +82,74 @@ function initPageLoader() {
   }
 }
 
-/** Header search — icon click navigates to catalog (with input focused there).
- *  Works on desktop (.header__search button in header__right) and mobile burger menu. */
+/** Header search — inline expandable input on desktop.
+ *  Click icon → input slides over the nav with a smooth fade+slide, user types, Enter
+ *  navigates to /products.html?q=<query>. Close button or Esc reverts. Mobile uses the
+ *  burger-menu inline search form (built in initMobileMenu). */
 function initHeaderSearch() {
-  const searchBtns = document.querySelectorAll('.header__search, .header__search-mobile');
-  if (!searchBtns.length) return;
+  const header = document.querySelector('.header');
+  const searchBtn = header && header.querySelector('.header__search');
+  if (!header || !searchBtn) return;
 
-  searchBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const base = window.location.pathname.includes('/pages/')
-        ? 'products.html'
-        : 'pages/products.html';
-      window.location.href = `${base}#search`;
-    });
+  // Build the inline search form once and inject into .header__inner.
+  // Positioned absolutely so it overlays the nav without disrupting flex layout.
+  let form = header.querySelector('.header__search-form');
+  if (!form) {
+    form = document.createElement('form');
+    form.className = 'header__search-form';
+    form.setAttribute('role', 'search');
+    form.innerHTML = `
+      <input type="search" class="header__search-input" placeholder="поиск по продукции..." aria-label="Поиск по продукции" autocomplete="off">
+      <button type="submit" class="header__search-submit" aria-label="Найти">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button type="button" class="header__search-close" aria-label="Закрыть поиск">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    `;
+    header.querySelector('.header__inner').appendChild(form);
+  }
+
+  const input = form.querySelector('.header__search-input');
+  const closeBtn = form.querySelector('.header__search-close');
+
+  // Resolve relative path back to root (pages/about.html → "../"; index.html → "")
+  const isInPages = /\/pages\//.test(window.location.pathname);
+  const root = isInPages ? '../' : '';
+
+  function open() {
+    header.classList.add('header--searching');
+    // Defer focus until transition starts so visibility:visible has applied.
+    requestAnimationFrame(() => input.focus());
+  }
+  function close() {
+    header.classList.remove('header--searching');
+    input.value = '';
+    input.blur();
+  }
+
+  searchBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    open();
+  });
+  closeBtn.addEventListener('click', close);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) { input.focus(); return; }
+    const target = `${root}pages/products.html?q=${encodeURIComponent(q)}#all`;
+    window.location.href = target;
   });
 
-  // If we landed on products.html with #search hash → focus catalog search input
-  if (window.location.hash === '#search') {
-    const focusTarget = document.querySelector('.catalog__search input, .catalog__search-input, input[type="search"]');
-    if (focusTarget) requestAnimationFrame(() => focusTarget.focus());
-  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && header.classList.contains('header--searching')) close();
+  });
 }
 
 /** Mobile burger menu — Pencil C8EHBB "Menu v4 — Mobile (open)".
