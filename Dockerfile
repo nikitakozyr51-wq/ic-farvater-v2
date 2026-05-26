@@ -12,8 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 # mod_headers/expires/deflate — для security/cache/gzip из .htaccess)
 RUN a2enmod rewrite headers expires deflate
 
-# Разрешаем .htaccess переопределять всё (AllowOverride All)
-RUN sed -ri -e 's!<Directory /var/www/>.*!<Directory /var/www/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride All\n\tRequire all granted\n</Directory>!g' /etc/apache2/apache2.conf || true
+# Разрешаем .htaccess переопределять всё (AllowOverride All).
+# Меняем ТОЛЬКО директиву AllowOverride None → All, не трогая структуру
+# блоков <Directory> в apache2.conf.
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # PHP конфиг (upload limits для KP-формы)
 RUN { \
