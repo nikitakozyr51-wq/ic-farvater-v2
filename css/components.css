@@ -222,9 +222,11 @@
   text-decoration: none;
   transition: color var(--dur-short) ease;
 }
-/* Dot-fill on hover — same paradigm as catalog filters */
+/* Dot-fill on hover — same paradigm as catalog filters.
+   Base: empty content (mobile shows no brackets per request).
+   Desktop (≥1024px): overridden to '( ) ' below in the desktop media query. */
 .footer__nav a::before {
-  content: '( ) ';
+  content: '';
   font-variant-numeric: tabular-nums;
   display: inline-block;
 }
@@ -936,7 +938,7 @@ body.menu-open {
   flex-direction: column;
   padding: 24px 24px 0;
 }
-.mobile-menu__search-item,
+.mobile-menu__search-form,
 .mobile-menu__item {
   display: flex;
   align-items: flex-end;
@@ -951,13 +953,37 @@ body.menu-open {
   font-family: inherit;
   cursor: pointer;
 }
-.mobile-menu__search-item {
-  color: var(--c-text-muted);
+.mobile-menu__search-form { align-items: center; padding-bottom: 0; }
+.mobile-menu__search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
+  color: var(--c-text);
+  padding: 0;
 }
-.mobile-menu__search-item svg { color: var(--c-text); flex: 0 0 18px; }
+.mobile-menu__search-input::placeholder { color: var(--c-text-muted); }
+.mobile-menu__search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.mobile-menu__search-submit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: var(--c-text);
+  cursor: pointer;
+  padding: 0;
+}
+.mobile-menu__search-submit svg { color: var(--c-text); flex: 0 0 18px; }
 .mobile-menu__item {
   font-size: 28px;
   font-weight: 500;

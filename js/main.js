@@ -139,13 +139,15 @@ function initMobileMenu() {
         </button>
       </header>
       <nav class="mobile-menu__nav" aria-label="Главная навигация">
-        <button type="button" class="mobile-menu__search-item" data-action="mobile-search">
-          <span class="mobile-menu__search-label">поиск</span>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <form class="mobile-menu__search-form" role="search" data-action="mobile-search">
+          <input type="search" class="mobile-menu__search-input" placeholder="поиск по продукции..." aria-label="Поиск по продукции" autocomplete="off">
+          <button type="submit" class="mobile-menu__search-submit" aria-label="Найти">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
         <a class="mobile-menu__item" href="${root}index.html"><span>главная</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
         <a class="mobile-menu__item" href="${root}pages/products.html"><span>продукция</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
         <a class="mobile-menu__item" href="${root}pages/about.html"><span>о&nbsp;компании</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
@@ -188,16 +190,20 @@ function initMobileMenu() {
   burger.addEventListener('click', () => setOpen(menu.hidden));
   menu.querySelector('.mobile-menu__close').addEventListener('click', () => setOpen(false));
 
-  // Close menu on any nav/CTA/contact link click. Excludes the search-item which has its own handler.
+  // Close menu on any nav/CTA/contact link click. Excludes the search-form which has its own handler.
   menu.querySelectorAll('.mobile-menu__item, .mobile-menu__cta, .mobile-menu__field-value, .mobile-menu__logo').forEach(link => {
     link.addEventListener('click', () => setOpen(false));
   });
 
-  // Search-item routes to catalog#search.
-  menu.querySelector('.mobile-menu__search-item').addEventListener('click', () => {
+  // Search form — submit navigates to catalog with ?q=<query>; empty query opens catalog with search input focused.
+  const searchForm = menu.querySelector('.mobile-menu__search-form');
+  const searchInput = menu.querySelector('.mobile-menu__search-input');
+  searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = searchInput.value.trim();
     setOpen(false);
-    const onCatalog = /\/products\.html(\?|#|$)/.test(window.location.pathname + window.location.search);
-    window.location.href = onCatalog ? (window.location.pathname + '#search') : `${root}pages/products.html#search`;
+    const target = `${root}pages/products.html${q ? `?q=${encodeURIComponent(q)}` : ''}#all`;
+    window.location.href = target;
   });
 }
 
@@ -1330,6 +1336,15 @@ function initCatalog() {
   }
   applyHash();
   window.addEventListener('hashchange', applyHash);
+
+  // Read ?q=<query> URL param (set by mobile menu search submit) and apply on load.
+  const urlParams = new URLSearchParams(window.location.search);
+  const qParam = urlParams.get('q');
+  if (qParam) {
+    state.search = qParam;
+    searchInputs.forEach(i => i.value = qParam);
+    apply();
+  }
 }
 
 
