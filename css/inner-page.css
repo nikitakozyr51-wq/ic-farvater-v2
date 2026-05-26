@@ -204,16 +204,19 @@
   transform: rotate(45deg);
 }
 
-/* Body — collapsed by default, expanded when --open via JS-set inline maxHeight */
+/* Body — collapsed by default, expanded when --open via JS-set inline maxHeight.
+   Padding NOT transitioned: JS measures scrollHeight after class add, and a transitioning
+   padding would make that measurement under-shoot by the bottom-padding amount (clipping the
+   last line). Padding is applied instantly while max-height/opacity animate. */
 .accordion-item__body {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
   padding: 0;
   opacity: 0;
 }
 .accordion-item--open .accordion-item__body {
-  padding: 0 0 24px;
+  padding: 0 0 32px;
   opacity: 1;
 }
 .accordion-item__body p {

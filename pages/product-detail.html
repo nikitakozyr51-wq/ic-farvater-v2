@@ -9,10 +9,10 @@
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=3">
+  <link rel="stylesheet" href="../css/tokens.css?v=4">
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=11">
+  <link rel="stylesheet" href="../css/components.css?v=13">
   <link rel="stylesheet" href="../css/inner-page.css?v=46">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
@@ -227,27 +227,32 @@
           <h3 class="footer__newsletter-title">хотите запросить расчёт?</h3>
           <p class="footer__newsletter-desc">подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
           <form class="footer__email-form" action="#">
-            <input type="email" placeholder="ваш email" aria-label="Email для расчёта" required>
+            <input type="email" placeholder="email@example.com" aria-label="Email для расчёта" required>
             <button type="submit" aria-label="Отправить">→</button>
           </form>
           <p class="footer__disclaimer">отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.</p>
         </div>
         <div class="footer__navs">
-          <ul class="footer__nav footer__nav--products">
-            <li><a href="products.html#razemy">разъёмы</a></li>
-            <li><a href="products.html#microchips">микросхемы</a></li>
-            <li><a href="products.html#converters">преобразователи</a></li>
-            <li><a href="products.html#capacitors">свч-конденсаторы</a></li>
-            <li><a href="products.html#transistors">свч-транзисторы</a></li>
-          </ul>
-          <ul class="footer__nav footer__nav--site">
-            <li><a href="../index.html">главная</a></li>
-            <li><a href="about.html">о&nbsp;компании</a></li>
-            <li><a href="products.html">продукция</a></li>
-            <li><a href="../index.html#uslugi">услуги</a></li>
-            <li><a href="contacts.html">контакты</a></li>
-            <li><a href="#">вопросы-ответы</a></li>
-          </ul>
+          <div class="footer__nav-col footer__nav-col--products">
+            <p class="footer__nav-label">каталог</p>
+            <ul class="footer__nav footer__nav--products">
+              <li><a href="products.html#razemy">разъёмы</a></li>
+              <li><a href="products.html#microchips">микросхемы</a></li>
+              <li><a href="products.html#converters">преобразователи</a></li>
+              <li><a href="products.html#capacitors">свч-конденсаторы</a></li>
+              <li><a href="products.html#transistors">свч-транзисторы</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col footer__nav-col--site">
+            <p class="footer__nav-label">компания</p>
+            <ul class="footer__nav footer__nav--site">
+              <li><a href="../index.html">главная</a></li>
+              <li><a href="about.html">о&nbsp;компании</a></li>
+              <li><a href="../index.html#uslugi">услуги</a></li>
+              <li><a href="contacts.html">контакты</a></li>
+              <li><a href="#">вопросы-ответы</a></li>
+            </ul>
+          </div>
         </div>
         <div class="footer__contact">
           <p class="footer__label">контакты</p>

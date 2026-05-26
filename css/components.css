@@ -151,6 +151,17 @@
   grid-template-columns: 1fr 1fr;
   gap: var(--s-4);
 }
+/* Mobile nav columns each have an eyebrow label (Pencil YsYD7 GKiXt "каталог" / YpD9r "компания").
+   13/500/+0.45 muted-on-dark, gap 16 between label and list. */
+.footer__nav-col { display: flex; flex-direction: column; gap: var(--s-4); }
+.footer__nav-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.45px;
+  line-height: 1.4;
+  color: var(--c-eyebrow-on-dark);  /* Pencil GKiXt 40% white */
+  margin: 0;
+}
 .footer__logo {
   font-family: var(--font-primary);
   font-size: 32px;
@@ -170,7 +181,7 @@
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--ls-label);
-  color: var(--c-tertiary-on-dark);
+  color: var(--c-eyebrow-on-dark);  /* Pencil flhL9 40% white */
   line-height: 1.4;
 }
 .footer__address {
@@ -290,15 +301,18 @@
     justify-content: space-between;
   }
   .footer__navs { display: contents; }
+  .footer__nav-col { display: flex; flex-direction: column; gap: var(--s-5); }
+  /* Hide mobile eyebrow labels on desktop — UGNxO has the columns labeled differently. */
+  .footer__nav-label { display: none; }
   /* Pencil UGNxO order: col1 = ic farvater + address + phone + email (single brand stack),
                         col2 = ftN1 site nav (главная … вопросы-ответы),
                         col3 = ftN2 products nav (разъёмы … свч-транзисторы),
                         col4 = ftContact-CTA newsletter. */
-  .footer__logo-block    { grid-column: 1; grid-row: 1; }
-  .footer__contact       { grid-column: 1; grid-row: 2; }
-  .footer__nav--site     { grid-column: 2; grid-row: 1 / span 2; }
-  .footer__nav--products { grid-column: 3; grid-row: 1 / span 2; }
-  .footer__newsletter    { grid-column: 4; grid-row: 1 / span 2; }
+  .footer__logo-block         { grid-column: 1; grid-row: 1; }
+  .footer__contact            { grid-column: 1; grid-row: 2; }
+  .footer__nav-col--site      { grid-column: 2; grid-row: 1 / span 2; }
+  .footer__nav-col--products  { grid-column: 3; grid-row: 1 / span 2; }
+  .footer__newsletter         { grid-column: 4; grid-row: 1 / span 2; }
   .footer__nav a::before { content: "( ) "; }
   .footer__logo { font-size: 19px; font-weight: 400; letter-spacing: 0; line-height: 1.42; }
   .footer__logo-block { gap: var(--s-5); }              /* Pencil ftCo gap=24 */

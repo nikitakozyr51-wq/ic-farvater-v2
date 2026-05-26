@@ -20,7 +20,8 @@
   --c-text-on-dark:      #F5F3EF;
   --c-muted-on-dark:     #F5F3EFCC;  /* 80% — sub в hero на dark image */
   --c-label-on-dark:     #F5F3EFB3;  /* 70% — labels в drawer КП */
-  --c-tertiary-on-dark:  #F5F3EF99;  /* 60% — hints, ghost text */
+  --c-tertiary-on-dark:  #F5F3EF99;  /* 60% — hints, copyright */
+  --c-eyebrow-on-dark:   #F5F3EF66;  /* 40% — eyebrow labels, ИНН (Pencil GKiXt/flhL9/ufHIX) */
   --c-border-on-dark:    #F5F3EF26;  /* 15% — dividers */
   --c-input-on-dark:     #F5F3EF40;  /* 25% — input border-bottom */
 
