@@ -1,0 +1,22 @@
+# IC Фарватер — https://ic-farvater.ru/
+
+User-agent: *
+Disallow: /scripts/
+Disallow: /pages/consent.html
+Disallow: /pages/product-detail.html
+Allow: /
+
+# AI crawlers — allow (we maintain llms.txt for context)
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: YandexGPT
+Allow: /
+
+Sitemap: https://ic-farvater.ru/sitemap.xml
+Host: ic-farvater.ru

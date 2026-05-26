@@ -14,6 +14,41 @@ function cyrillize(s) {
   return String(s || '').split('').map(ch => CYRILLIZE_MAP[ch] || ch).join('');
 }
 
+/** Form submission helper — production hits PHP backend, staging/local returns
+ *  mock success after a short delay so we can demo the UI flow without a backend.
+ *  Production endpoint = same-origin /scripts/send.php (requires Beget + PHP).
+ *  Staging hosts (localhost / github.io / netlify) skip the network call. */
+const FORM_ENDPOINT = '/scripts/send.php';
+function isStagingHost() {
+  const h = location.hostname;
+  return h === 'localhost' || h === '127.0.0.1' ||
+         h.endsWith('.github.io') || h.endsWith('.netlify.app') ||
+         h.endsWith('.vercel.app');
+}
+async function submitForm(form, kind, extra) {
+  if (isStagingHost()) {
+    await new Promise(r => setTimeout(r, 500));
+    return { ok: true, staging: true };
+  }
+  const fd = new FormData(form);
+  fd.set('kind', kind);
+  fd.set('consent', '1');
+  if (extra && typeof extra === 'object') {
+    for (const [k, v] of Object.entries(extra)) {
+      if (v != null && v !== '') fd.set(k, v);
+    }
+  }
+  try {
+    const res = await fetch(FORM_ENDPOINT, { method: 'POST', body: fd });
+    let json;
+    try { json = await res.json(); }
+    catch { return { ok: false, error: 'Сервер вернул некорректный ответ' }; }
+    return json;
+  } catch (err) {
+    return { ok: false, error: 'Сеть недоступна. Напишите info@ic-farvater.ru' };
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initPageLoader();
   initMobileMenu();
@@ -203,20 +238,22 @@ function initContactForm() {
   const btn = form.querySelector('.contact-form__submit');
   const fileState = initContactFiles(form);
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     removeFormMessage(form);
 
     const originalLabel = btn ? btn.innerHTML : '';
     if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
-    // TODO: replace with real backend
-    setTimeout(() => {
+    const result = await submitForm(form, 'contact');
+    if (result.ok) {
       showFormMessage(form, 'спасибо! мы свяжемся с вами в течение рабочего дня.', true);
       form.reset();
       if (fileState) fileState.clear();
-      if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
-    }, 600);
+    } else {
+      showFormMessage(form, result.error || 'ошибка отправки. напишите info@ic-farvater.ru', false);
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
   });
 }
 
@@ -411,21 +448,58 @@ function initServiceAccordion() {
   });
 }
 
-/** Cookie consent banner */
+/** Yandex.Metrica loader — reads counter ID from <meta name="yandex-counter">
+ *  (empty/zero → no-op). Idempotent: re-calls are ignored. */
+function loadYandexMetrika() {
+  if (window.ym) return;
+  const meta = document.querySelector('meta[name="yandex-counter"]');
+  const id = parseInt(meta?.content || '0', 10);
+  if (!id) return; // placeholder — counter not configured yet
+  (function(m,e,t,r,i,k,a){
+    m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < e.scripts.length; j++) {
+      if (e.scripts[j].src === r) return;
+    }
+    k=e.createElement(t); a=e.getElementsByTagName(t)[0];
+    k.async=1; k.src=r; a.parentNode.insertBefore(k,a);
+  })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+  window.ym(id, 'init', {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: false,
+    defer: true,
+  });
+}
+
+/** Cookie consent banner — persists choice in localStorage and loads analytics
+ *  on accept. Loads analytics automatically if user already accepted previously. */
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
-  if (!banner) return;
   const choice = localStorage.getItem('cookieConsent');
-  if (choice === 'accepted' || choice === 'rejected' || localStorage.getItem('cookieAccepted') === 'true') {
-    banner.classList.add('cookie-banner--hidden');
+
+  // Already accepted before — load analytics + skip banner
+  if (choice === 'accepted' || localStorage.getItem('cookieAccepted') === 'true') {
+    if (banner) banner.classList.add('cookie-banner--hidden');
+    loadYandexMetrika();
     return;
   }
+  // Previously rejected — skip banner, no analytics
+  if (choice === 'rejected') {
+    if (banner) banner.classList.add('cookie-banner--hidden');
+    return;
+  }
+  // No choice yet — show banner
+  if (!banner) return;
   banner.classList.remove('cookie-banner--hidden');
   banner.querySelectorAll('[data-cookie-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.getAttribute('data-cookie-action');
-      localStorage.setItem('cookieConsent', action === 'accept' ? 'accepted' : 'rejected');
+      const accepted = action === 'accept';
+      localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'rejected');
       banner.classList.add('cookie-banner--hidden');
+      if (accepted) loadYandexMetrika();
     });
   });
 }
@@ -1981,23 +2055,35 @@ function initKpDrawer() {
     });
   }
 
-  // Submit (placeholder — replace with real backend later)
+  // Submit — production hits PHP backend, staging mocks success
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = form.querySelector('.kp-form__submit');
       if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
       // Remove old message
       form.querySelectorAll('.kp-form__msg').forEach(el => el.remove());
-      setTimeout(() => {
-        const msg = document.createElement('p');
+
+      // Pull product context that openDrawer wrote into the visible chips
+      const productName = document.getElementById('kpProductName')?.textContent?.trim();
+      const productCategory = document.getElementById('kpProductLabel')?.textContent?.trim();
+
+      const result = await submitForm(form, 'kp', {
+        product: productName,
+        category: productCategory,
+      });
+      const msg = document.createElement('p');
+      if (result.ok) {
         msg.className = 'kp-form__msg kp-form__msg--ok';
         msg.textContent = 'Спасибо! Мы свяжемся с вами в течение рабочего дня.';
-        form.appendChild(msg);
         form.reset();
         if (filesList) filesList.innerHTML = '';
-        if (btn) { btn.disabled = false; btn.textContent = 'отправить запрос'; }
-      }, 600);
+      } else {
+        msg.className = 'kp-form__msg kp-form__msg--error';
+        msg.textContent = result.error || 'Ошибка отправки. Напишите info@ic-farvater.ru';
+      }
+      form.appendChild(msg);
+      if (btn) { btn.disabled = false; btn.textContent = 'отправить запрос'; }
     });
   }
 }

@@ -1,10 +1,18 @@
-# Assets junction → linked from d:\site\assets\, not committed in v2 repo
-assets/
-
-# Playwright artifacts
+# Build / dev artifacts
 .playwright-mcp/
-*.png
-!docs/screenshots/
+.youtube-analyze/
+.lazyweb/
+.agents/
+
+# Junk PNG / screenshots at root (audit captures) — but KEEP assets/**/*.png
+/*.png
+/*.jpeg
+/*.jpg
+# Allow assets/ images (favicons + photos)
+!assets/**/*.png
+!assets/**/*.jpg
+!assets/**/*.jpeg
+!assets/**/*.webp
 
 # OS
 .DS_Store
@@ -16,3 +24,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Claude / Pencil session files
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+
+# Local backup .pen files
+*.pen.bak
