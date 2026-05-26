@@ -11,8 +11,6 @@
   <meta name="robots" content="index, follow">
   <meta name="format-detection" content="telephone=no">
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; frame-src https://yandex.ru https://*.yandex.ru; connect-src 'self' https://mc.yandex.ru; base-uri 'self'; form-action 'self';">
-
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="IC Фарватер">
   <meta property="og:locale" content="ru_RU">
@@ -163,6 +161,10 @@
             <div class="contact-form__field contact-form__field--textarea">
               <label class="contact-form__label" for="cf-message">Сообщение</label>
               <textarea id="cf-message" name="message" class="contact-form__textarea" rows="3"></textarea>
+            </div>
+            <!-- Honeypot — невидимое поле для отсечения ботов. send.php silently отбрасывает заявку если заполнено. -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+              <label>Не заполняйте это поле<input type="text" name="honeypot" tabindex="-1" autocomplete="off"></label>
             </div>
             <label class="contact-form__consent is-mobile-only">
               <input type="checkbox" class="contact-form__checkbox" required>

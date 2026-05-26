@@ -23,7 +23,7 @@ const CSS_NON_CRITICAL = ['css/components.css', 'css/inner-page.css', 'css/anima
 const JS_APP = [
   'js/main.js', 'js/animations.js', 'js/nbsp.js',
   'js/products.js', 'js/connectors-data.js', 'js/converters-data.js',
-  'js/capacitors-data.js', 'js/connectors-parsers.js',
+  'js/capacitors-data.js',
 ];
 const HTML_PAGES = [
   'index.html',

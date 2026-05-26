@@ -788,13 +788,13 @@ function initCatalog() {
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
         type: 'product', kind: 'microchip', cat: 'microchips', id: p.id, name: p.name,
-        desc: (p.subcategory || p.description || '').toLowerCase(),
+        desc: chipCardDesc(p),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
         type: 'product', kind: 'transistor', cat: 'transistors', id: p.id, name: p.name,
-        desc: (p.subcategory || p.description || '').toLowerCase(),
+        desc: chipCardDesc(p),
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     }
@@ -817,7 +817,34 @@ function initCatalog() {
     // exact items by typing "0R5" (capacitor partnumber) or short codes.
     const variantDesc = (it) => [
       it.type, it.tu, it.partnumber, it.displayName, it.displaySub
-    ].filter(Boolean).join(' · ').toLowerCase();
+    ].filter(Boolean).join(' · ');
+
+    // Card description for microchips/transistors — extract clean function type from specs.
+    // Strips Latin parenthetical glosses ("(Power management)", "(MCU)"); sentence-cases
+    // all-caps Russian; preserves Latin acronyms (LDMOS, HEMT) and short Cyrillic acronyms
+    // (АЦП, ЦАП, ПЛИС, МК, ОУ). Fallback: manufacturer brand from subcategory.
+    function cleanCardType(text) {
+      if (!text) return '';
+      let t = String(text).trim();
+      // Drop parens that contain Latin chars (English gloss like "(Power management)").
+      t = t.replace(/\s*\([^)]*[A-Za-z][^)]*\)/g, '').trim();
+      // If all-caps Cyrillic (no lowercase Cyrillic anywhere), sentence-case it.
+      if (!/[а-яё]/.test(t) && /[А-ЯЁ]/.test(t)) {
+        // Lowercase everything, then re-uppercase first letter and known acronyms.
+        t = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+        // Re-uppercase known short Cyrillic acronyms (whole words only).
+        t = t.replace(/\b(плис|ацп|цап|пзу|озу|оу|опн|цсп|мк|свч|экб|опк|гост|рв)\b/gi,
+          (m) => m.toUpperCase());
+      }
+      return t;
+    }
+    function chipCardDesc(p) {
+      const fromType = cleanCardType(p.specs && p.specs['Тип']);
+      if (fromType) return fromType;
+      // Fallback: drop "Микросхемы " / "СВЧ-транзисторы " prefix → just the manufacturer/family.
+      const sub = (p.subcategory || '').replace(/^Микросхемы\s+/i, '').replace(/^СВЧ-транзисторы\s+/i, '');
+      return cleanCardType(sub);
+    }
     if (typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
@@ -2021,6 +2048,10 @@ function initKpDrawer() {
             <div class="kp-form__field kp-form__field--textarea">
               <label for="kpComment" class="kp-form__label">комментарий к&nbsp;запросу</label>
               <textarea id="kpComment" name="comment" class="kp-form__textarea" rows="3"></textarea>
+            </div>
+            <!-- Honeypot — невидимое поле для отсечения ботов -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+              <label>Не заполняйте это поле<input type="text" name="honeypot" tabindex="-1" autocomplete="off"></label>
             </div>
             <div class="kp-form__field">
               <label class="kp-form__label" for="kpFiles">вложения</label>

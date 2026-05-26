@@ -60,8 +60,13 @@ AddDefaultCharset UTF-8
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-  # HSTS — включить ПОСЛЕ установки SSL на Beget
-  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # HSTS — браузер запоминает что домен только HTTPS на 1 год + subdomains
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # Content-Security-Policy — глобально для всех страниц.
+  # script-src/style-src нужны 'unsafe-inline' для JSON-LD + критического CSS + Metrika init.
+  # img-src https: широко — некоторые товары в products.js ссылаются на ekb-test.ru.
+  # frame-src yandex.ru нужен для iframe Яндекс.Карт на contacts.html.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://yastatic.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; frame-src 'self' https://yandex.ru https://*.yandex.ru; connect-src 'self' https://mc.yandex.ru https://*.yandex.ru; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 </IfModule>
 
 # ===========================================================
