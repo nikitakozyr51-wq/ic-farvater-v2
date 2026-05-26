@@ -100,10 +100,10 @@
   }
   </script>
 
-  <!-- LCP image preload — responsive (mobile / desktop) -->
+  <!-- LCP image preload — mobile = оригинал (макс качество), desktop = оптимизированный -->
   <link rel="preload" as="image"
         href="assets/images/9CN77-1700.webp"
-        imagesrcset="assets/images/9CN77-800.webp 800w, assets/images/9CN77-1200.webp 1200w, assets/images/9CN77-1700.webp 1700w"
+        imagesrcset="assets/images/9CN77.webp 800w, assets/images/9CN77-1700.webp 1700w"
         imagesizes="100vw"
         fetchpriority="high">
 
@@ -163,7 +163,7 @@
     <!-- Hero Seed-style (verified hTqZQ desktop / pt5JK mobile) -->
     <section class="hero">
       <picture class="hero__bg" aria-hidden="true">
-        <source media="(max-width: 768px)" srcset="assets/images/9CN77-800.webp 800w, assets/images/9CN77-1200.webp 1200w" sizes="100vw">
+        <source media="(max-width: 768px)" srcset="assets/images/9CN77.webp">
         <img width="1700" height="780" src="assets/images/9CN77-1700.webp" alt="" fetchpriority="high" decoding="async">
       </picture>
       <div class="container hero__inner">
