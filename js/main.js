@@ -912,14 +912,22 @@ function initCatalog() {
       });
     }
     // Empty state when filter+search yields nothing — show message + offer global search.
+    // SECURITY: user-controlled `q` goes through textContent/dataset (никогда innerHTML) — защита от XSS.
     if (count === 0) {
       const empty = document.createElement('div');
       empty.className = 'catalog__list-empty';
       const q = search ? search.trim() : '';
+      const NBSP = ' ';
       if (q) {
-        empty.innerHTML = `ничего не&nbsp;найдено по&nbsp;запросу «${q}» в&nbsp;«${catLabel}». попробуйте <a href="#all" data-global-search="${q}">поискать во&nbsp;всех категориях</a>.`;
+        empty.append(`ничего не${NBSP}найдено по${NBSP}запросу «${q}» в${NBSP}«${catLabel}». попробуйте `);
+        const a = document.createElement('a');
+        a.href = '#all';
+        a.dataset.globalSearch = q;
+        a.textContent = `поискать во${NBSP}всех категориях`;
+        empty.appendChild(a);
+        empty.append('.');
       } else {
-        empty.innerHTML = `в&nbsp;разделе «${catLabel}» пока нет товаров.`;
+        empty.textContent = `в${NBSP}разделе «${catLabel}» пока нет товаров.`;
       }
       listGrid.appendChild(empty);
       if (listMore) listMore.hidden = true;
@@ -963,7 +971,14 @@ function initCatalog() {
     if (count === 0) {
       const empty = document.createElement('div');
       empty.className = 'catalog__list-empty';
-      empty.innerHTML = `ничего не&nbsp;найдено по&nbsp;запросу «${query}». попробуйте другой запрос или&nbsp;<a href="#all">вернитесь к&nbsp;категориям</a>.`;
+      // SECURITY: user-controlled `query` через textContent (никогда innerHTML).
+      const NBSP = ' ';
+      empty.append(`ничего не${NBSP}найдено по${NBSP}запросу «${query}». попробуйте другой запрос или${NBSP}`);
+      const a = document.createElement('a');
+      a.href = '#all';
+      a.textContent = `вернитесь к${NBSP}категориям`;
+      empty.appendChild(a);
+      empty.append('.');
       listGrid.appendChild(empty);
       if (listMore) listMore.hidden = true;
       return 0;
