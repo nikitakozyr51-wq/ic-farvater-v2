@@ -1,4 +1,8 @@
-# Deploy IC Фарватер v2 на Beget
+# Deploy IC Фарватер v2 на Beget Shared Hosting
+
+> **⚠ Этот гайд — для shared-хостинга (Blog/Year тарифы). Если у тебя VPS — используй `DEPLOY-DOKPLOY.md` вместо этого.**
+>
+> Текущий план: **VPS + Dokploy** (см. `DEPLOY-DOKPLOY.md`). Этот файл оставлен как fallback на случай миграции на shared.
 
 Пошаговая инструкция: от готового кода → до работающего сайта на `ic-farvater.ru`.
 

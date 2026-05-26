@@ -1,0 +1,44 @@
+# Don't ship dev files into the Docker image — keeps image lean
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build artefacts
+dist/
+node_modules/
+
+# Dev tools / Claude / Pencil / audit
+.claude/
+.agents/
+.lazyweb/
+.playwright-mcp/
+.youtube-analyze/
+.mcp.json
+.vscode/
+.idea/
+
+# Dev scripts (only PHP ships, not Python/PowerShell helpers)
+scripts/*.py
+scripts/*.ps1
+
+# Audit artefacts
+screenshots/
+docs/
+*.json
+!assets/favicon/site.webmanifest
+!**/manifest.json
+
+# Markdown docs (защищено также .htaccess — но не нужно вообще в image)
+*.md
+
+# OS junk
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor backups
+*~
+*.bak
+*.pen.bak

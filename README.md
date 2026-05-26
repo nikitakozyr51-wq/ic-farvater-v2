@@ -7,7 +7,13 @@
 - HTML5, CSS3 (custom properties + grid + flex), ES6+ JavaScript
 - Шрифт Inter (локальный, woff2)
 - GSAP + Lenis для скролл-анимаций
-- PHP для бэкенда форм (на Beget)
+- PHP для бэкенда форм (отправка email через `scripts/send.php`)
+- Docker (`Dockerfile` с php:8.2-apache) для деплоя через Dokploy
+
+## Roadmap
+
+- **Сейчас:** static HTML + PHP формы → Dokploy → Beget VPS
+- **Этап 2:** Strapi CMS как админка для редактирования каталога — см. [`STRAPI-ROADMAP.md`](./STRAPI-ROADMAP.md)
 
 ## Структура
 
@@ -27,12 +33,16 @@
 ├── assets/
 │   ├── fonts/                  # Inter woff2
 │   ├── images/                 # Фото товаров + OG-картинка
-│   ├── favicon/                # SVG + PNG + manifest
-│   └── references/             # design-research материалы
-├── .htaccess                   # Apache конфиг для Beget (gzip, cache, security headers, PHP limits)
+│   └── favicon/                # SVG + PNG + manifest
+├── Dockerfile                  # PHP 8.2 + Apache (для Dokploy/VPS деплоя)
+├── .dockerignore               # Что исключить из image
+├── .htaccess                   # Apache конфиг (gzip, cache, security headers, PHP limits)
 ├── robots.txt                  # Crawler разрешения
 ├── sitemap.xml                 # XML карта сайта
-└── llms.txt                    # Краткая справка для AI ботов (ChatGPT, Perplexity)
+├── llms.txt                    # Краткая справка для AI ботов (ChatGPT, Perplexity)
+├── DEPLOY-DOKPLOY.md           # Гайд деплоя на VPS через Dokploy (актуальный)
+├── DEPLOY.md                   # Гайд для shared-хостинга (fallback)
+└── STRAPI-ROADMAP.md           # План этапа 2 — Strapi CMS как админка
 ```
 
 ## Локальная разработка
@@ -42,13 +52,18 @@ Start-Process python -ArgumentList '-m','http.server','5501','--directory','D:\s
 ```
 Открыть http://127.0.0.1:5501/
 
-## Deploy на Beget
+## Deploy на Beget VPS через Dokploy
 
-1. Залить файлы на сервер через SFTP/SSH (Termius) в корень `public_html/`
-2. Убедиться что `.htaccess` залит (по умолчанию скрытые файлы могут не залиться — включить show hidden)
-3. Проверить `scripts/send.php` — права доступа `644`, PHP версия 7.4+
-4. Создать почтовый ящик `noreply@ic-farvater.ru` в панели Beget (sender для формы)
-5. Установить SSL (Let's Encrypt бесплатно в Beget) → раскомментировать HSTS + HTTPS redirect в `.htaccess`
+См. подробный гайд: [`DEPLOY-DOKPLOY.md`](./DEPLOY-DOKPLOY.md)
+
+Кратко:
+1. Установить Dokploy на VPS (одна SSH-команда)
+2. В веб-панели Dokploy подключить GitHub-репозиторий
+3. Привязать домен `ic-farvater.ru` + Let's Encrypt
+4. **Deploy** → сайт работает
+5. Дальше: каждый `git push` → автоматический rebuild
+
+Альтернативный гайд для shared-хостинга: [`DEPLOY.md`](./DEPLOY.md) (legacy fallback).
 
 ## Конфигурация после деплоя
 
