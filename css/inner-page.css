@@ -187,7 +187,7 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-short) ease;
 }
 .accordion-item__head:hover { opacity: 0.7; }
 
@@ -195,7 +195,7 @@
   font-size: 20px;
   font-weight: 400;
   line-height: 1;
-  transition: transform 0.3s ease;
+  transition: transform var(--dur-mid) var(--ease-swiss);
   flex-shrink: 0;
   margin-left: 16px;
 }
@@ -211,7 +211,7 @@
 .accordion-item__body {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.25s ease;
+  transition: max-height var(--dur-mid) var(--ease-swiss), opacity var(--dur-short) ease;
   padding: 0;
   opacity: 0;
 }
@@ -367,7 +367,7 @@
 }
 .filter-group--collapsed .filter-group__items { display: none; }
 .filter-group__icon {
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-mid) var(--ease-swiss);
   display: inline-block;
 }
 .filter-group--collapsed .filter-group__icon { transform: rotate(-90deg); }
@@ -376,7 +376,9 @@
   text-align: left;
   color: var(--c-text-muted);
   font-weight: 400;
+  transition: color var(--dur-short) ease;
 }
+.filter-item:hover { color: var(--c-text); }
 .filter-item--active {
   color: var(--c-text);
   font-weight: 500;
@@ -513,7 +515,13 @@
 .catalog__grid[hidden],
 .catalog__list[hidden] { display: none; }
 
-.cat-card { display: flex; }
+.cat-card {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-long) var(--ease-swiss);
+}
+.cat-card:hover { transform: translateY(-6px); }
 .cat-card__link {
   display: flex;
   flex-direction: column;
@@ -530,6 +538,12 @@
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform var(--dur-xl) var(--ease-swiss);
+}
+.cat-card:hover .cat-card__img img { transform: scale(1.06); }
+@media (hover: none) {
+  .cat-card:hover { transform: none; }
+  .cat-card:hover .cat-card__img img { transform: none; }
 }
 .cat-card__info {
   display: flex;
@@ -1334,6 +1348,15 @@
   border-bottom: var(--border-thin);
   text-decoration: none;
   color: inherit;
+  transition: transform var(--dur-long) var(--ease-swiss);
+}
+.pd-card::after {
+  transition: transform var(--dur-short) var(--ease-swiss);
+}
+.pd-card:hover::after { transform: translateX(4px); }
+@media (hover: none) {
+  .pd-card:hover { transform: none; }
+  .pd-card:hover::after { transform: none; }
 }
 .pd-card__image { display: none; } /* hidden on mobile per Pencil RcMLj */
 .pd-card__image-label {
@@ -1439,6 +1462,7 @@
     padding: 0;
     border-bottom: 0;
   }
+  .pd-card:hover { transform: translateY(-6px); }
   .pd-card::after { content: none; } /* hide arrow on desktop */
   .pd-card__image {
     display: flex;
@@ -1824,7 +1848,20 @@
   font-weight: 500;
   color: var(--c-text);
   flex: 0 0 auto;
+  transition: transform var(--dur-short) var(--ease-swiss);
 }
+/* List-view hover — override grid card translate. Subtle arrow shift + muted color shift. */
+.catalog__list-grid--list .cat-card {
+  transition: background-color var(--dur-instant) ease, color var(--dur-instant) ease;
+  padding-inline: 16px;
+  margin-inline: -16px;
+}
+.catalog__list-grid--list .cat-card:hover {
+  transform: none;
+  background: var(--c-bg-alt);
+}
+.catalog__list-grid--list .cat-card:hover::after { transform: translateX(4px); }
+.catalog__list-grid--list .cat-card:hover .cat-card__img img { transform: none; }
 /* Entry card and subheader styling tweaks for list mode */
 .catalog__list-grid--list .cat-card--entry { display: none; } /* no "обзор раздела" row in list mode */
 .catalog__list-grid--list .catalog__list-subheader {

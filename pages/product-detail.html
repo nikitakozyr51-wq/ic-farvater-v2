@@ -9,11 +9,11 @@
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=4">
+  <link rel="stylesheet" href="../css/tokens.css?v=5">
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=13">
-  <link rel="stylesheet" href="../css/inner-page.css?v=46">
+  <link rel="stylesheet" href="../css/components.css?v=14">
+  <link rel="stylesheet" href="../css/inner-page.css?v=49">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -54,7 +54,7 @@
   <main>
     <!-- Page Top — Pencil x6QVgU desktop / Uda0l mobile -->
     <section class="section section--no-border page-top product-top">
-      <div class="container product-top__inner">
+      <div class="container product-top__inner" data-animate="fade-up-stagger">
         <nav class="product-top__eyebrow" aria-label="breadcrumb">
           <a href="products.html">каталог</a>&nbsp;/&nbsp;<a href="products.html#razemy">разъёмы</a>&nbsp;/&nbsp;<span>ет-серия</span>
         </nav>
@@ -69,14 +69,14 @@
     <section class="section section--no-border section--pd-content">
       <div class="container pd-content">
         <!-- Image (left desktop / top mobile) -->
-        <div class="pd-image">
+        <div class="pd-image" data-animate="scale-reveal">
           <div class="pd-image__placeholder" aria-label="Фото ЕТ-СНЦ23">
             <span class="pd-image__label">ет-снц23</span>
           </div>
         </div>
 
         <!-- Info column (right desktop) / unfolds in 3 sections on mobile -->
-        <div class="pd-info">
+        <div class="pd-info" data-animate="fade-up-stagger">
           <!-- Description block. Counter (02) shown for landings only (Pencil v4 mobile W7BuW7). -->
           <div class="pd-block pd-block--description">
             <h2 class="pd-block__title">описание<sup class="pd-block__counter pd-block__counter--landing" hidden>(02)</sup></h2>
@@ -149,7 +149,7 @@
          (connector/converter/capacitor). JS renders pills + table. Pencil qYQC0. -->
     <section class="section section--pd-variants" id="pdVariantsSection" hidden>
       <div class="container pd-variants">
-        <h2 class="pd-variants__title">варианты исполнений<sup class="pd-variants__counter" id="pdVariantsCounter">(02)</sup></h2>
+        <h2 class="pd-variants__title" data-animate="fade-up">варианты исполнений<sup class="pd-variants__counter" id="pdVariantsCounter">(02)</sup></h2>
         <div class="pd-variants__pills" id="pdVariantsPills" role="tablist"></div>
         <div class="pd-variants__table" id="pdVariantsTable"></div>
       </div>
@@ -159,7 +159,7 @@
          9-row spec table — label left, value right, height 56, border-bottom #D7D3CB. -->
     <section class="section section--pd-nomenclature" id="pdNomenclatureSection" hidden>
       <div class="container pd-nomenclature">
-        <div class="pd-nomenclature__header">
+        <div class="pd-nomenclature__header" data-animate="fade-up">
           <h2 class="pd-nomenclature__title">номенклатура</h2>
           <sup class="pd-nomenclature__counter">(04)</sup>
         </div>
@@ -171,9 +171,9 @@
     <!-- Pencil I4cwln desktop / x0Ycp mobile -->
     <section class="section section--pd-related">
       <div class="container pd-related">
-        <h2 class="pd-related__title">другие исполнения<sup class="pd-related__counter">(03)</sup></h2>
+        <h2 class="pd-related__title" data-animate="fade-up">другие исполнения<sup class="pd-related__counter">(03)</sup></h2>
         <!-- Related: 4 related connector series. Hrefs use real catalog slugs. -->
-        <div class="pd-related__grid" id="pdRelatedGrid">
+        <div class="pd-related__grid" id="pdRelatedGrid" data-animate="fade-up-stagger">
           <a href="product-detail.html#s-c-et-2rmg" class="pd-card">
             <div class="pd-card__image" aria-label="ет-2рмг">
               <span class="pd-card__image-label">ет-2рмг</span>
@@ -218,7 +218,7 @@
   <!-- Footer — unified main page footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer__top">
+      <div class="footer__top" data-animate="fade-up-stagger">
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
           <p class="footer__tagline">поставки экб от&nbsp;склада в&nbsp;санкт-петербурге. подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
@@ -297,7 +297,7 @@
   <script src="../js/converters-data.js" defer></script>
   <script src="../js/capacitors-data.js" defer></script>
   <script src="../js/main.js?v=43" defer></script>
-  <script src="../js/animations.js?v=1" defer></script>
+  <script src="../js/animations.js?v=2" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
 </html>

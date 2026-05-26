@@ -12,11 +12,11 @@
 
   <!-- CSS — order matters: reset → tokens → base → layout → components → animations -->
   <link rel="stylesheet" href="css/reset.css?v=1">
-  <link rel="stylesheet" href="css/tokens.css?v=4">
+  <link rel="stylesheet" href="css/tokens.css?v=5">
   <link rel="stylesheet" href="css/base.css?v=7">
   <link rel="stylesheet" href="css/layout.css?v=1">
-  <link rel="stylesheet" href="css/components.css?v=13">
-  <link rel="stylesheet" href="css/inner-page.css?v=20">
+  <link rel="stylesheet" href="css/components.css?v=14">
+  <link rel="stylesheet" href="css/inner-page.css?v=21">
   <link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
@@ -64,7 +64,7 @@
         <img src="assets/images/9CN77.webp" alt="">
       </picture>
       <div class="container hero__inner">
-        <div class="hero__text">
+        <div class="hero__text" data-animate="fade-up-stagger">
           <h1 class="hero__title">
             <span class="hero__title--desktop">поставки электронных<br>компонентов<br>по всей россии</span>
             <span class="hero__title--mobile">поставки экб<br>по всей<br>россии</span>
@@ -78,10 +78,10 @@
     <!-- Разъёмы (01) — verified bBLRC desktop / m5SGn4 mobile -->
     <section class="section section--products" id="razemy">
       <div class="container">
-        <header class="section-head">
+        <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">разъёмы<span class="section-head__counter">(01)</span></h2>
         </header>
-        <div class="card-grid">
+        <div class="card-grid" data-animate="fade-up-stagger">
           <a href="pages/products.html#razemy" class="card">
             <div class="card__img">
               <img src="assets/images/products/items/ET_SNC23%201.webp" alt="ЕТ-СНЦ23" loading="lazy">
@@ -126,10 +126,10 @@
     <section class="section section--about" id="o-kompanii">
       <div class="container">
         <div class="uy-grid">
-          <picture class="uy-grid__image">
+          <picture class="uy-grid__image" data-animate="scale-reveal">
             <img src="assets/images/o-kompanii.webp" alt="О компании — испытательная лаборатория и склад ЭКБ" loading="lazy">
           </picture>
-          <div class="uy-grid__text">
+          <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">о&nbsp;компании · (02)</p>
               <h2 class="uy-grid__title">дистрибьютор&nbsp;экб <br class="is-desktop-only">с&nbsp;партнёрской лабораторией</h2>
@@ -148,10 +148,10 @@
     <!-- СВЧ-компоненты (03) — verified IDw1v desktop / QDGJt mobile -->
     <section class="section section--products" id="svch">
       <div class="container">
-        <header class="section-head">
+        <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">свч-компоненты<span class="section-head__counter">(03)</span></h2>
         </header>
-        <div class="card-grid">
+        <div class="card-grid" data-animate="fade-up-stagger">
           <a href="pages/products.html#capacitors" class="card">
             <div class="card__img">
               <img src="assets/images/dR4sr.webp" alt="ARC70 СВЧ-конденсаторы" loading="lazy">
@@ -196,10 +196,10 @@
     <section class="section section--about" id="kabelnye">
       <div class="container">
         <div class="uy-grid uy-grid--image-right">
-          <picture class="uy-grid__image">
+          <picture class="uy-grid__image" data-animate="scale-reveal">
             <img src="assets/images/uGwvR.webp" alt="Кабельные сборки — производство по КД заказчика" loading="lazy">
           </picture>
-          <div class="uy-grid__text">
+          <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">услуги · (04)</p>
               <h2 class="uy-grid__title">кабельные сборки</h2>
@@ -217,10 +217,10 @@
     <!-- Импортозамещение (05) — verified bwNZI desktop (3-col cards) / GYHok mobile (1-col stack; card3 image hidden mobile) -->
     <section class="section section--promise" id="importozameshchenie">
       <div class="container">
-        <header class="section-head">
+        <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">импортозамещение<span class="section-head__counter">(05)</span></h2>
         </header>
-        <div class="promise-grid">
+        <div class="promise-grid" data-animate="fade-up-stagger">
           <article class="promise-card">
             <div class="promise-card__img">
               <img src="assets/images/podbor-analogov-desktop.webp" alt="Подбор аналогов" loading="lazy">
@@ -256,14 +256,14 @@
     <section class="section section--services" id="uslugi">
       <div class="container">
         <div class="services-grid">
-          <div class="services-grid__head">
+          <div class="services-grid__head" data-animate="fade-up-stagger">
             <header class="section-head">
               <h2 class="section-head__title">услуги<span class="section-head__counter">(06)</span></h2>
             </header>
             <p class="services-grid__desc">работаем с&nbsp;предприятиями опк, авиации, космоса и&nbsp;телекоммуникаций. поставки со&nbsp;склада в&nbsp;санкт-петербурге, изготовление кабельных сборок и&nbsp;испытания экб по&nbsp;гост.</p>
             <a href="pages/contacts.html" class="btn-pill btn-pill--solid services-grid__cta">связаться</a>
           </div>
-          <ul class="services-list accordion-list" data-accordion-group="services">
+          <ul class="services-list accordion-list" data-accordion-group="services" data-animate="fade-up-stagger">
             <li class="accordion-item">
               <button type="button" class="accordion-item__head" aria-expanded="false">
                 <span class="accordion-item__title">поставка экб</span>
@@ -329,7 +329,7 @@
   <!-- Footer Custo-style — verified UGNxO desktop (4-col top + bottom row) / YsYD7 mobile (vertical stack) -->
   <footer class="footer">
     <div class="container">
-      <div class="footer__top">
+      <div class="footer__top" data-animate="fade-up-stagger">
         <!-- Block 1: logo + tagline -->
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
@@ -409,7 +409,7 @@
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
   <script src="js/main.js?v=41" defer></script>
-  <script src="js/animations.js?v=1" defer></script>
+  <script src="js/animations.js?v=2" defer></script>
   <script src="js/nbsp.js?v=1" defer></script>
 </body>
 </html>

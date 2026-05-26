@@ -11,11 +11,11 @@
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=4">
+  <link rel="stylesheet" href="../css/tokens.css?v=5">
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=13">
-  <link rel="stylesheet" href="../css/inner-page.css?v=12">
+  <link rel="stylesheet" href="../css/components.css?v=14">
+  <link rel="stylesheet" href="../css/inner-page.css?v=49">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -58,10 +58,10 @@
     <section class="page-top page-top--right-desc">
       <div class="container page-top__inner">
         <div class="page-top__head">
-          <h1 class="page-top__title">контакты<span class="page-top__counter">(01)</span></h1>
+          <h1 class="page-top__title" data-animate="split">контакты<span class="page-top__counter">(01)</span></h1>
         </div>
         <div class="page-top__desc-wrap">
-          <p class="page-top__desc page-top__desc--right">подберём компоненты по&nbsp;вашему ТЗ, поможем с&nbsp;импортозамещением, испытаниями и&nbsp;кабельными сборками. ответим в&nbsp;течение рабочего дня.</p>
+          <p class="page-top__desc page-top__desc--right" data-animate="fade-up">подберём компоненты по&nbsp;вашему ТЗ, поможем с&nbsp;импортозамещением, испытаниями и&nbsp;кабельными сборками. ответим в&nbsp;течение рабочего дня.</p>
         </div>
       </div>
     </section>
@@ -72,7 +72,7 @@
         <!-- Info column. Pencil Ox7QR desktop: phone/email/sale/purchase/address/hours.
              Pencil GiyzV mobile: address/phone/email/sale/hours (NO purchase, address first).
              Mobile order via CSS .contact-info__row--address { order:-1 }; purchase hidden on mobile. -->
-        <div class="contact-info">
+        <div class="contact-info" data-animate="fade-up-stagger">
           <div class="contact-info__row">
             <span class="contact-info__label">телефон</span>
             <a href="tel:+79967788842" class="contact-info__value">+7&nbsp;996 778-88-42</a>
@@ -100,7 +100,7 @@
         </div>
 
         <!-- Form column (Pencil yLXmH desktop / sdS8U mobile) -->
-        <div class="contact-form-wrap">
+        <div class="contact-form-wrap" data-animate="fade-up">
           <h2 class="contact-form__title">написать нам<span class="contact-form__counter is-mobile-only">(02)</span></h2>
           <form id="contactForm" class="contact-form" action="#" novalidate>
             <div class="contact-form__field">
@@ -139,12 +139,12 @@
          Border-top divider above "как нас найти" comes from default .section border (Pencil PB0jN stroke-top #D7D3CB). -->
     <section class="section section--map">
       <div class="container map-section">
-        <h2 class="map-section__title">
+        <h2 class="map-section__title" data-animate="fade-up">
           <span class="is-desktop-only">как нас найти</span>
           <span class="is-mobile-only">на&nbsp;карте</span>
           <span class="map-section__counter is-mobile-only">(03)</span>
         </h2>
-        <div class="map-section__placeholder" aria-label="Карта офиса">
+        <div class="map-section__placeholder" aria-label="Карта офиса" data-animate="scale-reveal">
           <iframe
             src="https://yandex.ru/map-widget/v1/?ll=30.198967%2C59.941599&z=16&pt=30.198967%2C59.941599%2Cpm2blm&text=%D1%83%D0%BB.%20%D0%91%D0%B5%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%2C%20%D0%B4.%201-%D0%90%2C%20%D0%BE%D1%84.%2046-%D0%9D"
             width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"
@@ -159,7 +159,7 @@
   <!-- Footer — unified main page footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer__top">
+      <div class="footer__top" data-animate="fade-up-stagger">
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
           <p class="footer__tagline">поставки экб от&nbsp;склада в&nbsp;санкт-петербурге. подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
@@ -233,7 +233,7 @@
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
   <script src="../js/main.js?v=41" defer></script>
-  <script src="../js/animations.js?v=1" defer></script>
+  <script src="../js/animations.js?v=2" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
 </html>

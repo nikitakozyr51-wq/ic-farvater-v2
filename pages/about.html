@@ -9,11 +9,11 @@
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=4">
+  <link rel="stylesheet" href="../css/tokens.css?v=5">
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=13">
-  <link rel="stylesheet" href="../css/inner-page.css?v=19">
+  <link rel="stylesheet" href="../css/components.css?v=14">
+  <link rel="stylesheet" href="../css/inner-page.css?v=49">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -58,11 +58,11 @@
     <!-- Page Top — Pencil J949F1 desktop / mEZAN mobile -->
     <section class="page-top">
       <div class="container page-top__inner">
-        <div class="page-top__head">
+        <div class="page-top__head" data-animate="fade-up-stagger">
           <h1 class="page-top__title">о&nbsp;компании<span class="page-top__counter">(01)</span></h1>
           <p class="page-top__desc">ооо «айси фарватер» — интегратор электронной компонентной базы для предприятий опк, авиации и&nbsp;космоса. полный цикл: от&nbsp;подбора компонентов до&nbsp;испытаний и&nbsp;сертификации. прямые контракты с&nbsp;производителями, партнёрская испытательная лаборатория «экб тест», iso 9001:2015.</p>
         </div>
-        <picture class="page-top__image">
+        <picture class="page-top__image" data-animate="scale-reveal">
           <img src="../assets/images/mission.webp" alt="" loading="lazy">
         </picture>
       </div>
@@ -70,7 +70,7 @@
 
     <!-- Mission — Pencil juPlU desktop (3-col body) / HFuZm mobile (vertical stack) -->
     <section class="section section--mission" id="mission">
-      <div class="container mission-grid">
+      <div class="container mission-grid" data-animate="fade-up-stagger">
         <p>ic farvater работает с&nbsp;предприятиями опк, авиационной и&nbsp;космической отрасли — там, где надёжность компонента определяет надёжность всей системы.</p>
         <p>мы обеспечиваем полный цикл: подбор, поставку, входной контроль, испытания и&nbsp;техническое сопровождение. в&nbsp;основе работы — прямые контракты с&nbsp;российскими производителями и&nbsp;партнёрская испытательная лаборатория «экб тест».</p>
         <p>система менеджмента качества сертифицирована по&nbsp;iso 9001:2015. каждая поставка документально подтверждена. мы&nbsp;хотим, чтобы каждый клиент был уверен в&nbsp;качестве и&nbsp;сроках.</p>
@@ -80,10 +80,10 @@
     <!-- Cert Section — Pencil L6VpI desktop / fX9Qh mobile -->
     <section class="section section--cert" id="cert">
       <div class="container split-grid">
-        <header class="split-grid__head">
+        <header class="split-grid__head" data-animate="fade-up">
           <h2 class="split-grid__title">сертификат соответствия<span class="split-grid__counter">(02)</span></h2>
         </header>
-        <ul class="split-grid__list accordion-list" data-accordion-group="cert">
+        <ul class="split-grid__list accordion-list" data-accordion-group="cert" data-animate="fade-up-stagger">
           <li class="accordion-item">
             <button type="button" class="accordion-item__head" aria-expanded="false">
               <span class="accordion-item__title">iso 9001:2015</span>
@@ -101,10 +101,10 @@
     <!-- FAQ Section — Pencil gGzCe desktop / aKz84 mobile -->
     <section class="section section--faq" id="faq">
       <div class="container split-grid">
-        <header class="split-grid__head">
+        <header class="split-grid__head" data-animate="fade-up">
           <h2 class="split-grid__title">частые вопросы<span class="split-grid__counter">(03)</span></h2>
         </header>
-        <ul class="split-grid__list accordion-list" data-accordion-group="faq">
+        <ul class="split-grid__list accordion-list" data-accordion-group="faq" data-animate="fade-up-stagger">
           <li class="accordion-item">
             <button type="button" class="accordion-item__head" aria-expanded="false">
               <span class="accordion-item__title">как быстро выполняется поставка?</span>
@@ -167,7 +167,7 @@
   <!-- Footer — unified main page footer (Pencil reuses Sk0bR component, no big wordmark) -->
   <footer class="footer">
     <div class="container">
-      <div class="footer__top">
+      <div class="footer__top" data-animate="fade-up-stagger">
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
           <p class="footer__tagline">поставки экб от&nbsp;склада в&nbsp;санкт-петербурге. подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
@@ -241,7 +241,7 @@
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
   <script src="../js/main.js?v=41" defer></script>
-  <script src="../js/animations.js?v=1" defer></script>
+  <script src="../js/animations.js?v=2" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
 </html>

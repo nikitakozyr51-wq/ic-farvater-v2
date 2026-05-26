@@ -114,4 +114,16 @@
   --card-gap:    clamp(12px, 1.2vw, 16px);  /* img → info inside card: mobile 12, desktop 16 */
   --info-gap-d:  6px;                       /* name → desc desktop (verified qXA0D gap:6, Pencil edge-case non-grid) */
   --info-gap-m:  8px;                       /* name → desc mobile (verified VlBHR gap:8) */
+
+  /* === Motion (sync с js/animations.js) === */
+  --dur-instant: 150ms;   /* color/bg swap, list-view hover */
+  --dur-short:   250ms;   /* button hover, opacity tints */
+  --dur-mid:     350ms;   /* drawer overlay, accordion chevron */
+  --dur-long:    500ms;   /* card hover lift */
+  --dur-xl:      700ms;   /* card image scale */
+
+  /* Swiss easing (cubic-bezier(0.16, 1, 0.3, 1)) — фирменный smooth out, мягкая остановка */
+  --ease-swiss:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out:     cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* power2.out */
+  --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);          /* drawer slide */
 }

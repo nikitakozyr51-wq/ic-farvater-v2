@@ -9,11 +9,11 @@
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=4">
+  <link rel="stylesheet" href="../css/tokens.css?v=5">
   <link rel="stylesheet" href="../css/base.css?v=7">
   <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=13">
-  <link rel="stylesheet" href="../css/inner-page.css?v=48">
+  <link rel="stylesheet" href="../css/components.css?v=14">
+  <link rel="stylesheet" href="../css/inner-page.css?v=49">
   <link rel="stylesheet" href="../css/animations.css?v=1">
 </head>
 <body>
@@ -56,10 +56,10 @@
     <section class="page-top page-top--right-desc">
       <div class="container page-top__inner">
         <div class="page-top__head">
-          <h1 class="page-top__title">продукция<span class="page-top__counter">(01)</span></h1>
+          <h1 class="page-top__title" data-animate="split">продукция<span class="page-top__counter">(01)</span></h1>
         </div>
         <div class="page-top__desc-wrap">
-          <p class="page-top__desc page-top__desc--right">каталог экб для ответственных применений: микросхемы, разъёмы, преобразователи, свч-компоненты и&nbsp;печатные платы.</p>
+          <p class="page-top__desc page-top__desc--right" data-animate="fade-up">каталог экб для ответственных применений: микросхемы, разъёмы, преобразователи, свч-компоненты и&nbsp;печатные платы.</p>
         </div>
       </div>
     </section>
@@ -68,7 +68,7 @@
     <section class="section section--catalog">
       <div class="container catalog">
         <!-- Sidebar (desktop only) — Pencil J1dha 240w -->
-        <aside class="catalog__sidebar">
+        <aside class="catalog__sidebar" data-animate="fade-up">
           <div class="filter-header">фильтры</div>
           <div class="filter-group">
             <div class="filter-group__header">
@@ -127,7 +127,7 @@
         </aside>
 
         <!-- Mobile toolbar (mobile only): search + view-toggle + filter-pills -->
-        <div class="catalog__toolbar">
+        <div class="catalog__toolbar" data-animate="fade-up">
           <form class="catalog__search" role="search">
             <input type="search" placeholder="поиск по продукции..." aria-label="Поиск по продукции">
             <button type="submit" aria-label="Найти">→</button>
@@ -156,7 +156,7 @@
             <input type="search" placeholder="поиск по продукции..." aria-label="Поиск по продукции">
             <button type="submit" aria-label="Найти">→</button>
           </form>
-          <div class="catalog__grid" id="catalogGrid">
+          <div class="catalog__grid" id="catalogGrid" data-animate="fade-up-stagger">
             <article class="cat-card" data-cat="microchips" data-name="микросхемы цифровые аналоговые">
               <a href="#microchips" class="cat-card__link">
                 <div class="cat-card__img">
@@ -240,7 +240,7 @@
   <!-- Footer same as main page -->
   <footer class="footer">
     <div class="container">
-      <div class="footer__top">
+      <div class="footer__top" data-animate="fade-up-stagger">
         <div class="footer__logo-block">
           <span class="footer__logo">ic farvater</span>
           <p class="footer__tagline">поставки экб от&nbsp;склада в&nbsp;санкт-петербурге. подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
@@ -319,7 +319,7 @@
   <script src="../js/converters-data.js" defer></script>
   <script src="../js/capacitors-data.js" defer></script>
   <script src="../js/main.js?v=42" defer></script>
-  <script src="../js/animations.js?v=1" defer></script>
+  <script src="../js/animations.js?v=2" defer></script>
   <script src="../js/nbsp.js?v=1" defer></script>
 </body>
 </html>

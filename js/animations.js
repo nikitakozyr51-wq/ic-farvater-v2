@@ -83,6 +83,8 @@
 
   // ═══════════════════════════════════════
   // 2. STAGGERED CHILDREN — one-shot
+  // After trigger, remove data-animate attr so CSS rule stops applying opacity:0
+  // to dynamically inserted children (catalog re-renders cards on filter change).
   // ═══════════════════════════════════════
 
   gsap.utils.toArray('[data-animate="fade-up-stagger"]').forEach((container) => {
@@ -100,6 +102,7 @@
           ease: 'power2.out',
           force3D: true,
           overwrite: true,
+          onComplete: () => container.removeAttribute('data-animate'),
         });
       },
     });
