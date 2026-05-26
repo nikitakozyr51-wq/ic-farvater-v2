@@ -759,6 +759,34 @@ function initCatalog() {
   // Series items carry a `group` field (main / additional / dev) so renderList
   // can emit subsection headers (e.g. "основные серии" / "в разработке").
   // Series cards link to in-page sub-hash #cat/slug (stay on catalog, no separate Series Detail).
+
+  // Card description for microchips/transistors — extract clean function type from specs.
+  // Strips Latin parenthetical glosses ("(Power management)", "(MCU)"); sentence-cases
+  // all-caps Russian; preserves Latin acronyms (LDMOS, HEMT) and short Cyrillic acronyms
+  // (АЦП, ЦАП, ПЛИС, МК, ОУ). Fallback: manufacturer brand from subcategory.
+  function cleanCardType(text) {
+    if (!text) return '';
+    let t = String(text).trim();
+    // Drop parens that contain Latin chars (English gloss like "(Power management)").
+    t = t.replace(/\s*\([^)]*[A-Za-z][^)]*\)/g, '').trim();
+    // If all-caps Cyrillic (no lowercase Cyrillic anywhere), sentence-case it.
+    if (!/[а-яё]/.test(t) && /[А-ЯЁ]/.test(t)) {
+      // Lowercase everything, then re-uppercase first letter and known acronyms.
+      t = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+      // Re-uppercase known short Cyrillic acronyms (whole words only).
+      t = t.replace(/\b(плис|ацп|цап|пзу|озу|оу|опн|цсп|мк|свч|экб|опк|гост|рв)\b/gi,
+        (m) => m.toUpperCase());
+    }
+    return t;
+  }
+  function chipCardDesc(p) {
+    const fromType = cleanCardType(p.specs && p.specs['Тип']);
+    if (fromType) return fromType;
+    // Fallback: drop "Микросхемы " / "СВЧ-транзисторы " prefix → just the manufacturer/family.
+    const sub = (p.subcategory || '').replace(/^Микросхемы\s+/i, '').replace(/^СВЧ-транзисторы\s+/i, '');
+    return cleanCardType(sub);
+  }
+
   function getItems(cat) {
     const out = [];
     // seriesTypes — Set of normalized variant types this series contains. Used by Type-filter
@@ -819,32 +847,6 @@ function initCatalog() {
       it.type, it.tu, it.partnumber, it.displayName, it.displaySub
     ].filter(Boolean).join(' · ');
 
-    // Card description for microchips/transistors — extract clean function type from specs.
-    // Strips Latin parenthetical glosses ("(Power management)", "(MCU)"); sentence-cases
-    // all-caps Russian; preserves Latin acronyms (LDMOS, HEMT) and short Cyrillic acronyms
-    // (АЦП, ЦАП, ПЛИС, МК, ОУ). Fallback: manufacturer brand from subcategory.
-    function cleanCardType(text) {
-      if (!text) return '';
-      let t = String(text).trim();
-      // Drop parens that contain Latin chars (English gloss like "(Power management)").
-      t = t.replace(/\s*\([^)]*[A-Za-z][^)]*\)/g, '').trim();
-      // If all-caps Cyrillic (no lowercase Cyrillic anywhere), sentence-case it.
-      if (!/[а-яё]/.test(t) && /[А-ЯЁ]/.test(t)) {
-        // Lowercase everything, then re-uppercase first letter and known acronyms.
-        t = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
-        // Re-uppercase known short Cyrillic acronyms (whole words only).
-        t = t.replace(/\b(плис|ацп|цап|пзу|озу|оу|опн|цсп|мк|свч|экб|опк|гост|рв)\b/gi,
-          (m) => m.toUpperCase());
-      }
-      return t;
-    }
-    function chipCardDesc(p) {
-      const fromType = cleanCardType(p.specs && p.specs['Тип']);
-      if (fromType) return fromType;
-      // Fallback: drop "Микросхемы " / "СВЧ-транзисторы " prefix → just the manufacturer/family.
-      const sub = (p.subcategory || '').replace(/^Микросхемы\s+/i, '').replace(/^СВЧ-транзисторы\s+/i, '');
-      return cleanCardType(sub);
-    }
     if (typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
