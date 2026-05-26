@@ -1,6 +1,7 @@
 /* IC Фарватер v2 — Animations
  * Копия v1 1:1 — JS animations.js завязан на [data-animate=*] hooks.
  * GPU-friendly: only transform + opacity.
+ * NOTE: правки этого файла авто-собираются через .husky/pre-commit (npm run build).
  */
 
 /* ─── Fade-up ─── */

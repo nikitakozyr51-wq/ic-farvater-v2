@@ -4,9 +4,11 @@
   "description": "IC Фарватер — статический сайт (без bundler'а, esbuild только для минификации в production)",
   "private": true,
   "scripts": {
-    "build": "node scripts/build-prod.mjs"
+    "build": "node scripts/build-prod.mjs",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "esbuild": "^0.28.0"
+    "esbuild": "^0.28.0",
+    "husky": "^9.1.7"
   }
 }

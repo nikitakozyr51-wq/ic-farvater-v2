@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+# IC Фарватер pre-commit — авто-rebuild .min.* если изменился source CSS/JS.
+# Защищает от ситуации: ты правишь css/components.css → коммитишь → на прод
+# уезжает старый .min.css → твоё изменение НЕ видно.
+
+# Список staged source-файлов, чьи изменения требуют rebuild:
+# - css/*.css   (НЕ .min.css — те генерируются)
+# - js/*.js     (НЕ .min.js, НЕ vendor/* — те minified third-party)
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR | \
+  grep -E '^(css/[^/]+\.css|js/[^/]+\.js)$' | \
+  grep -vE '\.min\.(css|js)$|^js/vendor/')
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+echo "→ Изменены source CSS/JS, запускаю npm run build..."
+echo "$STAGED" | sed 's/^/   - /'
+
+if ! npm run build --silent; then
+  echo ""
+  echo "✗ Build упал. Коммит отменён."
+  echo "  Запусти 'npm run build' вручную чтобы увидеть ошибку."
+  exit 1
+fi
+
+# Добавить пересобранные артефакты в коммит:
+# - css/*.min.css + js/*.min.js (минификация)
+# - *.html (critical CSS re-inject)
+git add css/*.min.css js/*.min.js index.html pages/*.html 2>/dev/null || true
+
+echo "✓ Build готов, артефакты добавлены в коммит."
