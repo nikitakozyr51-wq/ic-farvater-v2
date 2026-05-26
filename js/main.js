@@ -1085,16 +1085,24 @@ function initCatalog() {
     } else if (inListMode) {
       // List view: hide cat-cards, render category items.
       // renderList() handles its own empty-state UI (contextual message + global-search fallback link).
-      // Special case: pcb has no products → keep showing landing link.
+      // Special case: pcb has no products in catalog → render ONE regular cat-card-row
+      // (looks identical to other list rows / grid cards) pointing to the landing page.
       grid.hidden = true;
       listWrap.hidden = false;
       const count = renderList(state.cat, state.search);
       if (count === 0 && state.cat === 'pcb' && !state.search) {
-        const empty = document.createElement('div');
-        empty.className = 'catalog__list-empty';
-        empty.innerHTML = `<a href="product-detail.html#cat-pcb" class="catalog__list-empty-link">печатные платы&nbsp;— перейти к&nbsp;описанию категории →</a>`;
+        const card = document.createElement('a');
+        card.className = 'cat-card cat-card--small';
+        card.href = 'product-detail.html#cat-pcb';
+        card.innerHTML = `
+          <div class="cat-card__img"></div>
+          <div class="cat-card__info">
+            <h3 class="cat-card__name">печатные платы</h3>
+            <p class="cat-card__desc">перейти к&nbsp;описанию категории</p>
+          </div>
+        `;
         listGrid.innerHTML = '';
-        listGrid.appendChild(empty);
+        listGrid.appendChild(card);
         if (listMore) listMore.hidden = true;
       }
       if (emptyMsg) emptyMsg.hidden = true;
