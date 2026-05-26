@@ -788,13 +788,13 @@ function initCatalog() {
     } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
         type: 'product', kind: 'microchip', cat: 'microchips', id: p.id, name: p.name,
-        desc: chipCardDesc(p),
+        desc: chipCardDesc(p), descCased: true,
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
       PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
         type: 'product', kind: 'transistor', cat: 'transistors', id: p.id, name: p.name,
-        desc: chipCardDesc(p),
+        desc: chipCardDesc(p), descCased: true,
         image: p.image, href: `product-detail.html#p-${p.id}`
       }));
     }
@@ -1031,14 +1031,18 @@ function initCatalog() {
     a.className = 'cat-card cat-card--small';
     a.href = it.href;
     // Product codes in UPPERCASE (ЕТ-СНЦ23, ЕТ1310РН1У — they're abbreviations/model codes).
-    // Description in lowercase (brand text style).
+    // Series cards keep lowercase desc (legacy brand voice for SERIES_SHORT_DESC); microchip/
+    // transistor cards with descCased:true preserve sentence-case from chipCardDesc().
+    const descText = it.desc
+      ? (it.descCased ? cyrillize(it.desc) : cyrillize(it.desc).toLowerCase())
+      : '';
     a.innerHTML = `
       <div class="cat-card__img">
         ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
       </div>
       <div class="cat-card__info">
         <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
-        ${it.desc ? `<p class="cat-card__desc">${cyrillize(it.desc).toLowerCase()}</p>` : ''}
+        ${descText ? `<p class="cat-card__desc">${descText}</p>` : ''}
       </div>
     `;
     return a;
