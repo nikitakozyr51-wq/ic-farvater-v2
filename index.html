@@ -100,11 +100,9 @@
   }
   </script>
 
-  <!-- LCP image preload — mobile = оригинал (макс качество), desktop = оптимизированный -->
+  <!-- LCP image preload — оригинал (максимальное качество для hero) -->
   <link rel="preload" as="image"
-        href="assets/images/9CN77-1700.webp"
-        imagesrcset="assets/images/9CN77.webp 800w, assets/images/9CN77-1700.webp 1700w"
-        imagesizes="100vw"
+        href="assets/images/9CN77.webp"
         fetchpriority="high">
 
   <!-- Font preload — InterVariable single file для всех весов -->
@@ -163,8 +161,7 @@
     <!-- Hero Seed-style (verified hTqZQ desktop / pt5JK mobile) -->
     <section class="hero">
       <picture class="hero__bg" aria-hidden="true">
-        <source media="(max-width: 768px)" srcset="assets/images/9CN77.webp">
-        <img width="1700" height="780" src="assets/images/9CN77-1700.webp" alt="" fetchpriority="high" decoding="async">
+        <img width="1699" height="780" src="assets/images/9CN77.webp" alt="" fetchpriority="high" decoding="async">
       </picture>
       <div class="container hero__inner">
         <div class="hero__text hero__text--entry">
