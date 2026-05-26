@@ -83,16 +83,18 @@ function initPageLoader() {
 }
 
 /** Header search — inline expandable input on desktop.
- *  Click icon → input slides over the nav with a smooth fade+slide, user types, Enter
- *  navigates to /products.html?q=<query>. Close button or Esc reverts. Mobile uses the
- *  burger-menu inline search form (built in initMobileMenu). */
+ *  Click icon → form slides out from icon's position, expanding leftward into the
+ *  nav area. Icon collapses simultaneously. Submit → /products.html?q=<query>.
+ *  Esc / close-button revert. Mobile uses the burger-menu inline search (initMobileMenu). */
 function initHeaderSearch() {
   const header = document.querySelector('.header');
   const searchBtn = header && header.querySelector('.header__search');
   if (!header || !searchBtn) return;
 
-  // Build the inline search form once and inject into .header__inner.
-  // Positioned absolutely so it overlays the nav without disrupting flex layout.
+  // Build the inline search form once and insert BEFORE the icon inside .header__right.
+  // With flex justify-content:flex-end, width:0 means form takes no space; when active,
+  // form expands width (320px) while icon collapses (width:0) — net effect is the form
+  // "slides out" from where the icon was, growing leftward into the nav space.
   let form = header.querySelector('.header__search-form');
   if (!form) {
     form = document.createElement('form');
@@ -112,7 +114,7 @@ function initHeaderSearch() {
         </svg>
       </button>
     `;
-    header.querySelector('.header__inner').appendChild(form);
+    searchBtn.parentNode.insertBefore(form, searchBtn);
   }
 
   const input = form.querySelector('.header__search-input');

@@ -850,47 +850,50 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-h-mobile);
-  position: relative; /* anchor for absolutely-positioned .header__search-form (desktop) */
 }
 
-/* Desktop expandable header search — injected by initHeaderSearch().
-   Hidden by default. When .header--searching is active on the parent header,
-   the form fades+slides in, while .header__nav fades out beneath. */
+/* Desktop expandable header search — injected by initHeaderSearch() into .header__right.
+   In flex layout the form sits BEFORE the icon, with width 0 by default. On
+   .header--searching, width animates to 320px (spring overshoot easing) while the
+   icon collapses to width 0 — the form visually slides out FROM the icon position,
+   expanding leftward into the now-empty nav area. */
 .header__search-form { display: none; }
 @media (min-width: 1024px) {
   .header__search-form {
     display: flex;
     align-items: center;
-    gap: 8px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, calc(-50% + 6px));
-    /* 440px matches the nav column at 1320 container (1320/3). Capped at 92vw so it
-       stays within viewport on narrow desktop. */
-    width: min(440px, 92vw);
-    max-width: min(440px, 92vw);
-    padding: 8px 10px 8px 16px;
+    gap: 6px;
+    height: 40px;
+    width: 0;
+    padding: 0;
     background: var(--c-bg);
     border: 1px solid var(--c-border);
     border-radius: 100px;
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
+    overflow: hidden;
+    box-sizing: border-box;
     transition:
-      opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-      transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      visibility 0s linear 0.25s;
+      width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
+      padding 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
+      margin-right 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
+      opacity 0.2s ease,
+      border-color 0.2s ease;
   }
   .header--searching .header__search-form {
+    width: 320px;
+    padding: 0 6px 0 18px;
+    margin-right: 8px;
     opacity: 1;
-    visibility: visible;
     pointer-events: auto;
-    transform: translate(-50%, -50%);
     transition:
-      opacity 0.25s 0.05s cubic-bezier(0.4, 0, 0.2, 1),
-      transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      visibility 0s linear 0s;
+      width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
+      padding 0.4s 0.05s cubic-bezier(0.34, 1.2, 0.64, 1),
+      margin-right 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
+      opacity 0.25s 0.1s ease;
+  }
+  .header__search-form:focus-within {
+    border-color: var(--c-text);
   }
   .header__search-input {
     flex: 1;
@@ -921,27 +924,36 @@
     cursor: pointer;
     padding: 0;
     border-radius: 50%;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, transform 0.2s ease;
   }
   .header__search-submit:hover,
   .header__search-close:hover { background-color: rgba(17, 47, 110, 0.06); }
+  .header__search-submit:active,
+  .header__search-close:active { transform: scale(0.92); }
 
   /* Nav fades + slides up slightly when search opens. */
   .header__nav {
-    transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .header--searching .header__nav {
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px);
   }
-  /* Icon button morphs: rotate slightly as user enters search mode (subtle motion cue). */
+  /* Icon button collapses (width + opacity) — form takes its space as it expands. */
   .header__search {
-    transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    overflow: hidden;
+    transition:
+      opacity 0.2s ease,
+      width 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
+      margin 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
+      transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
   .header--searching .header__search {
     opacity: 0;
-    transform: scale(0.85);
+    width: 0;
+    margin: 0;
+    transform: translateX(8px) scale(0.7);
     pointer-events: none;
   }
 }
