@@ -1278,7 +1278,9 @@ function initCatalog() {
         card.className = 'cat-card cat-card--small';
         card.href = 'product-detail.html#cat-pcb';
         card.innerHTML = `
-          <div class="cat-card__img"></div>
+          <div class="cat-card__img">
+            <img width="1200" height="1200" src="../assets/images/products/pcb.webp" alt="Печатные платы" loading="lazy" onerror="this.style.opacity='0'">
+          </div>
           <div class="cat-card__info">
             <h3 class="cat-card__name">печатные платы</h3>
             <p class="cat-card__desc">перейти к&nbsp;описанию категории</p>
