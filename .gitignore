@@ -1,4 +1,5 @@
 # Build / dev artifacts
+dist/
 .playwright-mcp/
 .youtube-analyze/
 .lazyweb/
