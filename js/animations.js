@@ -108,6 +108,29 @@
     });
   });
 
+  // Faster variant — used for small grids near scroll edges (e.g. pd-related 4 cards)
+  // where the default 1.2s stagger feels sluggish.
+  gsap.utils.toArray('[data-animate="fade-up-fast"]').forEach((container) => {
+    const children = gsap.utils.toArray(container.children);
+    gsap.set(children, { y: 20, opacity: 0 });
+    ScrollTrigger.create({
+      trigger: container,
+      start: 'top 92%',
+      once: true,
+      onEnter: () => {
+        gsap.to(children, {
+          y: 0, opacity: 1,
+          duration: 0.5,
+          stagger: 0.06,
+          ease: 'power2.out',
+          force3D: true,
+          overwrite: true,
+          onComplete: () => container.removeAttribute('data-animate'),
+        });
+      },
+    });
+  });
+
 
   // ═══════════════════════════════════════
   // 3. SPLIT TEXT — one-shot word reveal

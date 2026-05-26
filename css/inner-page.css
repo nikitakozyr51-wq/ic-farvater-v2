@@ -376,9 +376,22 @@
   text-align: left;
   color: var(--c-text-muted);
   font-weight: 400;
+  cursor: pointer;
   transition: color var(--dur-short) ease;
 }
-.filter-item:hover { color: var(--c-text); }
+/* Pseudo-element radio marker: ( ) inactive, (•) active.
+   Hover on inactive previews the (•) — v1 paradigm.
+   tabular-nums keeps the marker width stable so labels don't jitter on swap. */
+.filter-item::before {
+  content: '( ) ';
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+.filter-item--active::before { content: '(\2022) '; }
+@media (hover: hover) {
+  .filter-item:hover { color: var(--c-text); }
+  .filter-item:hover:not(.filter-item--active)::before { content: '(\2022) '; }
+}
 .filter-item--active {
   color: var(--c-text);
   font-weight: 500;
@@ -473,6 +486,18 @@
 .catalog__view-link {
   font-size: 14px;
   color: var(--c-text-muted);
+  cursor: pointer;
+  transition: color var(--dur-short) ease;
+}
+.catalog__view-link::before {
+  content: '( ) ';
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+.catalog__view-link--active::before { content: '(\2022) '; }
+@media (hover: hover) {
+  .catalog__view-link:hover { color: var(--c-text); }
+  .catalog__view-link:hover:not(.catalog__view-link--active)::before { content: '(\2022) '; }
 }
 .catalog__view-link--active {
   font-weight: 500;

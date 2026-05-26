@@ -1040,7 +1040,7 @@ function initCatalog() {
     all.type = 'button';
     all.className = 'filter-item' + (state.seriesType === 'all' ? ' filter-item--active' : '');
     all.dataset.type = 'all';
-    all.textContent = (state.seriesType === 'all' ? '(•) ' : '( ) ') + 'все';
+    all.textContent = 'все';
     itemsEl.appendChild(all);
     types.forEach(t => {
       const btn = document.createElement('button');
@@ -1048,7 +1048,7 @@ function initCatalog() {
       const isActive = state.seriesType === t;
       btn.className = 'filter-item' + (isActive ? ' filter-item--active' : '');
       btn.dataset.type = t;
-      btn.textContent = (isActive ? '(•) ' : '( ) ') + t;
+      btn.textContent = t;
       itemsEl.appendChild(btn);
     });
     // Wire clicks (delegated via fresh handler each render — innerHTML wipes previous listeners)
@@ -1133,13 +1133,9 @@ function initCatalog() {
       state.seriesType = 'all';
     }
 
-    // Update active state on sidebar + pills
+    // Update active state on sidebar + pills — marker (•)/( ) rendered via CSS ::before
     sidebarBtns.forEach(b => {
-      const isActive = b.dataset.cat === state.cat;
-      b.classList.toggle('filter-item--active', isActive);
-      // Re-render label with (•) or ( )
-      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
-      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
+      b.classList.toggle('filter-item--active', b.dataset.cat === state.cat);
     });
     pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
 
@@ -1150,8 +1146,6 @@ function initCatalog() {
       const isActive = b.dataset.view === state.view;
       b.classList.toggle('filter-item--active', isActive);
       b.classList.toggle('catalog__view-link--active', isActive);
-      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
-      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
     });
 
     const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0) + (state.seriesType && state.seriesType !== 'all' ? 1 : 0);
@@ -1191,12 +1185,7 @@ function initCatalog() {
   // matches v1 site UX: groups are presented but don't narrow the grid).
   const appBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-app]');
   appBtns.forEach(btn => btn.addEventListener('click', () => {
-    appBtns.forEach(b => {
-      const isActive = b === btn;
-      b.classList.toggle('filter-item--active', isActive);
-      const labelText = b.textContent.replace(/^[(•)\s]+/u, '');
-      b.textContent = (isActive ? '(•) ' : '( ) ') + labelText;
-    });
+    appBtns.forEach(b => b.classList.toggle('filter-item--active', b === btn));
   }));
 
   // Global-search fallback link inside empty-state (delegated to listGrid).
