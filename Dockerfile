@@ -4,6 +4,10 @@
 
 FROM php:8.2-apache
 
+# curl нужен для будущих SMTP integrations + диагностики (опционально, ~3 MB)
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 # Включаем нужные Apache модули (mod_rewrite для редиректов,
 # mod_headers/expires/deflate — для security/cache/gzip из .htaccess)
 RUN a2enmod rewrite headers expires deflate
@@ -25,10 +29,6 @@ COPY --chown=www-data:www-data . /var/www/html/
 
 # Apache по умолчанию слушает :80, Dokploy проксирует :80 → внешний :443 через Traefik
 EXPOSE 80
-
-# Healthcheck — Dokploy перезапустит контейнер если страница не отвечает
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -fsS http://localhost/ > /dev/null || exit 1
 
 # Явно указываем CMD на случай если Dokploy UI попытается переопределить
 # (в Dokploy в Advanced → Run Command поле должно быть ПУСТЫМ, не "/bin/sh")
