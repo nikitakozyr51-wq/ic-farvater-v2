@@ -1,38 +1,61 @@
 <?php
 /**
  * IC Фарватер — единый обработчик форм (KP-drawer + contact-form).
- * Разместить на Beget по пути /scripts/send.php
+ * Отправляет письма через SMTP (PHPMailer). Все секреты — в env vars Dokploy.
  *
  * Принимает multipart/form-data POST со следующими полями:
- *   kind        — "kp" | "contact" (определяет шаблон письма + тему)
- *   name        — имя (required)
- *   email       — email (required, валидируется)
- *   phone       — телефон (optional)
- *   message     — текст обращения (contact form, required)
- *   comment     — комментарий к запросу (kp form, optional)
- *   product     — название товара/раздела (kp form, optional)
- *   category    — категория (kp form, optional)
- *   consent     — checkbox "1"
+ *   kind        — "kp" | "contact"
+ *   name        — required
+ *   email       — required
+ *   phone       — optional
+ *   message     — contact form required
+ *   comment     — kp form optional
+ *   product     — kp form optional (название товара)
+ *   category    — kp form optional (категория)
+ *   consent     — "1" required (согласие на ОПД)
  *   files[]     — до 5 вложений суммарно 10 MB (kp form only)
  *   honeypot    — должно быть пустым (anti-bot)
  *
  * Возвращает JSON { ok: true } или { ok: false, error: "..." }
+ *
+ * Конфигурация — env vars (в Dokploy → Application frontend → Environment):
+ *   SMTP_HOST       (default: smtp.beget.com)
+ *   SMTP_PORT       (default: 465)
+ *   SMTP_USER       (full email, e.g. noreply@ic-farvater.ru)
+ *   SMTP_PASS       (пароль ящика)
+ *   SMTP_FROM       (default: совпадает с SMTP_USER)
+ *   SMTP_FROM_NAME  (default: "IC Фарватер")
+ *   MAIL_TO         (default: info@ic-farvater.ru)
+ *   MAIL_CC         (optional, e.g. sale@ic-farvater.ru)
+ *   ALLOWED_ORIGIN  (default: https://ic-farvater.ru)
  */
 
-define('TO_EMAIL',       'info@ic-farvater.ru');
-define('CC_EMAIL',       'sale@ic-farvater.ru');   // дублируем коммерческому отделу
-define('FROM_EMAIL',     'noreply@ic-farvater.ru'); // должен совпадать с почтой Beget
-define('ALLOWED_ORIGIN', 'https://ic-farvater.ru');
-define('FILE_MAX_COUNT',  5);
-define('FILE_MAX_TOTAL',  10 * 1024 * 1024);
+require_once __DIR__ . '/../vendor/autoload.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+/* ─── Конфиг из env vars с дефолтами ─── */
+$SMTP_HOST       = getenv('SMTP_HOST')       ?: 'smtp.beget.com';
+$SMTP_PORT       = (int)(getenv('SMTP_PORT') ?: 465);
+$SMTP_USER       = getenv('SMTP_USER')       ?: 'noreply@ic-farvater.ru';
+$SMTP_PASS       = getenv('SMTP_PASS')       ?: '';
+$SMTP_FROM       = getenv('SMTP_FROM')       ?: $SMTP_USER;
+$SMTP_FROM_NAME  = getenv('SMTP_FROM_NAME')  ?: 'IC Фарватер';
+$MAIL_TO         = getenv('MAIL_TO')         ?: 'info@ic-farvater.ru';
+$MAIL_CC         = getenv('MAIL_CC')         ?: '';
+$ALLOWED_ORIGIN  = getenv('ALLOWED_ORIGIN')  ?: 'https://ic-farvater.ru';
+
+define('FILE_MAX_COUNT', 5);
+define('FILE_MAX_TOTAL', 10 * 1024 * 1024);
 $ALLOWED_EXT = ['pdf','doc','docx','xls','xlsx','csv','txt','png','jpg','jpeg','webp','zip','rar','7z'];
 
 header('Content-Type: application/json; charset=utf-8');
 
-// CORS
+/* ─── CORS ─── */
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin === ALLOWED_ORIGIN) {
+if ($origin === $ALLOWED_ORIGIN) {
     header("Access-Control-Allow-Origin: $origin");
 }
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -42,31 +65,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
-
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'Method not allowed']);
     exit;
 }
 
-// CSRF: пропускаем только запросы со своего домена
+/* ─── CSRF guard ─── */
 $referer   = $_SERVER['HTTP_REFERER'] ?? '';
-$okOrigin  = ($origin === ALLOWED_ORIGIN);
-$okReferer = (strpos($referer, ALLOWED_ORIGIN . '/') === 0);
+$okOrigin  = ($origin === $ALLOWED_ORIGIN);
+$okReferer = (strpos($referer, $ALLOWED_ORIGIN . '/') === 0);
 if (!$okOrigin && !$okReferer) {
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'Forbidden']);
     exit;
 }
 
-// Honeypot — должно быть пустым
+/* ─── Honeypot ─── */
 if (!empty($_POST['honeypot'] ?? '')) {
-    // Бот: молча возвращаем ok, ничего не отправляем
-    echo json_encode(['ok' => true]);
+    echo json_encode(['ok' => true]); // молча
     exit;
 }
 
-// Сбор данных
+/* ─── Сбор данных ─── */
 $kind     = trim($_POST['kind']     ?? 'contact');
 $name     = trim($_POST['name']     ?? '');
 $email    = trim($_POST['email']    ?? '');
@@ -77,7 +98,7 @@ $product  = trim($_POST['product']  ?? '');
 $category = trim($_POST['category'] ?? '');
 $consent  = $_POST['consent']       ?? '';
 
-// Валидация
+/* ─── Валидация ─── */
 if (!$name || !$email) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Заполните обязательные поля']);
@@ -93,14 +114,13 @@ if (!$consent) {
     echo json_encode(['ok' => false, 'error' => 'Необходимо согласие на обработку данных']);
     exit;
 }
-// Минимум контента
 if ($kind === 'contact' && !$message) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Заполните сообщение']);
     exit;
 }
 
-// Вложения (только для KP формы)
+/* ─── Аттачи (только для KP формы) ─── */
 $attachments = [];
 if ($kind === 'kp' && !empty($_FILES['files']) && is_array($_FILES['files']['name'])) {
     $files = $_FILES['files'];
@@ -116,12 +136,10 @@ if ($kind === 'kp' && !empty($_FILES['files']) && is_array($_FILES['files']['nam
         exit;
     }
     $totalSize = 0;
-    $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : false;
     foreach ($real as $i) {
         if ($files['error'][$i] !== UPLOAD_ERR_OK) {
             http_response_code(400);
             echo json_encode(['ok' => false, 'error' => 'Ошибка загрузки: ' . $files['name'][$i]]);
-            if ($finfo) finfo_close($finfo);
             exit;
         }
         $tmp = $files['tmp_name'][$i];
@@ -129,117 +147,83 @@ if ($kind === 'kp' && !empty($_FILES['files']) && is_array($_FILES['files']['nam
         if (!is_uploaded_file($tmp)) {
             http_response_code(400);
             echo json_encode(['ok' => false, 'error' => 'Некорректный файл']);
-            if ($finfo) finfo_close($finfo);
             exit;
         }
         $ext = strtolower(pathinfo($nm, PATHINFO_EXTENSION));
         if (!in_array($ext, $ALLOWED_EXT, true)) {
             http_response_code(400);
             echo json_encode(['ok' => false, 'error' => "Тип «.$ext» не поддерживается"]);
-            if ($finfo) finfo_close($finfo);
             exit;
         }
         $totalSize += $files['size'][$i];
         if ($totalSize > FILE_MAX_TOTAL) {
             http_response_code(400);
             echo json_encode(['ok' => false, 'error' => 'Превышен общий размер 10 MB']);
-            if ($finfo) finfo_close($finfo);
             exit;
         }
-        $mime = $finfo ? finfo_file($finfo, $tmp) : 'application/octet-stream';
-        $attachments[] = [
-            'name' => $nm,
-            'mime' => $mime ?: 'application/octet-stream',
-            'data' => file_get_contents($tmp),
-        ];
+        $attachments[] = ['path' => $tmp, 'name' => $nm];
     }
-    if ($finfo) finfo_close($finfo);
 }
 
-// Санитизация
-$name_s     = htmlspecialchars($name,     ENT_QUOTES, 'UTF-8');
-$email_s    = htmlspecialchars($email,    ENT_QUOTES, 'UTF-8');
-$phone_s    = htmlspecialchars($phone,    ENT_QUOTES, 'UTF-8');
-$message_s  = htmlspecialchars($message,  ENT_QUOTES, 'UTF-8');
-$comment_s  = htmlspecialchars($comment,  ENT_QUOTES, 'UTF-8');
-$product_s  = htmlspecialchars($product,  ENT_QUOTES, 'UTF-8');
-$category_s = htmlspecialchars($category, ENT_QUOTES, 'UTF-8');
-
-// Текст письма
-$bodyText   = ($kind === 'kp' ? $comment_s : $message_s);
-$bodyLabel  = ($kind === 'kp' ? 'Комментарий' : 'Сообщение');
-$subjectRu  = ($kind === 'kp' ? 'Новый запрос КП с сайта IC Фарватер' : 'Новая заявка с сайта IC Фарватер');
-
-$attachLine = $attachments
-    ? 'Вложений:  ' . count($attachments)
-    : 'Вложений:  нет';
+/* ─── Сборка тела письма ─── */
+$bodyText  = ($kind === 'kp' ? $comment : $message);
+$bodyLabel = ($kind === 'kp' ? 'Комментарий' : 'Сообщение');
+$subject   = ($kind === 'kp' ? 'Новый запрос КП с сайта IC Фарватер'
+                              : 'Новая заявка с сайта IC Фарватер');
 
 $lines = [
     "Новая заявка с сайта ic-farvater.ru ({$kind})",
     str_repeat('-', 40),
 ];
-if ($product_s)  $lines[] = "Раздел:   $category_s";
-if ($product_s)  $lines[] = "Товар:    $product_s";
-$lines[] = "Имя:      $name_s";
-$lines[] = "Email:    $email_s";
-$lines[] = "Телефон:  " . ($phone_s ?: 'не указан');
-$lines[] = $attachLine;
+if ($category) $lines[] = "Раздел:   $category";
+if ($product)  $lines[] = "Товар:    $product";
+$lines[] = "Имя:      $name";
+$lines[] = "Email:    $email";
+$lines[] = "Телефон:  " . ($phone ?: 'не указан');
+$lines[] = 'Вложений: ' . (count($attachments) ?: 'нет');
 $lines[] = '';
 $lines[] = "$bodyLabel:";
 $lines[] = $bodyText ?: '(пусто)';
 $lines[] = '';
 $lines[] = str_repeat('-', 40);
-$lines[] = "Дата: " . date('d.m.Y H:i') . " (МСК)";
-$lines[] = "IP:   " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
-$body = implode("\n", $lines);
+$lines[] = 'Дата: ' . date('d.m.Y H:i') . ' (МСК)';
+$lines[] = 'IP:   ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+$bodyPlain = implode("\n", $lines);
 
-$subjectEnc = '=?UTF-8?B?' . base64_encode($subjectRu) . '?=';
+/* ─── Отправка через SMTP ─── */
+$mail = new PHPMailer(true);
+try {
+    $mail->isSMTP();
+    $mail->Host       = $SMTP_HOST;
+    $mail->Port       = $SMTP_PORT;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $SMTP_USER;
+    $mail->Password   = $SMTP_PASS;
+    $mail->SMTPSecure = ($SMTP_PORT === 465)
+        ? PHPMailer::ENCRYPTION_SMTPS
+        : PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->CharSet    = 'UTF-8';
+    $mail->Encoding   = 'base64';
 
-$sent = false;
-$toFinal = TO_EMAIL . (CC_EMAIL ? ', ' . CC_EMAIL : '');
+    $mail->setFrom($SMTP_FROM, $SMTP_FROM_NAME);
+    $mail->addAddress($MAIL_TO);
+    if ($MAIL_CC) $mail->addCC($MAIL_CC);
+    $mail->addReplyTo($email, $name);
 
-if (empty($attachments)) {
-    $headers = implode("\r\n", [
-        "From: IC Фарватер <" . FROM_EMAIL . ">",
-        "Reply-To: $email",
-        "Content-Type: text/plain; charset=UTF-8",
-        "MIME-Version: 1.0",
-        "X-Mailer: PHP/" . phpversion(),
-    ]);
-    $sent = mail($toFinal, $subjectEnc, $body, $headers);
-} else {
-    // MIME multipart с вложениями
-    $boundary = '=_b_' . md5(uniqid('', true));
-    $eol = "\r\n";
-    $headers = implode($eol, [
-        "From: IC Фарватер <" . FROM_EMAIL . ">",
-        "Reply-To: $email",
-        "MIME-Version: 1.0",
-        "Content-Type: multipart/mixed; boundary=\"$boundary\"",
-        "X-Mailer: PHP/" . phpversion(),
-    ]);
-    $msg  = "--$boundary$eol";
-    $msg .= "Content-Type: text/plain; charset=UTF-8$eol";
-    $msg .= "Content-Transfer-Encoding: 8bit$eol$eol";
-    $msg .= $body . $eol;
+    $mail->Subject = $subject;
+    $mail->Body    = $bodyPlain;
+
     foreach ($attachments as $att) {
-        $fnameEnc = '=?UTF-8?B?' . base64_encode($att['name']) . '?=';
-        $msg .= "--$boundary$eol";
-        $msg .= "Content-Type: " . $att['mime'] . "; name=\"$fnameEnc\"$eol";
-        $msg .= "Content-Disposition: attachment; filename=\"$fnameEnc\"$eol";
-        $msg .= "Content-Transfer-Encoding: base64$eol$eol";
-        $msg .= chunk_split(base64_encode($att['data'])) . $eol;
+        $mail->addAttachment($att['path'], $att['name']);
     }
-    $msg .= "--$boundary--$eol";
-    $sent = mail($toFinal, $subjectEnc, $msg, $headers);
-}
 
-if ($sent) {
+    $mail->send();
     echo json_encode(['ok' => true]);
-} else {
+} catch (Exception $e) {
+    error_log('SMTP error: ' . $mail->ErrorInfo);
     http_response_code(500);
     echo json_encode([
         'ok' => false,
-        'error' => 'Ошибка отправки. Напишите нам напрямую: ' . TO_EMAIL,
+        'error' => 'Ошибка отправки. Напишите нам напрямую: ' . $MAIL_TO,
     ]);
 }

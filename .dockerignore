@@ -29,6 +29,11 @@ docs/
 *.json
 !assets/favicon/site.webmanifest
 !**/manifest.json
+!composer.json
+!composer.lock
+
+# Vendor — устанавливается Composer внутри Docker
+vendor/
 
 # Markdown docs (защищено также .htaccess — но не нужно вообще в image)
 *.md

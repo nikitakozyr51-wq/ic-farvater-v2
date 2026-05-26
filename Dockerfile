@@ -4,17 +4,18 @@
 
 FROM php:8.2-apache
 
-# curl нужен для будущих SMTP integrations + диагностики (опционально, ~3 MB)
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+# Системные утилиты (curl, ca-certificates для SMTP, unzip + git для composer)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl ca-certificates unzip git \
     && rm -rf /var/lib/apt/lists/*
 
-# Включаем нужные Apache модули (mod_rewrite для редиректов,
-# mod_headers/expires/deflate — для security/cache/gzip из .htaccess)
+# Composer (для установки PHPMailer)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Apache модули (mod_rewrite, headers, expires, deflate — нужны для .htaccess)
 RUN a2enmod rewrite headers expires deflate
 
-# Разрешаем .htaccess переопределять всё (AllowOverride All).
-# Меняем ТОЛЬКО директиву AllowOverride None → All, не трогая структуру
-# блоков <Directory> в apache2.conf.
+# Разрешаем .htaccess переопределять всё (AllowOverride None → All)
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # PHP конфиг (upload limits для KP-формы)
@@ -26,12 +27,19 @@ RUN { \
     echo "expose_php = Off"; \
     } > /usr/local/etc/php/conf.d/icfarvater.ini
 
-# Копируем приложение. .dockerignore исключает dev-файлы.
-COPY --chown=www-data:www-data . /var/www/html/
+WORKDIR /var/www/html
 
-# Apache по умолчанию слушает :80, Dokploy проксирует :80 → внешний :443 через Traefik
+# Сначала composer.json — для кэширования слоя vendor (пересобираем только при изменении deps)
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts
+
+# Потом — всё остальное приложение
+COPY --chown=www-data:www-data . /var/www/html/
+# Vendor мог перезаписаться предыдущей COPY — восстанавливаем
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts \
+    && chown -R www-data:www-data vendor
+
 EXPOSE 80
 
 # Явно указываем CMD на случай если Dokploy UI попытается переопределить
-# (в Dokploy в Advanced → Run Command поле должно быть ПУСТЫМ, не "/bin/sh")
 CMD ["apache2-foreground"]

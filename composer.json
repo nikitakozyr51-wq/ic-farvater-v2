@@ -1,0 +1,14 @@
+{
+  "name": "ic-farvater/site-v2",
+  "description": "IC Фарватер — B2B каталог ЭКБ",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1",
+    "phpmailer/phpmailer": "^6.9"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}
