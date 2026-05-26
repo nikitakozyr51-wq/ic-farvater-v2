@@ -13,14 +13,6 @@
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: 'Inter';
-  src: url('../assets/fonts/InterVariable-Italic.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
-
 /* === Body / typography defaults ===
    Sticky-footer pattern + zero-overscroll defense:
    - body flex column + min-height:100vh + main flex:1 → footer always sits at viewport
