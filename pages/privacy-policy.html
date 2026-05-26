@@ -27,13 +27,18 @@
 
   <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="../css/reset.css?v=1">
-  <link rel="stylesheet" href="../css/tokens.css?v=5">
-  <link rel="stylesheet" href="../css/base.css?v=7">
-  <link rel="stylesheet" href="../css/layout.css?v=1">
-  <link rel="stylesheet" href="../css/components.css?v=20">
-  <link rel="stylesheet" href="../css/inner-page.css?v=54">
-  <link rel="stylesheet" href="../css/animations.css?v=5">
+  <!-- Critical CSS (reset+tokens+base+layout) inline — генерируется через `npm run build` -->
+  <!-- BUILD:CRITICAL-CSS-START -->
+  <style id="critical-css">*,*:before,*:after{box-sizing:border-box;margin:0;padding:0}html{-moz-text-size-adjust:none;-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth;overflow-y:scroll;scrollbar-width:none}html::-webkit-scrollbar{width:0;display:none}body{min-height:100vh;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"liga" 1,"calt" 1;font-optical-sizing:auto;font-synthesis:none}img,picture,video,canvas,svg{display:block;max-width:100%}input,button,textarea,select{font:inherit;color:inherit}p,h1,h2,h3,h4,h5,h6{overflow-wrap:break-word}a{color:inherit;text-decoration:none}ul,ol{list-style:none}button{cursor:pointer;border:none;background:none}
+:root{--c-bg: #F5F3EF;--c-bg-alt: #E9E8EB;--c-text: #112F6E;--c-text-muted: #6B7A94;--c-border: #D7D3CB;--c-bg-dark: #112F6E;--c-text-on-dark: #F5F3EF;--c-muted-on-dark: #F5F3EFCC;--c-label-on-dark: #F5F3EFB3;--c-tertiary-on-dark: #F5F3EF99;--c-eyebrow-on-dark: #F5F3EF66;--c-border-on-dark: #F5F3EF26;--c-input-on-dark: #F5F3EF40;--c-accent: var(--c-text);--font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;--t-hero: clamp(36px, 4.7vw, 56px);--t-section: clamp(24px, 2.5vw, 30px);--t-sub: clamp(18px, 1.5vw, 24px);--t-list-row: clamp(18px, 1.7vw, 20px);--t-body: 16px;--t-body-mob: 15px;--t-card-name: 15px;--t-card-desc: 13px;--t-label: 13px;--t-disclaimer: 11px;--t-logo: 18px;--t-nav: 14px;--t-cta-sm: 13px;--t-cta-md: 14px;--t-hero-sub: clamp(14px, 1.4vw, 16px);--t-paragraph: 15px;--ls-hero: -1.5px;--ls-section: -.5px;--ls-sub: -.3px;--ls-label: .45px;--lh-hero: 1.1;--lh-section: 1.15;--lh-body: 1.55;--lh-row: 1.62;--s-1: 4px;--s-2: 8px;--s-3: 12px;--s-4: 16px;--s-5: 24px;--s-6: 32px;--s-7: 48px;--s-8: 64px;--s-9: 80px;--s-10: 96px;--s-11: 120px;--s-12: 160px;--section-y: clamp(48px, 7.5vw, 100px);--container-x: clamp(24px, 4.2vw, 60px);--container-max: 1320px;--gap-internal: var(--s-2);--gap-intra: var(--s-6);--gap-section: var(--s-9);--row-height: 75px;--row-height-spec: 52px;--badge-min: 36px;--header-h-desktop: 72px;--header-h-mobile: 60px;--hero-h-desktop: 720px;--hero-h-mobile: 480px;--bp-mobile-max: 767.98px;--bp-tablet: 768px;--bp-desktop: 1280px;--bp-wide: 1440px;--border-thin: 1px solid var(--c-border);--pill-py-sm: 10px;--pill-px-sm: 18px;--pill-py-md: 12px;--pill-px-md: 24px;--pill-py-lg: 14px;--pill-px-lg: 28px;--header-nav-gap: 30px;--header-right-gap: 16px;--section-gap: clamp(24px, 4.5vw, 60px);--grid-gap: clamp(16px, 1.8vw, 24px);--card-gap: clamp(12px, 1.2vw, 16px);--info-gap-d: 6px;--info-gap-m: 8px;--dur-instant: .15s;--dur-short: .25s;--dur-mid: .35s;--dur-long: .5s;--dur-xl: .7s;--ease-swiss: cubic-bezier(.16, 1, .3, 1);--ease-out: cubic-bezier(.25, .46, .45, .94);--ease-in-out: cubic-bezier(.4, 0, .2, 1)}
+@font-face{font-family:Inter;src:url(../assets/fonts/InterVariable.woff2) format("woff2-variations");font-weight:100 900;font-style:normal;font-display:swap}html{background:var(--c-text);overscroll-behavior:none}body{display:flex;flex-direction:column;min-height:100vh;overscroll-behavior:none;font-family:var(--font-primary);font-size:var(--t-body);color:var(--c-text);background:var(--c-bg);font-weight:400}main{flex:1 0 auto}.footer{flex-shrink:0}h1,h2,h3{font-weight:500;letter-spacing:var(--ls-section);line-height:var(--lh-section);color:var(--c-text)}h1{font-size:var(--t-hero);letter-spacing:var(--ls-hero);line-height:var(--lh-hero)}h2{font-size:var(--t-section)}h3{font-size:var(--t-sub);letter-spacing:var(--ls-sub)}p{line-height:var(--lh-body);color:var(--c-text-muted)}.container{width:min(100% - 2 * var(--container-x),var(--container-max));margin-inline:auto}.section{border-top:var(--border-thin)}.section--no-border{border-top:none}.section--products{padding-block:48px}.section--about,.section--promise{padding-block:56px}.section--services{padding-block:48px}@media(min-width:1024px){.section--products{padding-block:100px}.section--about{padding-block:60px}.section--promise{padding-block:110px}.section--services{padding-block:80px}}.is-mobile-only{display:none!important}.is-desktop-only{display:initial!important}@media(max-width:1023.98px){.is-mobile-only{display:initial!important}.is-desktop-only{display:none!important}}
+.grid-12{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s-5)}@media(max-width:767.98px){.grid-12{grid-template-columns:repeat(4,1fr);gap:var(--s-3)}}.cards-4-to-2{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-5)}@media(max-width:767.98px){.cards-4-to-2{grid-template-columns:repeat(2,1fr);gap:var(--s-4)}}.cards-3-to-1{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-5)}@media(max-width:767.98px){.cards-3-to-1{grid-template-columns:1fr;gap:var(--s-5)}}.split-2col{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-9);align-items:center}@media(max-width:767.98px){.split-2col{grid-template-columns:1fr;gap:var(--s-5);align-items:stretch}}.split-2col--image-right .split-2col__image{order:2}.split-2col--image-right .split-2col__text{order:1}@media(max-width:767.98px){.split-2col--image-right .split-2col__image{order:1}.split-2col--image-right .split-2col__text{order:2}}
+</style>
+  <!-- BUILD:CRITICAL-CSS-END -->
+
+  <link rel="stylesheet" href="../css/components.min.css?v=1">
+  <link rel="stylesheet" href="../css/inner-page.min.css?v=1">
+  <link rel="stylesheet" href="../css/animations.min.css?v=1">
 </head>
 <body class="is-legal-page">
 
@@ -243,8 +248,8 @@
   <script src="../js/vendor/lenis.min.js" defer></script>
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="../js/main.js?v=49" defer></script>
-  <script src="../js/animations.js?v=7" defer></script>
-  <script src="../js/nbsp.js?v=1" defer></script>
+  <script src="../js/main.min.js?v=1" defer></script>
+  <script src="../js/animations.min.js?v=1" defer></script>
+  <script src="../js/nbsp.min.js?v=1" defer></script>
 </body>
 </html>

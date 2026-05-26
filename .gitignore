@@ -6,6 +6,9 @@ vendor/
 .lazyweb/
 .agents/
 
+# Node (esbuild для минификации в production — npm install)
+node_modules/
+
 # Junk PNG / screenshots at root (audit captures) — but KEEP assets/**/*.png
 /*.png
 /*.jpeg

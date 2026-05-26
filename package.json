@@ -1,0 +1,12 @@
+{
+  "name": "ic-farvater-site",
+  "version": "1.0.0",
+  "description": "IC Фарватер — статический сайт (без bundler'а, esbuild только для минификации в production)",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-prod.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}
