@@ -30,4 +30,6 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -fsS http://localhost/ > /dev/null || exit 1
 
-# php:apache image уже имеет правильный CMD ["apache2-foreground"], не переопределяем
+# Явно указываем CMD на случай если Dokploy UI попытается переопределить
+# (в Dokploy в Advanced → Run Command поле должно быть ПУСТЫМ, не "/bin/sh")
+CMD ["apache2-foreground"]
