@@ -1621,9 +1621,13 @@ function initProductDetail() {
   const imgEl = document.querySelector('.pd-image__placeholder');
   const labelEl = document.querySelector('.pd-image__label');
   if (labelEl) labelEl.textContent = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
-  if (imgEl && data.image) {
+  if (imgEl) {
     const labelText = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
-    imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
+    if (data.image) {
+      imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
+    } else {
+      imgEl.innerHTML = `<span class="pd-image__label">${labelText}</span>`;
+    }
   }
 
   // Page kind marker → CSS uses this to swap layout (Series Detail vs Variant Page vs Landing).
