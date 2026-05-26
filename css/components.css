@@ -852,19 +852,53 @@
   height: var(--header-h-mobile);
 }
 
-/* Desktop expandable header search — injected by initHeaderSearch() into .header__right.
-   In flex layout the form sits BEFORE the icon, with width 0 by default. On
-   .header--searching, width animates to 320px (spring overshoot easing) while the
-   icon collapses to width 0 — the form visually slides out FROM the icon position,
-   expanding leftward into the now-empty nav area. */
+/* Desktop expandable header search — built by initHeaderSearch().
+   Architecture: a wrap div takes the icon's flex space (18px). Inside the wrap,
+   the search ICON and the search FORM are both absolutely positioned with right:0.
+   When .header--searching is active, the form animates width 0→320px — because
+   it's anchored right, growth happens leftward into the nav area. The icon and
+   the neighbour "запросить КП" CTA do NOT move (no flex reflow). */
+.header__search-wrap,
 .header__search-form { display: none; }
 @media (min-width: 1024px) {
+  .header__search-wrap {
+    position: relative;
+    width: 18px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    /* When searching, expand the wrap's interactive surface (form is wider than 18px)
+       so hover/click on the form area registers properly. */
+  }
+  /* Re-position the existing search icon button absolutely inside the wrap.
+     This overrides the inline-flex placement from .header__right. */
+  .header__search-wrap .header__search {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    transition:
+      opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
+  .header--searching .header__search-wrap .header__search {
+    opacity: 0;
+    transform: translateY(-50%) translateX(6px) scale(0.7);
+    pointer-events: none;
+  }
+
   .header__search-form {
     display: flex;
     align-items: center;
-    gap: 6px;
-    height: 40px;
+    gap: 4px;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
     width: 0;
+    height: 40px;
     padding: 0;
     background: var(--c-bg);
     border: 1px solid var(--c-border);
@@ -873,28 +907,25 @@
     pointer-events: none;
     overflow: hidden;
     box-sizing: border-box;
+    /* Closing (default) transition — slightly faster than opening for snappy feel */
     transition:
-      width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      margin-right 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      opacity 0.2s ease,
+      width 0.42s cubic-bezier(0.65, 0, 0.35, 1),
+      padding 0.35s cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
       border-color 0.2s ease;
   }
   .header--searching .header__search-form {
-    width: 320px;
-    padding: 0 6px 0 18px;
-    margin-right: 8px;
+    width: 340px;
+    padding: 0 4px 0 18px;
     opacity: 1;
     pointer-events: auto;
+    /* Opening transition — spring overshoot for delight */
     transition:
-      width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
-      padding 0.4s 0.05s cubic-bezier(0.34, 1.2, 0.64, 1),
-      margin-right 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      opacity 0.25s 0.1s ease;
+      width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+      padding 0.45s 0.05s cubic-bezier(0.34, 1.2, 0.64, 1),
+      opacity 0.3s 0.08s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .header__search-form:focus-within {
-    border-color: var(--c-text);
-  }
+  .header__search-form:focus-within { border-color: var(--c-text); }
   .header__search-input {
     flex: 1;
     min-width: 0;
@@ -916,8 +947,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     background: transparent;
     border: none;
     color: var(--c-text);
@@ -933,28 +964,13 @@
 
   /* Nav fades + slides up slightly when search opens. */
   .header__nav {
-    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .header--searching .header__nav {
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px);
-  }
-  /* Icon button collapses (width + opacity) — form takes its space as it expands. */
-  .header__search {
-    overflow: hidden;
-    transition:
-      opacity 0.2s ease,
-      width 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      margin 0.4s cubic-bezier(0.34, 1.2, 0.64, 1),
-      transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
-  }
-  .header--searching .header__search {
-    opacity: 0;
-    width: 0;
-    margin: 0;
-    transform: translateX(8px) scale(0.7);
-    pointer-events: none;
   }
 }
 

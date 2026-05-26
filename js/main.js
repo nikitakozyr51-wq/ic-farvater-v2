@@ -91,12 +91,18 @@ function initHeaderSearch() {
   const searchBtn = header && header.querySelector('.header__search');
   if (!header || !searchBtn) return;
 
-  // Build the inline search form once and insert BEFORE the icon inside .header__right.
-  // With flex justify-content:flex-end, width:0 means form takes no space; when active,
-  // form expands width (320px) while icon collapses (width:0) — net effect is the form
-  // "slides out" from where the icon was, growing leftward into the nav space.
+  // Wrap icon + form in a fixed-width container so the form can be absolutely positioned
+  // without disturbing the flex layout. The wrap is 18px wide (matches icon) — when form
+  // expands, it grows LEFTWARD from the wrap's right edge (anchored via right:0), so the
+  // adjacent "запросить КП" button stays put.
+  let wrap = header.querySelector('.header__search-wrap');
   let form = header.querySelector('.header__search-form');
-  if (!form) {
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.className = 'header__search-wrap';
+    searchBtn.parentNode.insertBefore(wrap, searchBtn);
+    wrap.appendChild(searchBtn);
+
     form = document.createElement('form');
     form.className = 'header__search-form';
     form.setAttribute('role', 'search');
@@ -114,7 +120,7 @@ function initHeaderSearch() {
         </svg>
       </button>
     `;
-    searchBtn.parentNode.insertBefore(form, searchBtn);
+    wrap.appendChild(form);
   }
 
   const input = form.querySelector('.header__search-input');
