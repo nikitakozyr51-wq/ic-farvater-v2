@@ -87,6 +87,7 @@
   color: var(--c-text);
   font-size: var(--t-cta-sm);
   font-weight: 500;
+  border: 1px solid var(--c-bg);
   border-radius: 100px;
   display: inline-flex;
   align-items: center;
@@ -96,9 +97,19 @@
   line-height: 1;
   /* Pencil mobile: tqaZH gap 24 between children + ZZ8ma padding-top 8 = visual 32 */
   margin-top: 32px;
-  transition: opacity 0.2s ease;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
-.hero__cta:hover { opacity: 0.92; }
+@media (hover: hover) {
+  .hero__cta:hover {
+    background: transparent;
+    color: var(--c-bg);
+    border-color: var(--c-bg);
+  }
+}
+.hero__cta:active { transform: scale(0.97); }
 
 /* Desktop overrides */
 @media (min-width: 1024px) {
@@ -249,7 +260,14 @@
   color: var(--c-text);
   font-size: 16px;
   font-weight: 500;
+  cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-swiss),
+              opacity var(--dur-short) var(--ease-out);
 }
+@media (hover: hover) {
+  .footer__email-form button:hover { transform: translateX(3px); opacity: 0.7; }
+}
+.footer__email-form button:active { transform: translateX(3px) scale(0.92); }
 .footer__disclaimer {
   font-size: 11px;
   color: #F5F3EF66; /* Pencil z46ZAu 40% on dark */
@@ -522,16 +540,30 @@
   font-weight: 500;
   line-height: 1;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  border: 1px solid transparent;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
-.btn-pill:hover { opacity: 0.88; }
 
 .btn-pill--solid {
   background: var(--c-text);
   color: var(--c-bg);
+  border-color: var(--c-text);
   font-size: var(--t-cta-sm);
   padding: var(--pill-py-sm) var(--pill-px-sm);
 }
+/* Unified invert pattern — solid dark pill flips to cream bg + dark text + dark border.
+   Applied via @media (hover: hover) so :hover state doesn't linger after tap on mobile. */
+@media (hover: hover) {
+  .btn-pill--solid:hover {
+    background: var(--c-bg);
+    color: var(--c-text);
+    border-color: var(--c-text);
+  }
+}
+.btn-pill:active { transform: scale(0.97); }
 
 /* Mobile: section CTAs are full-width 48h pills (override desktop fit-content) */
 @media (max-width: 1023.98px) {
@@ -841,24 +873,23 @@ body.menu-open {
   overflow-y: auto;
   overscroll-behavior: contain;
   /* Slide-in from right (Pencil C8EHBB doesn't spec motion; choose subtle horizontal reveal
-     that complements sticky header burger position). */
+     that complements sticky header burger position).
+     pointer-events:none (instead of visibility:hidden) avoids race when user re-toggles
+     during the slide-out — pointer-events flips instantly with attribute. */
   transform: translateX(100%);
-  visibility: hidden;
-  transition: transform var(--dur-mid) var(--ease-in-out),
-              visibility 0s linear var(--dur-mid);
+  pointer-events: none;
+  transition: transform var(--dur-mid) var(--ease-in-out);
 }
-/* Override UA `[hidden] { display: none }` so transform/visibility transitions can run. */
+/* Override UA `[hidden] { display: none }` so transform transitions can run. */
 .mobile-menu[hidden] {
   display: flex;
 }
 .mobile-menu:not([hidden]) {
   transform: translateX(0);
-  visibility: visible;
-  transition: transform var(--dur-mid) var(--ease-in-out),
-              visibility 0s linear 0s;
+  pointer-events: auto;
 }
 @media (prefers-reduced-motion: reduce) {
-  .mobile-menu, .mobile-menu:not([hidden]) { transition: none; }
+  .mobile-menu { transition: none; }
 }
 .mobile-menu__header {
   flex: 0 0 auto;
@@ -940,11 +971,16 @@ body.menu-open {
   height: 52px;
   background: var(--c-text);
   color: var(--c-bg);
+  border: 1px solid var(--c-text);
   border-radius: 100px;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
+.mobile-menu__cta:active { transform: scale(0.97); }
 .mobile-menu__contact {
   display: flex;
   flex-direction: column;
@@ -1050,15 +1086,23 @@ body.menu-open {
     font-size: var(--t-cta-sm);
     font-weight: 500;
     padding: var(--pill-py-sm) var(--pill-px-sm);
+    border: 1px solid var(--c-text);
     border-radius: 100px;
     display: inline-flex;
     align-items: center;
     line-height: 1;  /* Pencil pill height: 10+13+10=33, not 10+20+10=40 */
-    transition: opacity 0.2s ease;
+    transition: background-color var(--dur-short) var(--ease-out),
+                color var(--dur-short) var(--ease-out),
+                border-color var(--dur-short) var(--ease-out),
+                transform 80ms var(--ease-out);
   }
-  .header__cta:hover {
-    opacity: 0.85;
+  @media (hover: hover) {
+    .header__cta:hover {
+      background: transparent;
+      color: var(--c-text);
+    }
   }
+  .header__cta:active { transform: scale(0.97); }
 }
 
 
@@ -1198,22 +1242,32 @@ body.menu-open {
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+  border: 1px solid var(--c-bg);
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
+.cookie-banner__btn:active { transform: scale(0.97); }
 
 .cookie-banner__btn--reject {
   background: transparent;
   color: var(--c-bg);
-  border: 1px solid var(--c-bg);
 }
-.cookie-banner__btn--reject:hover { background: var(--c-bg); color: var(--c-text); }
+@media (hover: hover) {
+  .cookie-banner__btn--reject:hover { background: var(--c-bg); color: var(--c-text); }
+}
 
 .cookie-banner__btn--accept {
   background: var(--c-bg);
   color: var(--c-text);
-  border: 0;
 }
-.cookie-banner__btn--accept:hover { opacity: 0.9; }
+@media (hover: hover) {
+  .cookie-banner__btn--accept:hover {
+    background: transparent;
+    color: var(--c-bg);
+  }
+}
 
 @media (min-width: 1024px) {
   /* Desktop Pencil ZHi2k: h=95, padding [24, 60], text-left + actions-right inline */
@@ -1463,15 +1517,25 @@ body.menu-open {
   height: 52px;
   background: var(--c-bg);
   color: var(--c-text);
-  border: 0;
+  border: 1px solid var(--c-bg);
   border-radius: 100px;
   font-size: 15px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out),
+              opacity var(--dur-short) ease;
 }
-.kp-form__submit:hover { opacity: 0.9; }
+@media (hover: hover) {
+  .kp-form__submit:hover {
+    background: transparent;
+    color: var(--c-bg);
+  }
+}
+.kp-form__submit:active { transform: scale(0.97); }
 .kp-form__submit:disabled { opacity: 0.6; cursor: progress; }
 
 .kp-form__msg {

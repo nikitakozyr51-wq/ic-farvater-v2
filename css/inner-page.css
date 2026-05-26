@@ -410,10 +410,22 @@
   font-size: var(--t-cta-sm);
   font-weight: 500;
   padding: 14px 0;
+  border: 1px solid var(--c-text);
   border-radius: 100px;
   text-align: center;
   line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
+@media (hover: hover) {
+  .filter-clear__btn:hover {
+    background: transparent;
+    color: var(--c-text);
+  }
+}
+.filter-clear__btn:active { transform: scale(0.97); }
 
 /* --- Mobile toolbar --- */
 .catalog__toolbar {
@@ -484,6 +496,17 @@
   color: var(--c-text);
   white-space: nowrap;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
+}
+.catalog__pill:active { transform: scale(0.97); }
+@media (hover: hover) {
+  .catalog__pill:hover:not(.catalog__pill--active) {
+    border-color: var(--c-text);
+  }
 }
 .catalog__pill--active {
   background: var(--c-text);
@@ -764,14 +787,23 @@
   border-radius: 100px;
   background: var(--c-text);
   color: var(--c-bg);
-  border: 0;
+  border: 1px solid var(--c-text);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
-.contact-form__submit:hover { opacity: 0.9; }
+@media (hover: hover) {
+  .contact-form__submit:hover {
+    background: transparent;
+    color: var(--c-text);
+  }
+}
+.contact-form__submit:active { transform: scale(0.97); }
 
 /* --- Map Section (Pencil PB0jN desktop / luygh mobile) ---
    Mobile luygh padding [40,24,48,24] → padding-block 40 top / 48 bottom. Border-top from .section default. */
@@ -1181,20 +1213,31 @@
   letter-spacing: var(--ls-label);
   cursor: pointer;
   text-decoration: none;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+  border: 1px solid var(--c-text);
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out),
+              transform 80ms var(--ease-out);
 }
+.pd-actions__primary:active,
+.pd-actions__secondary:active { transform: scale(0.97); }
 .pd-actions__primary {
   background: var(--c-text);
   color: var(--c-bg);
-  border: 0;
 }
-.pd-actions__primary:hover { opacity: 0.9; }
+@media (hover: hover) {
+  .pd-actions__primary:hover {
+    background: transparent;
+    color: var(--c-text);
+  }
+}
 .pd-actions__secondary {
   background: transparent;
   color: var(--c-text);
-  border: 1px solid var(--c-text);
 }
-.pd-actions__secondary:hover { background: var(--c-text); color: var(--c-bg); }
+@media (hover: hover) {
+  .pd-actions__secondary:hover { background: var(--c-text); color: var(--c-bg); }
+}
 .pd-actions__arrow { display: inline-flex; line-height: 1; }
 
 /* PD Nomenclature (Pencil v4 KLr6C / TquVi / DKTVM / CPfHe / s2AB0d / nobk8) —

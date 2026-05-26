@@ -37,6 +37,31 @@
   transform: scaleX(0);
 }
 
+/* ─── Above-the-fold entry — CSS-only, no JS delay ─── */
+/* Used by hero / page-top heads / product-top — visible immediately on first paint.
+   Don't gate via ScrollTrigger (those wait for full defer-script chain to load). */
+.hero__text--entry > *,
+.page-top__head--entry,
+.product-top__inner--entry > * {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: ic-entry-up 0.55s var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)) forwards;
+}
+.hero__text--entry > *:nth-child(1),
+.product-top__inner--entry > *:nth-child(1) { animation-delay: 0.05s; }
+.hero__text--entry > *:nth-child(2),
+.product-top__inner--entry > *:nth-child(2) { animation-delay: 0.13s; }
+.hero__text--entry > *:nth-child(3),
+.product-top__inner--entry > *:nth-child(3) { animation-delay: 0.21s; }
+
+/* Page-top entry siblings — small staggered delay between head and image/desc */
+.page-top__head--entry:nth-of-type(1) { animation-delay: 0.05s; }
+.page-top__head--entry:nth-of-type(2) { animation-delay: 0.15s; }
+
+@keyframes ic-entry-up {
+  to { opacity: 1; transform: none; }
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   [data-animate="fade-up"],
@@ -51,5 +76,12 @@
   }
   .word-inner {
     transform: none !important;
+  }
+  .hero__text--entry > *,
+  .page-top__head--entry,
+  .product-top__inner--entry > * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }

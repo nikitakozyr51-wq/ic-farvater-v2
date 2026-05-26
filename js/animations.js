@@ -166,7 +166,6 @@
           ease: 'power2.out',
           force3D: true,
           overwrite: true,
-          clearProps: 'transform',
         });
       },
     });
@@ -189,27 +188,6 @@
           duration: adaptiveDuration(1.2),
           ease: 'power2.inOut',
           overwrite: true,
-        });
-      },
-    });
-  });
-
-
-  // ═══════════════════════════════════════
-  // 6. SECTION BORDERS — animate in
-  // ═══════════════════════════════════════
-
-  gsap.utils.toArray('.section-header').forEach((el) => {
-    const border = el.style.borderBottom ? el : el;
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
-      onEnter: () => {
-        gsap.fromTo(el, { opacity: 0.3 }, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
         });
       },
     });
