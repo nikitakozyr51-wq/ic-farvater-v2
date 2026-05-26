@@ -1442,14 +1442,13 @@ const CATEGORY_LANDINGS = {
 
 /** Related cards (Pencil "другие категории" — 3 cats at bottom of each landing).
  *  Per landing: show 3 OTHER cats (not current one). */
-const RELATED_CATS = {
-  microchips:  ['razemy',     'converters',  'capacitors'],
-  razemy:      ['microchips', 'converters',  'transistors'],
-  converters:  ['microchips', 'razemy',      'capacitors'],
-  capacitors:  ['transistors','converters',  'pcb'],
-  transistors: ['capacitors', 'microchips',  'converters'],
-  pcb:         ['razemy',     'microchips',  'converters']
-};
+// Related cats for "другие категории" on landings — 4 cards per Pencil W3oj8 4-col grid.
+// Always derived from the canonical order minus the current category, takes the first 4
+// (so each landing gets 4 sibling cats out of 5 possible — drops the "weakest fit" tail).
+const RELATED_CAT_ORDER = ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb'];
+const RELATED_CATS = Object.fromEntries(
+  RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
+);
 const RELATED_CAT_INFO = {
   microchips:  { label: 'микросхемы',       desc: 'цифровые и&nbsp;аналоговые ис', image: '../assets/images/products/items/ET1636RR1 1.webp' },
   razemy:      { label: 'разъёмы',          desc: 'ет-серии, более 1500 позиций', image: '../assets/images/products/connectors/et-snc28.webp' },
