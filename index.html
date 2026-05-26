@@ -100,6 +100,13 @@
   }
   </script>
 
+  <!-- LCP image preload — responsive (mobile / desktop) -->
+  <link rel="preload" as="image"
+        href="assets/images/9CN77-1700.webp"
+        imagesrcset="assets/images/9CN77-800.webp 800w, assets/images/9CN77-1700.webp 1700w"
+        imagesizes="100vw"
+        fetchpriority="high">
+
   <!-- Font preload (only 500, used in headings — most visible) -->
   <link rel="preload" href="assets/fonts/Inter-500.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -154,7 +161,8 @@
     <!-- Hero Seed-style (verified hTqZQ desktop / pt5JK mobile) -->
     <section class="hero">
       <picture class="hero__bg" aria-hidden="true">
-        <img width="1699" height="780" src="assets/images/9CN77.webp" alt="" fetchpriority="high" decoding="async">
+        <source media="(max-width: 768px)" srcset="assets/images/9CN77-800.webp">
+        <img width="1700" height="780" src="assets/images/9CN77-1700.webp" alt="" fetchpriority="high" decoding="async">
       </picture>
       <div class="container hero__inner">
         <div class="hero__text hero__text--entry">
