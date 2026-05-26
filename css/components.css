@@ -217,11 +217,21 @@
 .footer__nav { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a {
   font-size: 14px;
-  color: var(--c-text-on-dark);
+  color: var(--c-tertiary-on-dark);
   line-height: 20px;
-  transition: opacity 0.2s ease;
+  text-decoration: none;
+  transition: color var(--dur-short) ease;
 }
-.footer__nav a:hover { opacity: 0.7; }
+/* Dot-fill on hover — same paradigm as catalog filters */
+.footer__nav a::before {
+  content: '( ) ';
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+@media (hover: hover) {
+  .footer__nav a:hover { color: var(--c-text-on-dark); }
+  .footer__nav a:hover::before { content: '(\2022) '; }
+}
 
 .footer__newsletter { display: flex; flex-direction: column; gap: var(--s-4); }
 .footer__newsletter-title {
