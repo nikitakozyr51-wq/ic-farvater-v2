@@ -710,7 +710,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--card-gap);
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
 }
+.card:hover { opacity: 0.85; }
 
 .card__img {
   background: var(--c-bg-alt);
@@ -792,85 +796,149 @@
   line-height: 1;  /* tight UI text — match Pencil cap-height */
 }
 
-/* Mobile (default): nav + right hidden, burger visible.
-   Open state (.header__nav--open via JS): fullscreen overlay with stacked links. */
+/* Mobile (default): nav + right hidden, burger visible. */
 .header__nav,
 .header__right {
   display: none;
 }
 
-.header__nav--open {
+body.menu-open {
+  overflow: hidden;
+}
+
+/* Mobile menu overlay — Pencil C8EHBB "Menu v4 — Mobile (open)".
+   Built once by initMobileMenu() and appended to <body> so it sits ABOVE the
+   sticky page header (z-index 110), preventing the scroll-edge artifact where
+   a sticky header peeks through behind the menu. */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: var(--c-bg);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  inset: 56px 0 0 0; /* below mobile header height */
-  z-index: 99;
-  background: var(--c-bg);
-  padding: 32px 24px 48px;
-  gap: 0;
-  align-items: stretch;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
-.header__nav--open .header__nav-link {
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: var(--ls-section);
-  height: 64px;
+.mobile-menu[hidden] { display: none; }
+.mobile-menu__header {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: var(--border-thin);
-  color: var(--c-text);
+  height: 60px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-bg);
 }
-.header__nav--open .header__nav-link::after {
-  content: '→';
+.mobile-menu__logo {
+  font-family: var(--font-primary);
   font-size: 18px;
-  color: var(--c-text-muted);
-  margin-left: 16px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: var(--c-text);
+  line-height: 1;
+  text-decoration: none;
 }
-/* Mobile-only extras row injected by JS at the bottom of the open menu — КП CTA + search.
-   Desktop hides these because .header__right already provides them. */
-.header__nav-extras { display: none; }
-.header__nav--open .header__nav-extras {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 32px;
-  margin-top: auto;
-}
-.header__nav-cta {
+.mobile-menu__close {
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  padding: 0 24px;
+  background: transparent;
+  color: var(--c-text);
+  cursor: pointer;
+}
+/* Nav: search-item + 5 nav-items, right-aligned content. */
+.mobile-menu__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 0;
+}
+.mobile-menu__search-item,
+.mobile-menu__item {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  height: 60px;
+  padding: 0 0 14px 0;
+  border-bottom: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text);
+  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.mobile-menu__search-item {
+  color: var(--c-text-muted);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.mobile-menu__search-item svg { color: var(--c-text); flex: 0 0 18px; }
+.mobile-menu__item {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+.mobile-menu__arrow {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+}
+.mobile-menu__cta-wrap {
+  padding: 40px 24px 24px;
+}
+.mobile-menu__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
   background: var(--c-text);
   color: var(--c-bg);
   border-radius: 100px;
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0;
   text-decoration: none;
 }
-.header__nav-search {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  height: 48px;
-  padding: 0 24px;
-  background: transparent;
-  border: 1px solid var(--c-border);
-  border-radius: 100px;
-  font-family: inherit;
-  font-size: 14px;
+.mobile-menu__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 24px 32px;
+  border-top: 1px solid var(--c-border);
+}
+.mobile-menu__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mobile-menu__field-label {
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0.45px;
+  color: var(--c-text-muted);
+}
+.mobile-menu__field-value {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
   color: var(--c-text);
-  cursor: pointer;
+  text-decoration: none;
 }
-body.menu-open {
-  overflow: hidden;
-}
-/* Burger morphs to X when menu open */
+/* Burger morphs to X when menu open — already covered by mobile-menu__close,
+   but keep this for the page-header burger itself (closes menu on click). */
 .header__burger--open svg path { d: path('M5 5L17 17M17 5L5 17'); }
+
+/* Desktop: hide mobile menu entirely. */
+@media (min-width: 1024px) {
+  .mobile-menu, .mobile-menu[hidden] { display: none; }
+}
 
 .header__burger {
   color: var(--c-text);

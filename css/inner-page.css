@@ -229,6 +229,38 @@
   letter-spacing: 0;
 }
 
+/* Bullets list inside accordion body (services on main page, esDib reference) */
+.accordion-item__bullets {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.accordion-item__bullets li {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+  padding-left: 20px;
+  position: relative;
+}
+.accordion-item__bullets li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--c-text-muted);
+}
+
+/* Services accordion: first item gets a top border (matches old services-list pattern) */
+.services-list.accordion-list .accordion-item:first-child {
+  border-top: var(--border-thin);
+}
+/* Services head font-size: 18→20 to match old .services-list__item scale */
+.services-list .accordion-item__head {
+  font-size: var(--t-list-row);
+}
+
 /* Cert accordion (single iso item) is 18px on mobile per Pencil jUtkY */
 .section--cert .accordion-item { font-size: 18px; }
 

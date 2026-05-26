@@ -70,55 +70,100 @@ function initHeaderSearch() {
   }
 }
 
-/** Mobile burger menu toggle. Also surfaces the КП CTA + search trigger inside the open menu
-    (in desktop they live in .header__right which is hidden on mobile). */
+/** Mobile burger menu — Pencil C8EHBB "Menu v4 — Mobile (open)".
+    Builds a fullscreen overlay element appended to <body> so it sits above the
+    sticky page header (avoids the scroll-edge artifact where sticky header peeks
+    through). Structure (per Pencil C8EHBB):
+      - menu header: ic farvater logo + X close
+      - search-item (top)
+      - 5 nav-items: главная / продукция / о компании / услуги / контакты (28/500/-1, alignItems end, → on right)
+      - CTA: запросить кп → (full-width pill, dark fill, 52h)
+      - contact block: 4 fields (телефон/email/адрес/режим работы) */
 function initMobileMenu() {
   const burger = document.querySelector('.header__burger');
-  const nav = document.querySelector('.header__nav');
-  if (!burger || !nav) return;
+  if (!burger) return;
 
-  // Inject mobile-only КП + search row at the bottom of the nav (rendered once).
-  if (!nav.querySelector('.header__nav-extras')) {
-    const extras = document.createElement('div');
-    extras.className = 'header__nav-extras';
-    extras.innerHTML = `
-      <a href="#" class="header__nav-cta" data-action="open-kp-drawer">запросить КП</a>
-      <button type="button" class="header__nav-search" aria-label="Поиск по каталогу">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <span>поиск по&nbsp;каталогу</span>
-      </button>
+  // Resolve relative path back to root (pages/about.html → "../"; index.html → "")
+  const isInPages = /\/pages\//.test(window.location.pathname);
+  const root = isInPages ? '../' : '';
+
+  // Build the overlay (once per page). Reuses on subsequent burger clicks.
+  let menu = document.getElementById('mobileMenu');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.id = 'mobileMenu';
+    menu.className = 'mobile-menu';
+    menu.hidden = true;
+    menu.innerHTML = `
+      <header class="mobile-menu__header">
+        <a href="${root}index.html" class="mobile-menu__logo">ic farvater</a>
+        <button type="button" class="mobile-menu__close" aria-label="Закрыть меню">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+      <nav class="mobile-menu__nav" aria-label="Главная навигация">
+        <button type="button" class="mobile-menu__search-item" data-action="mobile-search">
+          <span class="mobile-menu__search-label">поиск</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a class="mobile-menu__item" href="${root}index.html"><span>главная</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="${root}pages/products.html"><span>продукция</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="${root}pages/about.html"><span>о&nbsp;компании</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="${root}index.html#uslugi"><span>услуги</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="${root}pages/contacts.html"><span>контакты</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
+      </nav>
+      <div class="mobile-menu__cta-wrap">
+        <a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить КП <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="mobile-menu__contact">
+        <div class="mobile-menu__field">
+          <span class="mobile-menu__field-label">телефон</span>
+          <a class="mobile-menu__field-value" href="tel:+79967788842">+7&nbsp;996&nbsp;778-88-42</a>
+        </div>
+        <div class="mobile-menu__field">
+          <span class="mobile-menu__field-label">email</span>
+          <a class="mobile-menu__field-value" href="mailto:info@ic-farvater.ru">info@ic-farvater.ru</a>
+        </div>
+        <div class="mobile-menu__field">
+          <span class="mobile-menu__field-label">адрес</span>
+          <span class="mobile-menu__field-value">ул.&nbsp;Беринга, д.&nbsp;1-А, оф.&nbsp;46-Н<br>г.&nbsp;Санкт-Петербург, 199406</span>
+        </div>
+        <div class="mobile-menu__field">
+          <span class="mobile-menu__field-label">режим работы</span>
+          <span class="mobile-menu__field-value">пн.–пт. 10:00–18:00</span>
+        </div>
+      </div>
     `;
-    nav.appendChild(extras);
+    document.body.appendChild(menu);
   }
 
   function setOpen(open) {
-    nav.classList.toggle('header__nav--open', open);
+    menu.hidden = !open;
+    menu.classList.toggle('mobile-menu--open', open);
     burger.classList.toggle('header__burger--open', open);
     burger.setAttribute('aria-expanded', open);
     document.body.classList.toggle('menu-open', open);
   }
 
-  burger.addEventListener('click', () => {
-    setOpen(!nav.classList.contains('header__nav--open'));
-  });
+  burger.addEventListener('click', () => setOpen(menu.hidden));
+  menu.querySelector('.mobile-menu__close').addEventListener('click', () => setOpen(false));
 
-  // Close menu on nav link click (v2 uses .header__nav-link) — and on the injected КП/search row.
-  nav.querySelectorAll('.header__nav-link, .header__link, .header__nav-cta, .header__nav-search').forEach(link => {
+  // Close menu on any nav/CTA/contact link click. Excludes the search-item which has its own handler.
+  menu.querySelectorAll('.mobile-menu__item, .mobile-menu__cta, .mobile-menu__field-value, .mobile-menu__logo').forEach(link => {
     link.addEventListener('click', () => setOpen(false));
   });
 
-  // Route the mobile search button to catalog#search.
-  const mobileSearchBtn = nav.querySelector('.header__nav-search');
-  if (mobileSearchBtn) {
-    mobileSearchBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const onCatalog = /\/products\.html(\?|#|$)/.test(window.location.pathname + window.location.search);
-      window.location.href = onCatalog ? (window.location.pathname + '#search') : 'products.html#search';
-    });
-  }
+  // Search-item routes to catalog#search.
+  menu.querySelector('.mobile-menu__search-item').addEventListener('click', () => {
+    setOpen(false);
+    const onCatalog = /\/products\.html(\?|#|$)/.test(window.location.pathname + window.location.search);
+    window.location.href = onCatalog ? (window.location.pathname + '#search') : `${root}pages/products.html#search`;
+  });
 }
 
 /** Highlight nav link matching current page or hash (v2 .header__nav-link + v1 .header__link) */
