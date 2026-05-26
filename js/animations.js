@@ -108,29 +108,6 @@
     });
   });
 
-  // Pure opacity fade (no vertical travel) — used for grids where translateY motion
-  // distracts (e.g. pd-related 4 cards). Soft sine ease + small stagger reads as one
-  // gentle reveal instead of "cards jumping up from below".
-  gsap.utils.toArray('[data-animate="fade-up-fast"]').forEach((container) => {
-    const children = gsap.utils.toArray(container.children);
-    gsap.set(children, { opacity: 0 });
-    ScrollTrigger.create({
-      trigger: container,
-      start: 'top 92%',
-      once: true,
-      onEnter: () => {
-        gsap.to(children, {
-          opacity: 1,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: 'sine.out',
-          force3D: true,
-          overwrite: true,
-          onComplete: () => container.removeAttribute('data-animate'),
-        });
-      },
-    });
-  });
 
 
   // ═══════════════════════════════════════

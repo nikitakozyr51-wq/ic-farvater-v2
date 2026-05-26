@@ -10,11 +10,6 @@
   transform: translateY(30px) translateZ(0);
 }
 
-/* ─── Pure fade (no Y travel) — for grids where movement distracts ─── */
-[data-animate="fade-up-fast"] > * {
-  opacity: 0;
-}
-
 /* ─── Split text ─── */
 .word {
   display: inline-block;
@@ -71,7 +66,6 @@
 @media (prefers-reduced-motion: reduce) {
   [data-animate="fade-up"],
   [data-animate="fade-up-stagger"] > *,
-  [data-animate="fade-up-fast"] > *,
   [data-animate="scale-reveal"] > img,
   [data-animate="scale-reveal"] > video,
   [data-animate="scale-reveal"] > div,

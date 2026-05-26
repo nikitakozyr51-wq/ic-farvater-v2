@@ -1406,6 +1406,24 @@
   display: flex;
   flex-direction: column;
 }
+/* CSS-only fade-in for related cards. Lives in CSS (not GSAP) because main.js
+   re-renders pdRelatedGrid on hash change — GSAP ScrollTrigger would attach to
+   old DOM nodes and the new ones would pop in at opacity:1. CSS animation
+   restarts on every appendChild — race-free. */
+.pd-related__grid > .pd-card {
+  animation: pd-card-fade 0.7s var(--ease-out, ease-out) backwards;
+}
+.pd-related__grid > .pd-card:nth-child(1) { animation-delay: 0.05s; }
+.pd-related__grid > .pd-card:nth-child(2) { animation-delay: 0.13s; }
+.pd-related__grid > .pd-card:nth-child(3) { animation-delay: 0.21s; }
+.pd-related__grid > .pd-card:nth-child(4) { animation-delay: 0.29s; }
+@keyframes pd-card-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-related__grid > .pd-card { animation: none; }
+}
 .pd-card {
   display: flex;
   flex-direction: row;
