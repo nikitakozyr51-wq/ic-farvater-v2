@@ -565,7 +565,11 @@ function initCookieBanner() {
   });
 }
 
-/** Product carousel — bounded scroll, desktop only */
+/** Product carousel — bounded horizontal scroll for card-grids on home page.
+ *  Mobile (<769px): JS skips entirely; arrows hidden via CSS.
+ *  Desktop/tablet: arrows visible when items > visible columns; fully hidden via
+ *  display:none when everything fits (maxIndex === 0). Cards stay in the same grid
+ *  layout — only their X transform changes. */
 function initProductCarousels() {
   if (window.matchMedia('(max-width: 768px)').matches) return;
 
@@ -577,9 +581,14 @@ function initProductCarousels() {
 
     if (!track || !grid || !btnPrev || !btnNext) return;
 
-    const cards = Array.from(grid.querySelectorAll('.product-card-v2'));
+    // Match the actual grid children (works with .card or any other class).
+    const cards = Array.from(grid.children).filter(el => el.nodeType === 1);
     const N = cards.length;
-    if (N < 2) return;
+    if (N < 2) {
+      btnPrev.style.display = 'none';
+      btnNext.style.display = 'none';
+      return;
+    }
 
     let index = 0;
 
@@ -596,6 +605,22 @@ function initProductCarousels() {
       return Math.max(0, N - visibleCount());
     }
 
+    function syncButtons() {
+      const max = maxIndex();
+      // Nothing to scroll → hide arrows entirely (per user preference).
+      if (max === 0) {
+        btnPrev.style.display = 'none';
+        btnNext.style.display = 'none';
+        return;
+      }
+      btnPrev.style.display = '';
+      btnNext.style.display = '';
+      btnPrev.style.opacity = index <= 0 ? '0.25' : '';
+      btnPrev.disabled = index <= 0;
+      btnNext.style.opacity = index >= max ? '0.25' : '';
+      btnNext.disabled = index >= max;
+    }
+
     function go(i, animate) {
       index = Math.max(0, Math.min(i, maxIndex()));
       if (!animate) {
@@ -606,10 +631,7 @@ function initProductCarousels() {
       } else {
         grid.style.transform = `translateX(-${index * getStep()}px)`;
       }
-      btnPrev.style.opacity = index <= 0 ? '0.25' : '';
-      btnPrev.disabled = index <= 0;
-      btnNext.style.opacity = index >= maxIndex() ? '0.25' : '';
-      btnNext.disabled = index >= maxIndex();
+      syncButtons();
     }
 
     btnPrev.addEventListener('click', () => go(index - 1, true));

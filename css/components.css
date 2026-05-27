@@ -831,6 +831,51 @@
 }
 
 /* ============================================================
+   Product carousel — optional horizontal scrolling wrapper around .card-grid.
+   Used on home page sections (Разъёмы, СВЧ-компоненты) when card count exceeds
+   visible columns. Hidden on mobile (<769px). Buttons fully hidden when nothing
+   to scroll (JS toggles via display:none).
+   ============================================================ */
+.product-carousel { position: relative; }
+.product-carousel__track {
+  overflow: hidden;
+  /* Negative inset compensates for card hover translateY (.card:hover lifts -6px)
+     so the lifted shadow isn't clipped at the top edge. */
+  margin: -8px -1px;
+  padding: 8px 1px;
+}
+.product-cards-grid {
+  transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.product-carousel__btn {
+  display: none; /* hidden until media query + JS enables */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: transparent;
+  border: none;
+  padding: 12px 8px;
+  color: var(--c-text);
+  cursor: pointer;
+  line-height: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.product-carousel__btn svg { display: block; width: 28px; height: 28px; }
+.product-carousel__btn--prev { left: -4px; }
+.product-carousel__btn--next { right: -4px; }
+@media (hover: hover) {
+  .product-carousel__btn:hover { opacity: 0.55; }
+}
+.product-carousel__btn:active { transform: translateY(-50%) scale(0.9); }
+@media (min-width: 769px) {
+  /* Desktop + tablet: arrows visible by default; JS hides via inline display:none
+     when there's nothing to scroll (maxIndex === 0). */
+  .product-carousel__btn { display: inline-flex; align-items: center; justify-content: center; }
+}
+
+/* ============================================================
    1. HEADER (verified ISnHK desktop, xAjS9 mobile)
 
    Mobile (default): logo + burger, 60h, border-bottom, padding [0,24] (container)
