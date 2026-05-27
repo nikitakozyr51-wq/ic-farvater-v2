@@ -566,16 +566,16 @@ function initCookieBanner() {
 }
 
 /** Product carousel — bounded horizontal scroll for card-grids on home page.
- *  Mobile (<769px): JS skips entirely; arrows hidden via CSS.
- *  Desktop/tablet:
- *    - Arrows always visible (per v1 reference); disabled state at boundaries via
+ *  Mobile + tablet (<1024px): JS skips; CSS hides cards 5-8 + arrows entirely.
+ *  Desktop (≥1024px):
+ *    - Arrows always visible; disabled state at boundaries via
  *      [aria-disabled="true"] which CSS dims to opacity 0.25.
  *    - Scroll step = 1 card per click.
  *    - Lazy-load: images with data-src have their src set only when their card
  *      enters the visible window (initial + after each scroll). Saves ~50% of
  *      LCP/transfer when half the cards are off-screen by default. */
 function initProductCarousels() {
-  if (window.matchMedia('(max-width: 768px)').matches) return;
+  if (window.matchMedia('(max-width: 1023.98px)').matches) return;
 
   document.querySelectorAll('.product-carousel').forEach(carousel => {
     const track = carousel.querySelector('.product-carousel__track');
@@ -1062,7 +1062,7 @@ function initCatalog() {
 
   function buildCard(it) {
     const a = document.createElement('a');
-    a.className = 'cat-card cat-card--small';
+    a.className = 'cat-card cat-card--small' + (it.group === 'dev' ? ' cat-card--dev' : '');
     a.href = it.href;
     // Product codes in UPPERCASE (ЕТ-СНЦ23, ЕТ1310РН1У — they're abbreviations/model codes).
     // Series cards keep lowercase desc (legacy brand voice for SERIES_SHORT_DESC); microchip/

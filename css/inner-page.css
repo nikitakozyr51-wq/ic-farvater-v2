@@ -1784,6 +1784,15 @@
   overflow: hidden;
 }
 
+/* Series в разработке (group: "dev" в *_SERIES) — приглушённая карточка с
+   grayscale на превью. Подгруппа уже размечена subheader'ом "В РАЗРАБОТКЕ",
+   доп. визуальный сигнал — само превью более тусклое. */
+.cat-card--dev { opacity: 0.55; transition: opacity var(--dur-short, 0.18s) ease; }
+.cat-card--dev .cat-card__img img { filter: grayscale(0.7); }
+@media (hover: hover) {
+  .cat-card--dev:hover { opacity: 0.85; }
+}
+
 /* Entry card (Pencil zCPAQ "entry-cards-6cats · short copy"):
    text-only first card in filtered grid that links to category landing.
    Pencil G5Una: outer card, vertical gap 8.
