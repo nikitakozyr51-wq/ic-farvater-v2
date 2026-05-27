@@ -882,6 +882,14 @@
 .product-carousel__btn:active { transform: translateY(-50%) scale(0.9); }
 @media (min-width: 769px) {
   .product-carousel__btn { display: inline-flex; align-items: center; justify-content: center; }
+  /* Force single row of N cards (track overflow:hidden + JS translateX handles
+     horizontal scroll). Without this, .card-grid's default repeat(2|4, 1fr)
+     would wrap 8 cards to 2 rows. */
+  .product-carousel .product-cards-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 3 * var(--grid-gap)) / 4);
+  }
 }
 
 /* ============================================================
