@@ -831,16 +831,19 @@
 }
 
 /* ============================================================
-   Product carousel — optional horizontal scrolling wrapper around .card-grid.
-   Used on home page sections (Разъёмы, СВЧ-компоненты) when card count exceeds
-   visible columns. Hidden on mobile (<769px). Buttons fully hidden when nothing
-   to scroll (JS toggles via display:none).
+   Product carousel — horizontal scrolling wrapper around .card-grid.
+   Used on home page sections (Разъёмы, СВЧ-компоненты).
+   Arrows always visible on desktop+tablet, sit OVERLAY on first/last visible card
+   image (vertical center of image area ≈ top:40% of track).
+   On mobile (<769px) arrows hidden entirely.
+   Disabled state (boundary reached) lowers opacity to 0.25.
+   Lazy-load: cards with data-src have images deferred until visible (JS swaps).
    ============================================================ */
 .product-carousel { position: relative; }
 .product-carousel__track {
   overflow: hidden;
-  /* Negative inset compensates for card hover translateY (.card:hover lifts -6px)
-     so the lifted shadow isn't clipped at the top edge. */
+  /* Negative inset compensates for card hover translateY (-6px) so lifted shadow
+     isn't clipped at top edge. */
   margin: -8px -1px;
   padding: 8px 1px;
 }
@@ -849,29 +852,35 @@
   will-change: transform;
 }
 .product-carousel__btn {
-  display: none; /* hidden until media query + JS enables */
+  display: none; /* mobile default; revealed on desktop via media query below */
   position: absolute;
-  top: 50%;
+  /* top:40% lands on the image area (image is 1:1 aspect = ~85% of card height).
+     translateY(-50%) re-centers the button on that anchor. */
+  top: 40%;
   transform: translateY(-50%);
   z-index: 2;
   background: transparent;
   border: none;
-  padding: 12px 8px;
+  padding: 8px;
   color: var(--c-text);
   cursor: pointer;
   line-height: 0;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.product-carousel__btn svg { display: block; width: 28px; height: 28px; }
-.product-carousel__btn--prev { left: -4px; }
-.product-carousel__btn--next { right: -4px; }
+.product-carousel__btn svg { display: block; width: 32px; height: 32px; }
+.product-carousel__btn--prev { left: 12px; }
+.product-carousel__btn--next { right: 12px; }
+.product-carousel__btn:disabled,
+.product-carousel__btn[aria-disabled="true"] {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
+}
 @media (hover: hover) {
   .product-carousel__btn:hover { opacity: 0.55; }
 }
 .product-carousel__btn:active { transform: translateY(-50%) scale(0.9); }
 @media (min-width: 769px) {
-  /* Desktop + tablet: arrows visible by default; JS hides via inline display:none
-     when there's nothing to scroll (maxIndex === 0). */
   .product-carousel__btn { display: inline-flex; align-items: center; justify-content: center; }
 }
 

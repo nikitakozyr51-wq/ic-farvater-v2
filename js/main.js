@@ -567,9 +567,13 @@ function initCookieBanner() {
 
 /** Product carousel — bounded horizontal scroll for card-grids on home page.
  *  Mobile (<769px): JS skips entirely; arrows hidden via CSS.
- *  Desktop/tablet: arrows visible when items > visible columns; fully hidden via
- *  display:none when everything fits (maxIndex === 0). Cards stay in the same grid
- *  layout — only their X transform changes. */
+ *  Desktop/tablet:
+ *    - Arrows always visible (per v1 reference); disabled state at boundaries via
+ *      [aria-disabled="true"] which CSS dims to opacity 0.25.
+ *    - Scroll step = 1 card per click.
+ *    - Lazy-load: images with data-src have their src set only when their card
+ *      enters the visible window (initial + after each scroll). Saves ~50% of
+ *      LCP/transfer when half the cards are off-screen by default. */
 function initProductCarousels() {
   if (window.matchMedia('(max-width: 768px)').matches) return;
 
@@ -581,12 +585,11 @@ function initProductCarousels() {
 
     if (!track || !grid || !btnPrev || !btnNext) return;
 
-    // Match the actual grid children (works with .card or any other class).
     const cards = Array.from(grid.children).filter(el => el.nodeType === 1);
     const N = cards.length;
     if (N < 2) {
-      btnPrev.style.display = 'none';
-      btnNext.style.display = 'none';
+      btnPrev.setAttribute('aria-disabled', 'true');
+      btnNext.setAttribute('aria-disabled', 'true');
       return;
     }
 
@@ -595,30 +598,36 @@ function initProductCarousels() {
     function getStep() {
       return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
     }
-
     function visibleCount() {
       const step = getStep();
       return step > 0 ? Math.round(track.offsetWidth / step) : 4;
     }
-
     function maxIndex() {
       return Math.max(0, N - visibleCount());
     }
 
     function syncButtons() {
       const max = maxIndex();
-      // Nothing to scroll → hide arrows entirely (per user preference).
-      if (max === 0) {
-        btnPrev.style.display = 'none';
-        btnNext.style.display = 'none';
-        return;
-      }
-      btnPrev.style.display = '';
-      btnNext.style.display = '';
-      btnPrev.style.opacity = index <= 0 ? '0.25' : '';
-      btnPrev.disabled = index <= 0;
-      btnNext.style.opacity = index >= max ? '0.25' : '';
-      btnNext.disabled = index >= max;
+      // Always visible; just toggle disabled-look at boundaries.
+      btnPrev.setAttribute('aria-disabled', String(index <= 0));
+      btnNext.setAttribute('aria-disabled', String(index >= max));
+    }
+
+    // Lazy-load image swap: swap data-src → src for cards inside the visible window
+    // (with 100px buffer so adjacent cards preload before user reaches them).
+    function loadVisibleImages() {
+      const trackW = track.offsetWidth;
+      const offset = index * getStep();
+      cards.forEach(card => {
+        const img = card.querySelector('img[data-src]');
+        if (!img) return;
+        const cardLeft = card.offsetLeft - offset;
+        const cardRight = cardLeft + card.offsetWidth;
+        if (cardRight > -100 && cardLeft < trackW + 100) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+      });
     }
 
     function go(i, animate) {
@@ -632,6 +641,7 @@ function initProductCarousels() {
         grid.style.transform = `translateX(-${index * getStep()}px)`;
       }
       syncButtons();
+      loadVisibleImages();
     }
 
     btnPrev.addEventListener('click', () => go(index - 1, true));
