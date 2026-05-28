@@ -699,6 +699,54 @@ function shortDesc(slug, fallback) {
   return SERIES_SHORT_DESC[slug] || (fallback ? String(fallback).split('.')[0] + '.' : '');
 }
 
+// Connector type normalization. Buckets messy real-world variant types (typos like
+// "роозетка", qualified forms like "вилка блочная", accessories like "заглушка для
+// снц144") into 4 primary categories so the Type filter UI stays tight and image
+// lookups can match keys reliably.
+function normalizeType(raw) {
+  const t = (raw || '').toLowerCase().trim();
+  if (!t) return null;
+  if (/заглушк/.test(t)) return 'заглушка';
+  if (/кожух/.test(t))   return 'кожух';
+  if (/вилк/.test(t))    return 'вилка';
+  if (/розетк|роозетк/.test(t)) return 'розетка';
+  return t; // fallback for clean types (e.g. "dc/dc" / "ac/dc" in converters)
+}
+
+// Generic type-fallback images for connector variants — used when a series has no
+// series.imageByType but its items carry a type (вилка / розетка / заглушка). Only
+// 4 of 23 connector series have type-specific files on disk; for the other 19 these
+// generic images show the correct connector TYPE rather than all variants sharing
+// the same series default image.
+const GENERIC_TYPE_IMAGES = {
+  'вилка':    '../assets/images/products/connectors/et-2rmt-vilka.webp',
+  'розетка':  '../assets/images/products/connectors/et-2rmt-rozetka.webp',
+  'заглушка': '../assets/images/products/connectors/et-ek-ep.webp'
+};
+
+// Resolve the best image for a series item. Order:
+//   1. series.imageByType[item.type] — exact key match
+//   2. series.imageByType[k] where normalizeType(k) === normalizeType(item.type)
+//      (handles e.g. "Вилка приборная" matching key "Вилка")
+//   3. GENERIC_TYPE_IMAGES[normalizeType(item.type)] — global fallback
+//   4. series.image — series default
+function resolveSeriesItemImage(series, item) {
+  if (series && series.imageByType && item && item.type) {
+    const img = series.imageByType[item.type];
+    if (img) return img;
+    const norm = normalizeType(item.type);
+    if (norm) {
+      const entry = Object.entries(series.imageByType).find(([k]) => normalizeType(k) === norm);
+      if (entry) return entry[1];
+    }
+  }
+  if (item && item.type) {
+    const norm = normalizeType(item.type);
+    if (norm && GENERIC_TYPE_IMAGES[norm]) return GENERIC_TYPE_IMAGES[norm];
+  }
+  return (series && series.image) || '';
+}
+
 /** Catalog — search + category filter + hash routing + product list rendering.
  *  Only activates on products.html (#catalogGrid).
  *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic).
@@ -777,15 +825,8 @@ function initCatalog() {
   // Connector type data is messy (typos like "роозетка", qualified variants like "вилка блочная",
   // accessories like "заглушка для снц144"). Bucket everything into 4 primary types so the
   // Type filter UI stays tight (без 17 опечаток).
-  function normalizeType(raw) {
-    const t = (raw || '').toLowerCase().trim();
-    if (!t) return null;
-    if (/заглушк/.test(t)) return 'заглушка';
-    if (/кожух/.test(t))   return 'кожух';
-    if (/вилк/.test(t))    return 'вилка';
-    if (/розетк|роозетк/.test(t)) return 'розетка';
-    return t; // fallback for clean types (e.g. "dc/dc" / "ac/dc" in converters)
-  }
+  // Connector type normalization + image resolution — moved to module level below
+  // initCatalog (need to be accessible from initProductDetail as well).
 
   // Get items for a single category (used by category-filter view).
   // Series items carry a `group` field (main / additional / dev) so renderList
@@ -884,7 +925,7 @@ function initCatalog() {
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
         id: `${s.slug}:${idx}`, name: it.name,
         desc: variantDesc(it),
-        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
     }
@@ -893,7 +934,7 @@ function initCatalog() {
         type: 'variant', kind: 'converter-variant', cat: 'converters',
         id: `${s.slug}:${idx}`, name: it.name,
         desc: variantDesc(it),
-        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
     }
@@ -902,7 +943,7 @@ function initCatalog() {
         type: 'variant', kind: 'capacitor-variant', cat: 'capacitors',
         id: `${s.slug}:${idx}`, name: it.name,
         desc: variantDesc(it),
-        image: (s.imageByType && it.type && s.imageByType[it.type]) || s.image || '',
+        image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
     }
@@ -1143,17 +1184,9 @@ function initCatalog() {
       // regardless of type filter ("вилка" / "розетка") narrowing the rendered list.
       const origIdx = allItems.indexOf(it);
       card.href = `product-detail.html#v-${slug}:${origIdx}`;
-      // Image lookup: try exact match first, then normalized (so "Вилка приборная" still hits "Вилка" key).
-      let img = '';
-      if (series.imageByType && it.type) {
-        img = series.imageByType[it.type];
-        if (!img) {
-          const norm = normalizeType(it.type);
-          const entry = Object.entries(series.imageByType).find(([k]) => normalizeType(k) === norm);
-          if (entry) img = entry[1];
-        }
-      }
-      img = img || series.image || '';
+      // Image lookup via shared helper (series.imageByType → normalized match →
+      // GENERIC_TYPE_IMAGES fallback → series.image).
+      const img = resolveSeriesItemImage(series, it);
       card.innerHTML = `
         <div class="cat-card__img">
           ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
@@ -1718,7 +1751,7 @@ function initProductDetail() {
     }
     if (series && Array.isArray(series.items) && series.items[idx]) {
       const item = series.items[idx];
-      const itemImage = (series.imageByType && item.type && series.imageByType[item.type]) || series.image || '';
+      const itemImage = resolveSeriesItemImage(series, item);
       data = {
         name: item.name,
         description: series.description || '',

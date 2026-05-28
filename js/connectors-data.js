@@ -696,7 +696,7 @@ var CONNECTOR_SERIES = [
   },
   {
     slug: "et-ek-ep",
-    image: "",
+    image: "../assets/images/products/connectors/et-ek-ep.webp",
     name: "\u0415\u0422-\u042d\u041a / \u0415\u0422-\u042d\u041f (\u0437\u0430\u0433\u043b\u0443\u0448\u043a\u0438)",
     group: "main",
     tu: "",
