@@ -714,14 +714,16 @@ function normalizeType(raw) {
 }
 
 // Generic type-fallback images for connector variants — used when a series has no
-// series.imageByType but its items carry a type (вилка / розетка / заглушка). Only
-// 4 of 23 connector series have type-specific files on disk; for the other 19 these
-// generic images show the correct connector TYPE rather than all variants sharing
-// the same series default image.
+// series.imageByType but its items carry a type. Only 4 of 23 connector series
+// have type-specific files on disk; for the other 19 these generic images show
+// the correct connector TYPE rather than all variants sharing the series default.
+//
+// "Заглушка" intentionally has NO fallback — et-ek-ep.webp visually reads as an
+// electronic module/converter, not a cap, so it would confuse users. Variants of
+// type "Заглушка" fall through to series.image → grey card when series has none.
 const GENERIC_TYPE_IMAGES = {
   'вилка':    '../assets/images/products/connectors/et-2rmt-vilka.webp',
-  'розетка':  '../assets/images/products/connectors/et-2rmt-rozetka.webp',
-  'заглушка': '../assets/images/products/connectors/et-ek-ep.webp'
+  'розетка':  '../assets/images/products/connectors/et-2rmt-rozetka.webp'
 };
 
 // Resolve the best image for a series item. Order:
