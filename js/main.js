@@ -60,9 +60,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initCookieBanner();
   initProductCarousels();
   initKpDrawer();
+  initFooterEmailForm();
   initCatalog();
   initProductDetail();
 });
+
+/** Footer email form — пользователь вводит email → открываем KP drawer с
+ *  предзаполненным email, фокус на поле «имя» (чтобы человек продолжил с того
+ *  места где остановился). Финальная отправка идёт через #kpForm → send.php. */
+function initFooterEmailForm() {
+  document.querySelectorAll('.footer__email-form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailInput = form.querySelector('input[type="email"]');
+      const email = (emailInput?.value || '').trim();
+      // Trigger drawer open via the existing global click delegation
+      const opener = document.querySelector('[data-action="open-kp-drawer"]');
+      if (!opener) return;
+      opener.click();
+      // Drawer DOM уже в body (initKpDrawer отработал на DOMContentLoaded) —
+      // можно сразу пред-заполнить email и переставить фокус на имя.
+      const kpEmail = document.getElementById('kpEmail');
+      if (kpEmail && email) {
+        kpEmail.value = email;
+        requestAnimationFrame(() => document.getElementById('kpName')?.focus());
+      }
+      if (emailInput) emailInput.value = '';
+    });
+  });
+}
 
 /** Page loader — hide overlay once window finishes loading */
 function initPageLoader() {

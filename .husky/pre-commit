@@ -3,6 +3,13 @@
 # Защищает от ситуации: ты правишь css/components.css → коммитишь → на прод
 # уезжает старый .min.css → твоё изменение НЕ видно.
 
+# Windows guard — git hook на Windows запускается в MSYS shell без Windows PATH.
+# Безусловно добавляем стандартные пути Node.js (даже если npm найден через
+# другой путь — он может не найти `node` при spawn'е).
+for p in "/c/Program Files/nodejs" "/c/Program Files (x86)/nodejs" "$HOME/AppData/Roaming/npm"; do
+  [ -d "$p" ] && export PATH="$p:$PATH"
+done
+
 # Список staged source-файлов, чьи изменения требуют rebuild:
 # - css/*.css   (НЕ .min.css — те генерируются)
 # - js/*.js     (НЕ .min.js, НЕ vendor/* — те minified third-party)
