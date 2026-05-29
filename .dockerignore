@@ -19,9 +19,15 @@ node_modules/
 .vscode/
 .idea/
 
-# Dev scripts (only PHP ships, not Python/PowerShell helpers)
+# Dev scripts (only PHP ships — send.php; build/sync helpers не нужны в image)
 scripts/*.py
 scripts/*.ps1
+scripts/*.mjs
+scripts/*.js
+
+# CI / GitHub Actions — не нужно в Docker-образе
+.github/
+.token
 
 # Audit artefacts
 screenshots/

@@ -1,0 +1,69 @@
+name: Sync catalog from Strapi
+
+# Робот синхронизации каталога: тянет данные из Strapi CMS, и ЕСЛИ контент
+# реально изменился — пересобирает минифицированные ассеты и пушит в master.
+# Push в master запускает существующий автодеплой сайта (Dokploy webhook).
+# Если в Strapi ничего не меняли — коммита нет, сайт не трогается.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'    # каждые ~10 минут (GitHub может задерживать)
+  workflow_dispatch: {}        # кнопка ручного запуска в Actions
+
+concurrency:
+  group: sync-catalog
+  cancel-in-progress: false
+
+permissions:
+  contents: write              # чтобы коммитить/пушить обновлённые данные
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Шаг 1 — генерация data-файлов из Strapi (без зависимостей: только Node).
+      # Пишет js/*-data.js только те, где данные реально изменились.
+      - name: Generate data from Strapi
+        env:
+          STRAPI_URL: https://cms.ic-farvater.ru
+          STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
+          FRONTEND_JS_DIR: ${{ github.workspace }}/js
+        run: node scripts/generate-data.js --write
+
+      # Шаг 2 — есть ли изменения? Если нет — на этом всё (сайт не трогаем).
+      - name: Detect changes
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Каталог изменился:"
+            git status --short
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Изменений нет — сборку и пуш пропускаем."
+          fi
+
+      # Шаг 3 — только при изменениях: ставим деп, пересобираем минифицированные
+      # ассеты (то же что npm run build локально), коммитим и пушим.
+      - name: Install deps & rebuild minified assets
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          npm ci
+          npm run build
+
+      - name: Commit & push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "ic-farvater-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git commit --no-verify -m "data: sync from Strapi"
+          git push
