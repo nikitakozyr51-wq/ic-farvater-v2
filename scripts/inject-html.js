@@ -14,8 +14,12 @@
  *     когда Strapi = seed из текущего HTML).
  *
  * Режимы:
- *   node scripts/inject-html.js --check   # сравнить, не писать
- *   node scripts/inject-html.js --write    # записать изменившиеся HTML
+ *   node scripts/inject-html.js --check     # сравнить с данными Strapi, не писать
+ *   node scripts/inject-html.js --write      # записать изменившиеся HTML
+ *   node scripts/inject-html.js --selftest   # БЕЗ Strapi: значения берутся из самих
+ *                                            # маркеров → инъекция обратно → diff ОБЯЗАН быть 0.
+ *                                            # Ловит конфликты (один ключ — разные значения) и
+ *                                            # баги escaping. Не требует токена/сети.
  *
  * Env: STRAPI_URL, STRAPI_TOKEN (read), FRONTEND_DIR (default ..)
  */
@@ -26,6 +30,7 @@ const path = require('path');
 const STRAPI_URL = (process.env.STRAPI_URL || 'https://cms.ic-farvater.ru').replace(/\/$/, '');
 const ROOT = process.env.FRONTEND_DIR || path.resolve(__dirname, '..');
 const WRITE = process.argv.includes('--write');
+const SELFTEST = process.argv.includes('--selftest');
 let TOKEN = process.env.STRAPI_TOKEN || '';
 try { if (!TOKEN) TOKEN = fs.readFileSync(path.join(ROOT, '.token'), 'utf8').trim(); } catch {}
 
@@ -57,8 +62,12 @@ function flatten(obj, prefix, out) {
     return;
   }
   if (typeof obj === 'object') {
-    // media-объект Strapi (есть url) → путь (на этапе текстов картинки обрабатываются отдельно)
-    if (typeof obj.url === 'string') { out[prefix] = obj.url; return; }
+    // media-объект Strapi (есть url) → метаданные для последующего скачивания в assets/
+    if (typeof obj.url === 'string') {
+      const absUrl = obj.url.startsWith('http') ? obj.url : STRAPI_URL + obj.url;
+      out[prefix] = { __media: true, url: absUrl, hash: obj.hash || '', ext: obj.ext || '', name: obj.name || '' };
+      return;
+    }
     for (const [k, v] of Object.entries(obj)) {
       if (['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt', 'locale'].includes(k)) continue;
       flatten(v, `${prefix}.${k}`, out);
@@ -77,19 +86,74 @@ function escapeForContext(value, before) {
 
 const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
 
+// SELFTEST: словарь значений из самих маркеров HTML (то, что seed залил бы в Strapi).
+// Ловит конфликты: один ключ с РАЗНЫМИ текущими значениями на разных страницах.
+function buildDictFromMarkers() {
+  const dict = {};
+  const seenAt = {};
+  const conflicts = [];
+  for (const rel of HTML_FILES) {
+    const fp = path.join(ROOT, rel);
+    if (!fs.existsSync(fp)) continue;
+    const html = fs.readFileSync(fp, 'utf8');
+    let m;
+    const re = new RegExp(MARKER.source, 'g');
+    while ((m = re.exec(html)) !== null) {
+      const key = m[1], val = m[2];
+      if (key in dict && dict[key] !== val) conflicts.push({ key, a: `${seenAt[key]}: ${dict[key].slice(0, 60)}`, b: `${rel}: ${val.slice(0, 60)}` });
+      dict[key] = val;
+      seenAt[key] = rel;
+    }
+  }
+  return { dict, conflicts };
+}
+
 (async () => {
-  console.log(`STRAPI_URL=${STRAPI_URL}  ROOT=${ROOT}  mode=${WRITE ? 'WRITE' : 'CHECK'}  token=${TOKEN ? 'да' : 'нет'}`);
+  console.log(`STRAPI_URL=${STRAPI_URL}  ROOT=${ROOT}  mode=${SELFTEST ? 'SELFTEST' : WRITE ? 'WRITE' : 'CHECK'}  token=${TOKEN ? 'да' : 'нет'}`);
 
   // 1. собрать словарь значений
-  const dict = {};
-  for (const st of SINGLE_TYPES) {
-    let data;
-    try { data = await fetchSingle(st.api); } catch (e) { console.warn(`  ! ${st.api}: ${e.message}`); continue; }
-    if (!data) { console.log(`  (тип ${st.api} ещё не создан — пропуск)`); continue; }
-    flatten(data, st.prefix, dict);
+  let dict = {};
+  if (SELFTEST) {
+    const r = buildDictFromMarkers();
+    dict = r.dict;
+    if (r.conflicts.length) {
+      console.error(`✗ КОНФЛИКТЫ (один ключ — разные значения на разных страницах):`);
+      r.conflicts.forEach((c) => console.error(`  ${c.key}\n     ${c.a}\n     ${c.b}`));
+      console.error('Единый источник (site-setting) изменил бы контент. Нужны раздельные ключи или унификация.');
+      process.exit(2);
+    }
+    console.log(`SELFTEST: значений из маркеров: ${Object.keys(dict).length}`);
+  } else {
+    for (const st of SINGLE_TYPES) {
+      let data;
+      try { data = await fetchSingle(st.api); } catch (e) { console.warn(`  ! ${st.api}: ${e.message}`); continue; }
+      if (!data) { console.log(`  (тип ${st.api} ещё не создан — пропуск)`); continue; }
+      flatten(data, st.prefix, dict);
+    }
+    console.log(`Значений из Strapi: ${Object.keys(dict).length}`);
   }
-  const keys = Object.keys(dict);
-  console.log(`Значений из Strapi: ${keys.length}`);
+
+  // 1.5. media-поля: скачать загруженные в Strapi картинки в assets/images/cms/
+  //      (стабильное имя по hash → не качаем повторно). Путь без префикса; префикс
+  //      под конкретный файл (../ для pages/*) добавляется при подстановке.
+  const mediaPaths = {};
+  if (!SELFTEST) {
+    const cmsDir = path.join(ROOT, 'assets', 'images', 'cms');
+    for (const [key, val] of Object.entries(dict)) {
+      if (!val || !val.__media) continue;
+      const fname = ((val.hash || key.replace(/[^\w]+/g, '_')) + (val.ext || '')).replace(/^_+/, '');
+      const dest = path.join(cmsDir, fname);
+      mediaPaths[key] = `assets/images/cms/${fname}`;
+      if (fs.existsSync(dest)) continue;             // уже скачано
+      try {
+        const res = await fetch(val.url);
+        if (!res.ok) { console.warn(`  ! media ${key} → ${res.status}`); delete mediaPaths[key]; continue; }
+        fs.mkdirSync(cmsDir, { recursive: true });
+        fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+        console.log(`  ↓ media ${key} → ${mediaPaths[key]}`);
+      } catch (e) { console.warn(`  ! media ${key}: ${e.message}`); delete mediaPaths[key]; }
+    }
+  }
 
   // 2. пройтись по HTML
   let changedFiles = 0;
@@ -98,20 +162,34 @@ const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
   for (const rel of HTML_FILES) {
     const fp = path.join(ROOT, rel);
     if (!fs.existsSync(fp)) continue;
+    const subdirPrefix = rel.includes('/') ? '../' : '';   // pages/*.html → ../assets/...
     const orig = fs.readFileSync(fp, 'utf8');
     let replaced = 0;
-    const next = orig.replace(MARKER, (full, key, current) => {
+    // 2a. ТЕКСТ — маркеры <!-- cms:KEY -->...<!-- /cms --> между тегами (только строковые значения)
+    let next = orig.replace(MARKER, (full, key, current) => {
       allMarkerKeys.add(key);
       const val = dict[key];
-      if (val === undefined || val === null || val === '') {
-        if (val === undefined) missingInStrapi.add(key);
-        return full;                                  // fallback — оставляем как есть
-      }
-      const newInner = escapeForContext(val);
-      if (newInner === current) return full;          // не изменилось
+      if (val === undefined) { missingInStrapi.add(key); return full; }
+      if (val === null || val === '' || typeof val !== 'string') return full;   // media/пусто → fallback
+      if (val === current) return full;               // не изменилось
       replaced++;
-      return `<!-- cms:${key} -->${newInner}<!-- /cms -->`;
+      return `<!-- cms:${key} -->${val}<!-- /cms -->`;
     });
+    // 2b. КАРТИНКИ — <img ... data-cms-src="KEY" ...>: подставить путь в src (или data-src для lazy).
+    //     Значение атрибута чистое (без комментариев) — картинка не ломается. Пусто в Strapi → не трогаем.
+    if (!SELFTEST) {
+      next = next.replace(/<img\b[^>]*?\bdata-cms-src="([\w.-]+)"[^>]*>/g, (tag, key) => {
+        allMarkerKeys.add(key);
+        const val = dict[key];
+        if (!val || !val.__media || !mediaPaths[key]) { if (val === undefined) missingInStrapi.add(key); return tag; }
+        const attr = /\sdata-src="/.test(tag) ? 'data-src' : 'src';
+        const re = new RegExp(`(\\s${attr}=")[^"]*(")`);   // \s перед именем — чтобы не цеплять data-cms-src
+        if (!re.test(tag)) return tag;
+        const newTag = tag.replace(re, `$1${subdirPrefix}${mediaPaths[key]}$2`);
+        if (newTag !== tag) replaced++;
+        return newTag;
+      });
+    }
     if (next !== orig) {
       changedFiles++;
       console.log(`  ${rel}: ${replaced} замен`);
@@ -122,6 +200,10 @@ const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
   }
 
   console.log(`\nМаркеров в HTML: ${allMarkerKeys.size}`);
+  if (SELFTEST) {
+    if (changedFiles === 0) { console.log('=== SELFTEST OK — round-trip байт-идентичен (diff=0) ==='); process.exit(0); }
+    console.error(`=== SELFTEST ПРОВАЛ — ${changedFiles} файл(ов) изменились бы (escaping/маркер-баг) ===`); process.exit(2);
+  }
   if (missingInStrapi.size) console.warn(`⚠ ключи-маркеры без значения в Strapi (fallback на HTML): ${[...missingInStrapi].join(', ')}`);
   console.log(`=== ${changedFiles === 0 ? 'HTML не изменился' : changedFiles + ' файл(ов) ' + (WRITE ? 'записано' : 'изменилось бы (CHECK)')} ===`);
   process.exit(0);

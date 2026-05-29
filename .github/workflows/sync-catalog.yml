@@ -29,14 +29,24 @@ jobs:
         with:
           node-version: '20'
 
-      # Шаг 1 — генерация data-файлов из Strapi (без зависимостей: только Node).
+      # Шаг 1а — генерация data-файлов каталога из Strapi (без зависимостей: только Node).
       # Пишет js/*-data.js только те, где данные реально изменились.
-      - name: Generate data from Strapi
+      - name: Generate catalog data from Strapi
         env:
           STRAPI_URL: https://cms.ic-farvater.ru
           STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
           FRONTEND_JS_DIR: ${{ github.workspace }}/js
         run: node scripts/generate-data.js --write
+
+      # Шаг 1б — инъекция текстов/картинок (single-types) в маркеры HTML.
+      # Заменяет содержимое маркера только при непустом значении в Strapi,
+      # иначе оставляет текущий HTML (fallback) — дизайн/вёрстка не меняются.
+      - name: Inject content into HTML
+        env:
+          STRAPI_URL: https://cms.ic-farvater.ru
+          STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
+          FRONTEND_DIR: ${{ github.workspace }}
+        run: node scripts/inject-html.js --write
 
       # Шаг 2 — есть ли изменения? Если нет — на этом всё (сайт не трогаем).
       - name: Detect changes
