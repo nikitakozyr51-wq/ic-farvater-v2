@@ -14,8 +14,12 @@
  *     когда Strapi = seed из текущего HTML).
  *
  * Режимы:
- *   node scripts/inject-html.js --check   # сравнить, не писать
- *   node scripts/inject-html.js --write    # записать изменившиеся HTML
+ *   node scripts/inject-html.js --check     # сравнить с данными Strapi, не писать
+ *   node scripts/inject-html.js --write      # записать изменившиеся HTML
+ *   node scripts/inject-html.js --selftest   # БЕЗ Strapi: значения берутся из самих
+ *                                            # маркеров → инъекция обратно → diff ОБЯЗАН быть 0.
+ *                                            # Ловит конфликты (один ключ — разные значения) и
+ *                                            # баги escaping. Не требует токена/сети.
  *
  * Env: STRAPI_URL, STRAPI_TOKEN (read), FRONTEND_DIR (default ..)
  */
@@ -26,6 +30,7 @@ const path = require('path');
 const STRAPI_URL = (process.env.STRAPI_URL || 'https://cms.ic-farvater.ru').replace(/\/$/, '');
 const ROOT = process.env.FRONTEND_DIR || path.resolve(__dirname, '..');
 const WRITE = process.argv.includes('--write');
+const SELFTEST = process.argv.includes('--selftest');
 let TOKEN = process.env.STRAPI_TOKEN || '';
 try { if (!TOKEN) TOKEN = fs.readFileSync(path.join(ROOT, '.token'), 'utf8').trim(); } catch {}
 
@@ -77,19 +82,52 @@ function escapeForContext(value, before) {
 
 const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
 
+// SELFTEST: словарь значений из самих маркеров HTML (то, что seed залил бы в Strapi).
+// Ловит конфликты: один ключ с РАЗНЫМИ текущими значениями на разных страницах.
+function buildDictFromMarkers() {
+  const dict = {};
+  const seenAt = {};
+  const conflicts = [];
+  for (const rel of HTML_FILES) {
+    const fp = path.join(ROOT, rel);
+    if (!fs.existsSync(fp)) continue;
+    const html = fs.readFileSync(fp, 'utf8');
+    let m;
+    const re = new RegExp(MARKER.source, 'g');
+    while ((m = re.exec(html)) !== null) {
+      const key = m[1], val = m[2];
+      if (key in dict && dict[key] !== val) conflicts.push({ key, a: `${seenAt[key]}: ${dict[key].slice(0, 60)}`, b: `${rel}: ${val.slice(0, 60)}` });
+      dict[key] = val;
+      seenAt[key] = rel;
+    }
+  }
+  return { dict, conflicts };
+}
+
 (async () => {
-  console.log(`STRAPI_URL=${STRAPI_URL}  ROOT=${ROOT}  mode=${WRITE ? 'WRITE' : 'CHECK'}  token=${TOKEN ? 'да' : 'нет'}`);
+  console.log(`STRAPI_URL=${STRAPI_URL}  ROOT=${ROOT}  mode=${SELFTEST ? 'SELFTEST' : WRITE ? 'WRITE' : 'CHECK'}  token=${TOKEN ? 'да' : 'нет'}`);
 
   // 1. собрать словарь значений
-  const dict = {};
-  for (const st of SINGLE_TYPES) {
-    let data;
-    try { data = await fetchSingle(st.api); } catch (e) { console.warn(`  ! ${st.api}: ${e.message}`); continue; }
-    if (!data) { console.log(`  (тип ${st.api} ещё не создан — пропуск)`); continue; }
-    flatten(data, st.prefix, dict);
+  let dict = {};
+  if (SELFTEST) {
+    const r = buildDictFromMarkers();
+    dict = r.dict;
+    if (r.conflicts.length) {
+      console.error(`✗ КОНФЛИКТЫ (один ключ — разные значения на разных страницах):`);
+      r.conflicts.forEach((c) => console.error(`  ${c.key}\n     ${c.a}\n     ${c.b}`));
+      console.error('Единый источник (site-setting) изменил бы контент. Нужны раздельные ключи или унификация.');
+      process.exit(2);
+    }
+    console.log(`SELFTEST: значений из маркеров: ${Object.keys(dict).length}`);
+  } else {
+    for (const st of SINGLE_TYPES) {
+      let data;
+      try { data = await fetchSingle(st.api); } catch (e) { console.warn(`  ! ${st.api}: ${e.message}`); continue; }
+      if (!data) { console.log(`  (тип ${st.api} ещё не создан — пропуск)`); continue; }
+      flatten(data, st.prefix, dict);
+    }
+    console.log(`Значений из Strapi: ${Object.keys(dict).length}`);
   }
-  const keys = Object.keys(dict);
-  console.log(`Значений из Strapi: ${keys.length}`);
 
   // 2. пройтись по HTML
   let changedFiles = 0;
@@ -122,6 +160,10 @@ const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
   }
 
   console.log(`\nМаркеров в HTML: ${allMarkerKeys.size}`);
+  if (SELFTEST) {
+    if (changedFiles === 0) { console.log('=== SELFTEST OK — round-trip байт-идентичен (diff=0) ==='); process.exit(0); }
+    console.error(`=== SELFTEST ПРОВАЛ — ${changedFiles} файл(ов) изменились бы (escaping/маркер-баг) ===`); process.exit(2);
+  }
   if (missingInStrapi.size) console.warn(`⚠ ключи-маркеры без значения в Strapi (fallback на HTML): ${[...missingInStrapi].join(', ')}`);
   console.log(`=== ${changedFiles === 0 ? 'HTML не изменился' : changedFiles + ' файл(ов) ' + (WRITE ? 'записано' : 'изменилось бы (CHECK)')} ===`);
   process.exit(0);
