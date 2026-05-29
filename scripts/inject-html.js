@@ -165,24 +165,31 @@ function buildDictFromMarkers() {
     const subdirPrefix = rel.includes('/') ? '../' : '';   // pages/*.html → ../assets/...
     const orig = fs.readFileSync(fp, 'utf8');
     let replaced = 0;
-    const next = orig.replace(MARKER, (full, key, current) => {
+    // 2a. ТЕКСТ — маркеры <!-- cms:KEY -->...<!-- /cms --> между тегами (только строковые значения)
+    let next = orig.replace(MARKER, (full, key, current) => {
       allMarkerKeys.add(key);
       const val = dict[key];
-      if (val === undefined || val === null || val === '') {
-        if (val === undefined) missingInStrapi.add(key);
-        return full;                                  // fallback — оставляем как есть
-      }
-      let newInner;
-      if (val && val.__media) {
-        if (!mediaPaths[key]) return full;            // картинка не скачалась → fallback на текущую
-        newInner = subdirPrefix + mediaPaths[key];
-      } else {
-        newInner = escapeForContext(val);
-      }
-      if (newInner === current) return full;          // не изменилось
+      if (val === undefined) { missingInStrapi.add(key); return full; }
+      if (val === null || val === '' || typeof val !== 'string') return full;   // media/пусто → fallback
+      if (val === current) return full;               // не изменилось
       replaced++;
-      return `<!-- cms:${key} -->${newInner}<!-- /cms -->`;
+      return `<!-- cms:${key} -->${val}<!-- /cms -->`;
     });
+    // 2b. КАРТИНКИ — <img ... data-cms-src="KEY" ...>: подставить путь в src (или data-src для lazy).
+    //     Значение атрибута чистое (без комментариев) — картинка не ломается. Пусто в Strapi → не трогаем.
+    if (!SELFTEST) {
+      next = next.replace(/<img\b[^>]*?\bdata-cms-src="([\w.-]+)"[^>]*>/g, (tag, key) => {
+        allMarkerKeys.add(key);
+        const val = dict[key];
+        if (!val || !val.__media || !mediaPaths[key]) { if (val === undefined) missingInStrapi.add(key); return tag; }
+        const attr = /\sdata-src="/.test(tag) ? 'data-src' : 'src';
+        const re = new RegExp(`(\\s${attr}=")[^"]*(")`);   // \s перед именем — чтобы не цеплять data-cms-src
+        if (!re.test(tag)) return tag;
+        const newTag = tag.replace(re, `$1${subdirPrefix}${mediaPaths[key]}$2`);
+        if (newTag !== tag) replaced++;
+        return newTag;
+      });
+    }
     if (next !== orig) {
       changedFiles++;
       console.log(`  ${rel}: ${replaced} замен`);
