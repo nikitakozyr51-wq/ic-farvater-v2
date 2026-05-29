@@ -62,12 +62,8 @@ function flatten(obj, prefix, out) {
     return;
   }
   if (typeof obj === 'object') {
-    // media-объект Strapi (есть url) → метаданные для последующего скачивания в assets/
-    if (typeof obj.url === 'string') {
-      const absUrl = obj.url.startsWith('http') ? obj.url : STRAPI_URL + obj.url;
-      out[prefix] = { __media: true, url: absUrl, hash: obj.hash || '', ext: obj.ext || '', name: obj.name || '' };
-      return;
-    }
+    // media-объект Strapi (есть url) → путь (на этапе текстов картинки обрабатываются отдельно)
+    if (typeof obj.url === 'string') { out[prefix] = obj.url; return; }
     for (const [k, v] of Object.entries(obj)) {
       if (['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt', 'locale'].includes(k)) continue;
       flatten(v, `${prefix}.${k}`, out);
@@ -133,28 +129,6 @@ function buildDictFromMarkers() {
     console.log(`Значений из Strapi: ${Object.keys(dict).length}`);
   }
 
-  // 1.5. media-поля: скачать загруженные в Strapi картинки в assets/images/cms/
-  //      (стабильное имя по hash → не качаем повторно). Путь без префикса; префикс
-  //      под конкретный файл (../ для pages/*) добавляется при подстановке.
-  const mediaPaths = {};
-  if (!SELFTEST) {
-    const cmsDir = path.join(ROOT, 'assets', 'images', 'cms');
-    for (const [key, val] of Object.entries(dict)) {
-      if (!val || !val.__media) continue;
-      const fname = ((val.hash || key.replace(/[^\w]+/g, '_')) + (val.ext || '')).replace(/^_+/, '');
-      const dest = path.join(cmsDir, fname);
-      mediaPaths[key] = `assets/images/cms/${fname}`;
-      if (fs.existsSync(dest)) continue;             // уже скачано
-      try {
-        const res = await fetch(val.url);
-        if (!res.ok) { console.warn(`  ! media ${key} → ${res.status}`); delete mediaPaths[key]; continue; }
-        fs.mkdirSync(cmsDir, { recursive: true });
-        fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
-        console.log(`  ↓ media ${key} → ${mediaPaths[key]}`);
-      } catch (e) { console.warn(`  ! media ${key}: ${e.message}`); delete mediaPaths[key]; }
-    }
-  }
-
   // 2. пройтись по HTML
   let changedFiles = 0;
   const allMarkerKeys = new Set();
@@ -162,7 +136,6 @@ function buildDictFromMarkers() {
   for (const rel of HTML_FILES) {
     const fp = path.join(ROOT, rel);
     if (!fs.existsSync(fp)) continue;
-    const subdirPrefix = rel.includes('/') ? '../' : '';   // pages/*.html → ../assets/...
     const orig = fs.readFileSync(fp, 'utf8');
     let replaced = 0;
     const next = orig.replace(MARKER, (full, key, current) => {
@@ -172,13 +145,7 @@ function buildDictFromMarkers() {
         if (val === undefined) missingInStrapi.add(key);
         return full;                                  // fallback — оставляем как есть
       }
-      let newInner;
-      if (val && val.__media) {
-        if (!mediaPaths[key]) return full;            // картинка не скачалась → fallback на текущую
-        newInner = subdirPrefix + mediaPaths[key];
-      } else {
-        newInner = escapeForContext(val);
-      }
+      const newInner = escapeForContext(val);
       if (newInner === current) return full;          // не изменилось
       replaced++;
       return `<!-- cms:${key} -->${newInner}<!-- /cms -->`;
