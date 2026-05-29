@@ -8,7 +8,7 @@ const PRODUCTS = [
     "name": "ET1310PN1U",
     "category": "Микросхемы",
     "subcategory": "Микросхемы ЭКБ ТЕСТ",
-    "description": "Микросхема ET1310PN1U",
+    "description": "Микросхема ET1310PN1U (тест синхронизации)",
     "image": "../assets/images/products/items/ET1310PN1U.webp",
     "specs": {
       "Тип корпуса": "SOT23, SOT-224",
