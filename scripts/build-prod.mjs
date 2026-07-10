@@ -14,6 +14,7 @@ import { build, transform } from 'esbuild';
 import { readFile, writeFile, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const log = (...a) => console.log('[build-prod]', ...a);
@@ -104,5 +105,35 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
     }
   }
 
-  log('Готово. HTML файлы НЕ переписывают <link>/<script> — обнови их вручную чтобы ссылаться на .min.*');
+  // 5. Cache-busting по содержимому: сервер отдаёт .min.* с max-age=1y immutable,
+  //    поэтому КАЖДОЕ изменение файла обязано менять ?v= в HTML (иначе вернувшиеся
+  //    посетители неделями видят старый каталог — робот синкает данные, а версия
+  //    не двигается). HTML не кэшируется (no-cache) → новые ссылки подхватываются сразу.
+  log('5. Версии ассетов в HTML по хэшу содержимого (?v=<md5-8>)');
+  const VERSIONED = [
+    'css/components.min.css', 'css/inner-page.min.css', 'css/animations.min.css',
+    'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js',
+    'js/products.min.js', 'js/connectors-data.min.js', 'js/converters-data.min.js',
+    'js/capacitors-data.min.js',
+  ];
+  const hashes = {};
+  for (const f of VERSIONED) {
+    try {
+      hashes[f] = createHash('md5').update(await readFile(join(ROOT, f))).digest('hex').slice(0, 8);
+    } catch { /* файл ещё не собран — пропуск */ }
+  }
+  for (const h of HTML_PAGES) {
+    const full = join(ROOT, h);
+    let html = await readFile(full, 'utf8');
+    let replaced = 0;
+    for (const [f, ver] of Object.entries(hashes)) {
+      const base = f.split('/').pop().replace(/\./g, '\\.');
+      const re = new RegExp(`((?:href|src)="[^"]*${base})(?:\\?v=[^"]*)?"`, 'g');
+      html = html.replace(re, (m, pre) => { replaced++; return `${pre}?v=${ver}"`; });
+    }
+    await writeFile(full, html, 'utf8');
+    log(`   ✓ ${h}: ${replaced} ссылок версионировано`);
+  }
+
+  log('Готово.');
 })();
