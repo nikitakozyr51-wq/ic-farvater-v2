@@ -833,7 +833,17 @@ function initCatalog() {
     converters: 'преобразователи',
     capacitors: 'свч-конденсаторы',
     transistors: 'свч-транзисторы',
-    pcb: 'печатные платы'
+    pcb: 'печатные платы',
+    rantsy: 'реактивные ранцы',
+    snow: 'снегоуборочная техника'
+  };
+
+  // Landing-only categories (no SKU data in catalog) — the list view renders a single
+  // cat-card linking to the category landing (product-detail.html#cat-X) instead of items.
+  const LANDING_ONLY_CATS = {
+    pcb:    { image: '../assets/images/products/pcb.webp',     alt: 'Печатные платы' },
+    rantsy: { image: '../assets/images/products/jetpack.webp', alt: 'Реактивные ранцы' },
+    snow:   { image: '../assets/images/products/snow.webp',    alt: 'Снегоуборочная техника' }
   };
 
   // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
@@ -975,6 +985,15 @@ function initCatalog() {
         href: `product-detail.html#v-${s.slug}:${idx}`
       })));
     }
+    // Landing-only categories (pcb / rantsy / snow) — searchable as single entries
+    // linking to the category landing (no SKU data to index).
+    Object.keys(LANDING_ONLY_CATS).forEach(cat => out.push({
+      type: 'landing', kind: 'landing', cat,
+      id: `cat-${cat}`, name: CAT_NAMES[cat],
+      desc: CAT_LIST_DESC[cat] || '',
+      image: LANDING_ONLY_CATS[cat].image,
+      href: `product-detail.html#cat-${cat}`
+    }));
     return out;
   }
 
@@ -1251,7 +1270,9 @@ function initCatalog() {
     converters:  'преобразователи напряжения dc/dc · ac/dc',
     capacitors:  'свч-конденсаторы arc70 · аналог atc',
     transistors: 'свч-транзисторы ldmos для усилителей мощности',
-    pcb:         'печатные платы одно- · двух- · многослойные'
+    pcb:         'печатные платы одно- · двух- · многослойные',
+    rantsy:      'турбореактивные ранцы для спасательных и промышленных задач',
+    snow:        'снегоуборочная техника для экстремальных условий'
   };
   function renderCategoryListRows() {
     if (!listGrid) return;
@@ -1260,7 +1281,7 @@ function initCatalog() {
     if (existingBanner) existingBanner.remove();
     listGrid.innerHTML = '';
     if (listMore) listMore.hidden = true;
-    ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'].forEach(cat => {
+    ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'].forEach(cat => {
       const row = document.createElement('a');
       row.className = 'cat-card cat-card--small';
       row.href = `#${cat}`;
@@ -1361,21 +1382,23 @@ function initCatalog() {
     } else if (inListMode) {
       // List view: hide cat-cards, render category items.
       // renderList() handles its own empty-state UI (contextual message + global-search fallback link).
-      // Special case: pcb has no products in catalog → render ONE regular cat-card-row
-      // (looks identical to other list rows / grid cards) pointing to the landing page.
+      // Special case: landing-only categories (pcb / rantsy / snow) have no products in
+      // catalog → render ONE regular cat-card-row (looks identical to other list rows /
+      // grid cards) pointing to the landing page.
       grid.hidden = true;
       listWrap.hidden = false;
       const count = renderList(state.cat, state.search);
-      if (count === 0 && state.cat === 'pcb' && !state.search) {
+      const landingOnly = LANDING_ONLY_CATS[state.cat];
+      if (count === 0 && landingOnly && !state.search) {
         const card = document.createElement('a');
         card.className = 'cat-card cat-card--small';
-        card.href = 'product-detail.html#cat-pcb';
+        card.href = `product-detail.html#cat-${state.cat}`;
         card.innerHTML = `
           <div class="cat-card__img">
-            <img width="1200" height="1200" src="../assets/images/products/pcb.webp" alt="Печатные платы" loading="lazy" onerror="this.style.opacity='0'">
+            <img width="1200" height="1200" src="${landingOnly.image}" alt="${landingOnly.alt}" loading="lazy" onerror="this.style.opacity='0'">
           </div>
           <div class="cat-card__info">
-            <h3 class="cat-card__name">печатные платы</h3>
+            <h3 class="cat-card__name">${CAT_NAMES[state.cat]}</h3>
             <p class="cat-card__desc">перейти к&nbsp;описанию категории</p>
           </div>
         `;
@@ -1511,7 +1534,7 @@ function initCatalog() {
     });
   }
 
-  const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb'];
+  const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
   function applyHash() {
     const h = window.location.hash.replace('#', '');
     // Support sub-hash: #razemy/et-2rmg (category + series slug)
@@ -1713,6 +1736,60 @@ const CATEGORY_LANDINGS = {
       ['покрытия',          'hasl, lead&nbsp;free, ni-au, enepig, иммерс. sn&nbsp;/ ag, осп'],
       ['контроль качества', 'адаптерный и&nbsp;летающий щуп, aoi, контроль импеданса ±5&nbsp;/ 10%']
     ]
+  },
+  rantsy: {
+    name: 'реактивные ранцы',
+    eyebrowCategory: ['rantsy', 'реактивные ранцы'],
+    subtitle: 'турбореактивный ранец 20–25&nbsp;кг&nbsp; ·&nbsp; тяга 80&nbsp;кг&nbsp; ·&nbsp; до&nbsp;100&nbsp;км/ч&nbsp; ·&nbsp; производство с&nbsp;сентября 2026',
+    image: '../assets/images/products/jetpack.webp',
+    description: [
+      'поставляем реактивные ранцы для&nbsp;аварийно-спасательных служб, промышленной инспекции и&nbsp;индустрии развлечений. лёгкий турбореактивный ранец массой 20–25&nbsp;кг развивает тяговое усилие 80&nbsp;кг при&nbsp;мощности 250–300&nbsp;л.с. и&nbsp;скорости до&nbsp;100&nbsp;км/ч.',
+      'области применения: тушение пожаров в&nbsp;высотных зданиях, горно-спасательные работы, инспекция объектов энергетики и&nbsp;нефтегазовой отрасли, шоу и&nbsp;спецэффекты для&nbsp;кино. цикл разработки и&nbsp;полевых испытаний завершён — старт серийного производства запланирован на&nbsp;сентябрь 2026 года.'
+    ],
+    bullets: [
+      ['спасение',       'пожары в&nbsp;высотных зданиях, горы, чс'],
+      ['промышленность', 'инспекция энергетики и&nbsp;нефтегаза'],
+      ['развлечения',    'шоу, туризм, кино и&nbsp;спецэффекты'],
+      ['полёт',          '5–10&nbsp;минут&nbsp;· до&nbsp;100&nbsp;км/ч']
+    ],
+    nomenclature: [
+      ['масса',           '20–25&nbsp;кг'],
+      ['тяговое усилие',  '80&nbsp;кг'],
+      ['мощность',        '250–300&nbsp;л.с.'],
+      ['скорость',        'до&nbsp;100&nbsp;км/ч'],
+      ['время полёта',    '5–10&nbsp;минут'],
+      ['расход топлива',  '2–4&nbsp;л на&nbsp;100&nbsp;км'],
+      ['двигатель',       'турбореактивный'],
+      ['статус',          'разработка и&nbsp;испытания завершены'],
+      ['производство',    'старт — сентябрь 2026 года']
+    ]
+  },
+  snow: {
+    name: 'снегоуборочная техника',
+    eyebrowCategory: ['snow', 'снегоуборочная техника'],
+    subtitle: 'профессиональная уборка снега&nbsp; ·&nbsp; тяга 80&nbsp;кг&nbsp; ·&nbsp; металлический корпус&nbsp; ·&nbsp; 56 машин за&nbsp;2025 год',
+    image: '../assets/images/products/snow.webp',
+    description: [
+      'поставляем снегоуборочную технику для&nbsp;работы в&nbsp;экстремальных погодных условиях: очистка территорий от&nbsp;плотных сугробов, снежных валов и&nbsp;обледенелых участков. высокая тяга и&nbsp;мощная силовая установка обеспечивают производительность при&nbsp;интенсивной эксплуатации.',
+      'корпус и&nbsp;основные элементы изготовлены из&nbsp;металла — повышенная прочность, устойчивость к&nbsp;механическим повреждениям и&nbsp;длительный срок службы. по&nbsp;итогам 2025 года поставлено 56 единиц техники, за&nbsp;первое полугодие 2026 года — ещё 37 машин.'
+    ],
+    bullets: [
+      ['тяга',        '80&nbsp;кг — сугробы и&nbsp;наледь'],
+      ['мощность',    'эквивалент 250–300&nbsp;л.с.'],
+      ['топливо',     'авиационное — автономность'],
+      ['конструкция', 'полностью металлический корпус']
+    ],
+    nomenclature: [
+      ['тяговое усилие',  '80&nbsp;кг'],
+      ['мощность',        'эквивалент 250–300&nbsp;л.с.'],
+      ['топливо',         'авиационное'],
+      ['корпус',          'металл, усиленная конструкция'],
+      ['назначение',      'сугробы, снежные валы, наледь'],
+      ['условия работы',  'экстремальные погодные условия'],
+      ['эксплуатация',    'интенсивная'],
+      ['поставки за&nbsp;2025 год', '56 единиц'],
+      ['поставки за&nbsp;1-е полугодие 2026', '37 единиц']
+    ]
   }
 };
 
@@ -1721,7 +1798,7 @@ const CATEGORY_LANDINGS = {
 // Related cats for "другие категории" on landings — 4 cards per Pencil W3oj8 4-col grid.
 // Always derived from the canonical order minus the current category, takes the first 4
 // (so each landing gets 4 sibling cats out of 5 possible — drops the "weakest fit" tail).
-const RELATED_CAT_ORDER = ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb'];
+const RELATED_CAT_ORDER = ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
 const RELATED_CATS = Object.fromEntries(
   RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
 );
@@ -1731,7 +1808,9 @@ const RELATED_CAT_INFO = {
   converters:  { label: 'преобразователи',  desc: 'dc/dc иртыш&nbsp;· волга&nbsp;· енисей&nbsp;· кама', image: '../assets/images/products/items/Irtysh.webp' },
   capacitors:  { label: 'свч-конденсаторы', desc: 'mlcc arc70a&nbsp;/ 70c&nbsp;/ 70e', image: '../assets/images/products/capacitors.webp' },
   transistors: { label: 'свч-транзисторы',  desc: 'ldmos для&nbsp;усилителей мощности', image: '../assets/images/products/transistors.webp' },
-  pcb:         { label: 'печатные платы',   desc: 'до&nbsp;40 слоёв, опп&nbsp;/ дпп&nbsp;/ мпп', image: '../assets/images/products/pcb.webp' }
+  pcb:         { label: 'печатные платы',   desc: 'до&nbsp;40 слоёв, опп&nbsp;/ дпп&nbsp;/ мпп', image: '../assets/images/products/pcb.webp' },
+  rantsy:      { label: 'реактивные ранцы', desc: 'тяга 80&nbsp;кг&nbsp;· до&nbsp;100&nbsp;км/ч', image: '../assets/images/products/jetpack.webp' },
+  snow:        { label: 'снегоуборочная техника', desc: 'для&nbsp;экстремальных условий', image: '../assets/images/products/snow.webp' }
 };
 
 /** Product Detail — populate fields from data based on URL hash.
