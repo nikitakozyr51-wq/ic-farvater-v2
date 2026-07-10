@@ -201,12 +201,13 @@
   color: var(--c-label-on-dark);
   line-height: var(--lh-body);
 }
+.footer__phones { display: flex; flex-direction: column; gap: 2px; }
 .footer__phone {
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: var(--ls-sub);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--c-text-on-dark);
-  line-height: 19px;
+  line-height: 17px;
 }
 .footer__email {
   font-size: 14px;
@@ -349,7 +350,8 @@
   .footer__tagline { display: none; }
   .footer__contact { gap: var(--s-5); margin-top: 0; }  /* row gap (24) уже разделяет logo→address */
   .footer__address { font-size: 15px; line-height: 1.62; max-width: 280px; color: var(--c-label-on-dark); }
-  .footer__phone { font-size: 19px; font-weight: 400; letter-spacing: 0; line-height: 1.42; color: var(--c-text-on-dark); }
+  .footer__phones { gap: 4px; }
+  .footer__phone { font-size: 15px; font-weight: 400; letter-spacing: 0; line-height: 1.55; color: var(--c-text-on-dark); }
   .footer__email { font-size: 15px; line-height: 1.55; color: var(--c-text-on-dark); }
   .footer__label { display: none; }
   .footer__nav { gap: var(--s-5); }                     /* Pencil ftN1/ftN2 gap=24 */

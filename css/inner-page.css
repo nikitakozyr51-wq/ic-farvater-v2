@@ -1771,6 +1771,9 @@
   -webkit-box-orient: vertical;
   line-clamp: 2;
   overflow: hidden;
+  /* long unbreakable part-numbers (ЭТЕНД7,5-27ФО05МФС) wrap inside the clamp
+     instead of overflowing the card horizontally */
+  overflow-wrap: anywhere;
 }
 .cat-card--small .cat-card__desc {
   font-size: 11px;

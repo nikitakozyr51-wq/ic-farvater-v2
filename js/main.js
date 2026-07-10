@@ -778,7 +778,7 @@ function resolveSeriesItemImage(series, item) {
 /** Catalog — search + category filter + hash routing + product list rendering.
  *  Only activates on products.html (#catalogGrid).
  *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic).
- *  Hash routing: #microchips, #razemy, #converters, #capacitors, #transistors, #pcb, #all.
+ *  Hash routing: #microchips, #razemy, #converters, #capacitors, #transistors, #pcb, #rantsy, #snow, #all.
  *  Category filter: hides cat-cards, renders product/series list from PRODUCTS / *_SERIES data. */
 function initCatalog() {
   const grid = document.getElementById('catalogGrid');
@@ -801,7 +801,9 @@ function initCatalog() {
   };
   // Normalize: lowercase, Latin homoglyphs → Cyrillic, ё→е fold.
   function normalize(s) {
-    s = String(s == null ? '' : s).toLowerCase().replace(/ё/g, 'е');
+    // NBSP → space: data strings carry literal U+00A0 (no-hanging-prepositions rule),
+    // multi-word queries must still match across them.
+    s = String(s == null ? '' : s).toLowerCase().replace(/ё/g, 'е').replace(/ /g, ' ');
     s = s.split('').map(ch => HOMOGLYPH[ch] || ch).join('');
     return s;
   }
@@ -847,8 +849,8 @@ function initCatalog() {
   };
 
   // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
-  // filtered grid, leads to category landing page (#cat-X). PCB skipped:
-  // it navigates direct to landing from the 6-card grid.
+  // filtered grid, leads to category landing page (#cat-X). Landing-only cats
+  // (pcb / rantsy / snow) skipped: their grid tiles navigate direct to the landing.
   // Pencil zCPAQ — current version dropped sub-name suffixes (ЕТ-серии/ARC70/LDMOS).
   // Titles now match Pencil literals 1:1.
   const ENTRY_CARDS = {
@@ -961,7 +963,7 @@ function initCatalog() {
     if (typeof CONNECTOR_SERIES !== 'undefined') {
       CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
-        id: `${s.slug}:${idx}`, name: it.name,
+        id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
@@ -970,7 +972,7 @@ function initCatalog() {
     if (typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'converter-variant', cat: 'converters',
-        id: `${s.slug}:${idx}`, name: it.name,
+        id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
@@ -979,7 +981,7 @@ function initCatalog() {
     if (typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'capacitor-variant', cat: 'capacitors',
-        id: `${s.slug}:${idx}`, name: it.name,
+        id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
         href: `product-detail.html#v-${s.slug}:${idx}`
@@ -1170,6 +1172,20 @@ function initCatalog() {
     return a;
   }
 
+  // Variant display name/sub split. Prefer the compact displayName over the raw long
+  // name ("Модульный преобразователь DC/DC Иртыш 3,3 В / 264 Вт ET-F300C-3V3P264R23").
+  // Rows whose Strapi displaySub is empty (серия ЕНИСЕЙ) cram the part-number into
+  // displayName — derive the split: trailing token ≥8 chars with digits+letters → sub.
+  function splitVariantName(it) {
+    const dn = it.displayName || it.name || '';
+    let name = dn, sub = it.displaySub || '';
+    if (!sub) {
+      const m = /^(.+)\s(\S{8,})$/.exec(dn);
+      if (m && /\d/.test(m[2]) && /[A-Za-zА-Яа-яЁё]/.test(m[2])) { name = m[1]; sub = m[2]; }
+    }
+    return [name, sub];
+  }
+
   // Entry card (Pencil zCPAQ): text-only first card linking to category landing.
   // Structure per spec: 228w outer, top 228h block (caption + title + spacer + sub),
   // bottom CTA "перейти к описанию →".
@@ -1234,13 +1250,17 @@ function initCatalog() {
       // Image lookup via shared helper (series.imageByType → normalized match →
       // GENERIC_TYPE_IMAGES fallback → series.image).
       const img = resolveSeriesItemImage(series, it);
+      // Compact name + part-number sub (fixes overflowing converter/capacitor names).
+      const [vName, vSub] = splitVariantName(it);
+      const vDesc = [it.type ? cyrillize(it.type).toLowerCase() : '', vSub ? cyrillize(vSub) : '']
+        .filter(Boolean).join(' · ');
       card.innerHTML = `
         <div class="cat-card__img">
           ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
         </div>
         <div class="cat-card__info">
-          <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
-          ${it.type ? `<p class="cat-card__desc">${cyrillize(it.type).toLowerCase()}</p>` : ''}
+          <h3 class="cat-card__name">${cyrillize(vName)}</h3>
+          ${vDesc ? `<p class="cat-card__desc">${vDesc}</p>` : ''}
         </div>
       `;
       return card;
@@ -1262,17 +1282,19 @@ function initCatalog() {
     return count;
   }
 
-  // Render 6 category rows for list view at cat=all (Pencil rN0pk default state).
+  // Render category rows (one per catalog category) for list view at cat=all (Pencil rN0pk default state).
   // Each row: name + short desc + → arrow. Click navigates to that category.
+  // Literal NBSP ( ) after short prepositions — no-hanging-prepositions rule.
+  // Entities (&nbsp;) would pollute the search haystack; normalize() folds   → space.
   const CAT_LIST_DESC = {
-    microchips:  'цифровые и аналоговые микросхемы',
-    razemy:      '23 серии ЕТ для ответственных применений',
+    microchips:  'цифровые и аналоговые микросхемы',
+    razemy:      '23 серии ЕТ для ответственных применений',
     converters:  'преобразователи напряжения dc/dc · ac/dc',
     capacitors:  'свч-конденсаторы arc70 · аналог atc',
-    transistors: 'свч-транзисторы ldmos для усилителей мощности',
+    transistors: 'свч-транзисторы ldmos для усилителей мощности',
     pcb:         'печатные платы одно- · двух- · многослойные',
-    rantsy:      'турбореактивные ранцы для спасательных и промышленных задач',
-    snow:        'снегоуборочная техника для экстремальных условий'
+    rantsy:      'турбореактивные ранцы для спасательных и промышленных задач',
+    snow:        'снегоуборочная техника для экстремальных условий'
   };
   function renderCategoryListRows() {
     if (!listGrid) return;
@@ -1410,13 +1432,13 @@ function initCatalog() {
       // Type filter at category level — visible for series-based cats (razemy/converters/capacitors).
       renderTypeFilter(state.cat, null);
     } else if (state.view === 'list') {
-      // Default (cat=all, no search) + list view → 6 category rows per Pencil rN0pk.
+      // Default (cat=all, no search) + list view → category rows per Pencil rN0pk.
       grid.hidden = true;
       listWrap.hidden = false;
       renderCategoryListRows();
       if (emptyMsg) emptyMsg.hidden = true;
     } else {
-      // Default view: 6 cat-cards visible
+      // Default view: all cat-cards visible
       grid.hidden = false;
       listWrap.hidden = true;
       cards.forEach(card => { card.hidden = false; });
@@ -1793,11 +1815,11 @@ const CATEGORY_LANDINGS = {
   }
 };
 
-/** Related cards (Pencil "другие категории" — 3 cats at bottom of each landing).
- *  Per landing: show 3 OTHER cats (not current one). */
+/** Related cards (Pencil "другие категории" — 4 cats at bottom of each landing). */
 // Related cats for "другие категории" on landings — 4 cards per Pencil W3oj8 4-col grid.
-// Always derived from the canonical order minus the current category, takes the first 4
-// (so each landing gets 4 sibling cats out of 5 possible — drops the "weakest fit" tail).
+// Always derived from the canonical order minus the current category, takes the first 4 —
+// tail categories (pcb / rantsy / snow) intentionally never appear as related cards;
+// their RELATED_CAT_INFO entries are reserved for a future reorder.
 const RELATED_CAT_ORDER = ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
 const RELATED_CATS = Object.fromEntries(
   RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
@@ -1816,7 +1838,7 @@ const RELATED_CAT_INFO = {
 /** Product Detail — populate fields from data based on URL hash.
  *  Hash formats: #p-<id> (PRODUCTS by id), #s-c-<slug> (connector series),
  *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series),
- *  #cat-microchips / #cat-transistors / #cat-pcb (static landings).
+ *  #cat-<slug> (static landings — any CATEGORY_LANDINGS key, incl. pcb / rantsy / snow).
  *  No hash → leave default static content (ET-СНЦ23). */
 function initProductDetail() {
   if (!document.querySelector('.product-top__title') || !document.querySelector('.section--pd-content')) return;
