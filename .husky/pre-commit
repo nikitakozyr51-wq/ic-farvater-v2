@@ -13,9 +13,11 @@ done
 # Список staged source-файлов, чьи изменения требуют rebuild:
 # - css/*.css   (НЕ .min.css — те генерируются)
 # - js/*.js     (НЕ .min.js, НЕ vendor/* — те minified third-party)
+# `|| true` обязателен: husky-шим запускает хук через `sh -e`, и grep с exit 1
+# (нет совпадений = чистый HTML-коммит) иначе валит весь хук ДО проверки -z.
 STAGED=$(git diff --cached --name-only --diff-filter=ACMR | \
   grep -E '^(css/[^/]+\.css|js/[^/]+\.js)$' | \
-  grep -vE '\.min\.(css|js)$|^js/vendor/')
+  grep -vE '\.min\.(css|js)$|^js/vendor/' || true)
 
 if [ -z "$STAGED" ]; then
   exit 0
