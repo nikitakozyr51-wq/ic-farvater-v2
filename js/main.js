@@ -775,6 +775,21 @@ function resolveSeriesItemImage(series, item) {
   return (series && series.image) || '';
 }
 
+// Variant display name/sub split — module level (used by initCatalog cards/search AND
+// initProductDetail variant title). Prefer the compact displayName over the raw long
+// name ("Модульный преобразователь DC/DC Иртыш 3,3 В / 264 Вт ET-F300C-3V3P264R23").
+// Rows whose Strapi displaySub is empty (серия ЕНИСЕЙ) cram the part-number into
+// displayName — derive the split: trailing token ≥8 chars with digits+letters → sub.
+function splitVariantName(it) {
+  const dn = it.displayName || it.name || '';
+  let name = dn, sub = it.displaySub || '';
+  if (!sub) {
+    const m = /^(.+)\s(\S{8,})$/.exec(dn);
+    if (m && /\d/.test(m[2]) && /[A-Za-zА-Яа-яЁё]/.test(m[2])) { name = m[1]; sub = m[2]; }
+  }
+  return [name, sub];
+}
+
 /** Catalog — search + category filter + hash routing + product list rendering.
  *  Only activates on products.html (#catalogGrid).
  *  Search: debounce 250ms, homoglyph-normalized (Latin↔Cyrillic).
@@ -1170,20 +1185,6 @@ function initCatalog() {
       </div>
     `;
     return a;
-  }
-
-  // Variant display name/sub split. Prefer the compact displayName over the raw long
-  // name ("Модульный преобразователь DC/DC Иртыш 3,3 В / 264 Вт ET-F300C-3V3P264R23").
-  // Rows whose Strapi displaySub is empty (серия ЕНИСЕЙ) cram the part-number into
-  // displayName — derive the split: trailing token ≥8 chars with digits+letters → sub.
-  function splitVariantName(it) {
-    const dn = it.displayName || it.name || '';
-    let name = dn, sub = it.displaySub || '';
-    if (!sub) {
-      const m = /^(.+)\s(\S{8,})$/.exec(dn);
-      if (m && /\d/.test(m[2]) && /[A-Za-zА-Яа-яЁё]/.test(m[2])) { name = m[1]; sub = m[2]; }
-    }
-    return [name, sub];
   }
 
   // Entry card (Pencil zCPAQ): text-only first card linking to category landing.
@@ -1881,8 +1882,11 @@ function initProductDetail() {
     if (series && Array.isArray(series.items) && series.items[idx]) {
       const item = series.items[idx];
       const itemImage = resolveSeriesItemImage(series, item);
+      // Короткий заголовок как у разъёмов — партномер уходит в «Характеристики».
+      const [vName, vSub] = splitVariantName(item);
       data = {
-        name: item.name,
+        name: vName,
+        partnumber: vSub || item.partnumber || '',
         description: series.description || '',
         image: itemImage,
         specs: series.specs || {},
@@ -2031,7 +2035,7 @@ function initProductDetail() {
   const descTitleEl = document.querySelector('.pd-block--description .pd-block__title');
   if (descTitleEl) {
     const counter = descTitleEl.querySelector('.pd-block__counter--landing');
-    descTitleEl.textContent = 'описание';
+    descTitleEl.textContent = 'Описание';
     if (counter) descTitleEl.appendChild(counter);
   }
 
@@ -2060,11 +2064,15 @@ function initProductDetail() {
     if (specsTable) {
       let specsObj = {};
       if (data.specs) {
-        specsObj = data.specs;
+        specsObj = { ...data.specs };   // клон — не мутировать shared series.specs
       } else if (kind === 'variant') {
         if (data.tu) specsObj['ту'] = data.tu;
         if (data.count) specsObj['количество позиций'] = String(data.count);
         if (data.group) specsObj['группа'] = data.group === 'main' ? 'основные серии' : (data.group === 'additional' ? 'дополнительные серии' : 'в разработке');
+      }
+      // Партномер варианта — первой строкой характеристик (в H1 теперь короткое имя).
+      if (kind === 'variant' && data.partnumber) {
+        specsObj = { 'партномер': data.partnumber, ...specsObj };
       }
       const entries = Object.entries(specsObj);
       if (entries.length) {
@@ -2122,7 +2130,7 @@ function initProductDetail() {
   // Wire data-kp-product / data-kp-category onto the primary CTA so the КП drawer pre-fills correctly.
   const primaryCta = document.querySelector('.pd-actions__primary[data-action="open-kp-drawer"]');
   if (primaryCta) {
-    primaryCta.dataset.kpProduct = cyrillize((data.name || '').toUpperCase());
+    primaryCta.dataset.kpProduct = cyrillize(((data.partnumber || data.name) || '').toUpperCase());
     primaryCta.dataset.kpCategory = catLabel || '';
   }
 
