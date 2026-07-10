@@ -517,6 +517,17 @@
   line-height: 1.5;
 }
 
+/* CTA link to catalog landing (cards «Реактивные ранцы» / «Снегоуборочная техника») */
+.promise-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text);
+}
+
 @media (min-width: 1024px) {
   .promise-grid {
     grid-template-columns: repeat(3, 1fr);
