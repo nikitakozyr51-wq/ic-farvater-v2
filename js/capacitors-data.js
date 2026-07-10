@@ -310,18 +310,5 @@ var CAPACITOR_SERIES = [
       {"name":"СВЧ-конденсатор ARC70E 4700 пФ","capacitance":"4700","displayName":"ARC70E 4700 пФ","displaySub":""},
       {"name":"СВЧ-конденсатор ARC70E 5100 пФ","capacitance":"5100","displayName":"ARC70E 5100 пФ","displaySub":""}
     ]
-  },
-  {
-    slug: "capacitor-series-1",
-    name: "реактивный ранец",
-    group: "main",
-    tu: "",
-    description: "ранец",
-    image: "",
-    imageByType: {},
-    count: 1,
-    items: [
-      {"name":"ранец"}
-    ]
   }
 ];
