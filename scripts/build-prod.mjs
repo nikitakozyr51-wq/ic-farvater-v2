@@ -24,7 +24,7 @@ const CSS_NON_CRITICAL = ['css/components.css', 'css/inner-page.css', 'css/anima
 const JS_APP = [
   'js/main.js', 'js/animations.js', 'js/nbsp.js',
   'js/products.js', 'js/connectors-data.js', 'js/converters-data.js',
-  'js/capacitors-data.js', 'js/categories-data.js',
+  'js/capacitors-data.js', 'js/categories-data.js', 'js/applications-data.js',
 ];
 const HTML_PAGES = [
   'index.html',
@@ -114,7 +114,7 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
     'css/components.min.css', 'css/inner-page.min.css', 'css/animations.min.css',
     'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js',
     'js/products.min.js', 'js/connectors-data.min.js', 'js/converters-data.min.js',
-    'js/capacitors-data.min.js', 'js/categories-data.min.js',
+    'js/capacitors-data.min.js', 'js/categories-data.min.js', 'js/applications-data.min.js',
   ];
   const hashes = {};
   for (const f of VERSIONED) {

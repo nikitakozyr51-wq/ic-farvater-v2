@@ -1012,14 +1012,14 @@ function initCatalog() {
       type: 'series', kind: kindKey, cat: catSlug, id: s.slug, name: s.name,
       desc: shortDesc(s.slug, s.description),
       image: s.image, group: s.group || 'main', href: `#${catSlug}/${s.slug}`,
-      seriesTypes: collectTypes(s)
+      seriesTypes: collectTypes(s), apps: s.apps || []
     }));
     const pushProducts = (kindKey, catSlug, catName) => {
       if (typeof PRODUCTS === 'undefined') return;
       PRODUCTS.filter(p => p.category === catName).forEach(p => out.push({
         type: 'product', kind: kindKey, cat: catSlug, id: p.id, name: p.name,
         desc: chipCardDesc(p), descCased: true,
-        image: p.image, href: `product-detail.html#p-${p.id}`
+        image: p.image, href: `product-detail.html#p-${p.id}`, apps: p.apps || []
       }));
     };
     if (CMS_CATS) {
@@ -1112,6 +1112,10 @@ function initCatalog() {
       const t = state.seriesType.toLowerCase();
       items = items.filter(it => it.seriesTypes && it.seriesTypes.has(t));
     }
+    // Фильтр «Применение» — по галочкам из админки (apps: слаги справочника).
+    if (APPS_READY && state.app !== 'all') {
+      items = items.filter(it => it.apps && it.apps.includes(state.app));
+    }
     const count = items.length;
     const catLabel = CAT_NAMES[cat] || cat;
     // listHeader (cat-breadcrumb + count) hidden — subheaders are primary headings now.
@@ -1202,7 +1206,11 @@ function initCatalog() {
     return count;
   }
 
-  const state = { search: '', cat: 'all', series: null, seriesType: 'all', view: 'grid' };
+  const state = { search: '', cat: 'all', series: null, seriesType: 'all', app: 'all', view: 'grid' };
+  // Фильтр «Применение» активен только когда справочник наполнен в админке
+  // (applications-data.js непуст) И данные размечены — до этого кнопки ведут
+  // себя как раньше (визуальный выбор без фильтрации).
+  const APPS_READY = typeof APPLICATIONS !== 'undefined' && Array.isArray(APPLICATIONS) && APPLICATIONS.length > 0;
   let searchTimer = null;
   // Both desktop sidebar filter-items[data-view] AND mobile toolbar view-link[data-view] —
   // single selector handles both, JS toggles state.view on click.
@@ -1563,8 +1571,12 @@ function initCatalog() {
       b.classList.toggle('catalog__view-link--active', isActive);
     });
 
-    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0) + (state.seriesType && state.seriesType !== 'all' ? 1 : 0);
+    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0)
+      + (state.seriesType && state.seriesType !== 'all' ? 1 : 0)
+      + (APPS_READY && state.app !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
+    // Подсветка активного применения (в фильтрующем режиме).
+    if (APPS_READY) appBtns.forEach(b => b.classList.toggle('filter-item--active', (b.dataset.app || 'all') === state.app));
 
     // Висящие предлоги в перерендеренном списке (CMS-тексты приходят без NBSP).
     if (window.applyNbsp && listWrap) window.applyNbsp(listWrap);
@@ -1599,11 +1611,17 @@ function initCatalog() {
   pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; state.seriesType = 'all'; setCat(btn.dataset.cat); }));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
-  // Application filter — visual radio selection (data not tagged with applications;
-  // matches v1 site UX: groups are presented but don't narrow the grid).
+  // Фильтр «Применение». С наполненным справочником — реально сужает выдачу
+  // (галочки применений на товарах/сериях в админке); без него — визуальный
+  // выбор, как в v1 (данные не размечены, фильтровать нечем).
   const appBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-app]');
   appBtns.forEach(btn => btn.addEventListener('click', () => {
-    appBtns.forEach(b => b.classList.toggle('filter-item--active', b === btn));
+    if (!APPS_READY) {
+      appBtns.forEach(b => b.classList.toggle('filter-item--active', b === btn));
+      return;
+    }
+    state.app = btn.dataset.app || 'all';
+    apply();
   }));
 
   // Global-search fallback link inside empty-state (delegated to listGrid).
@@ -1646,6 +1664,7 @@ function initCatalog() {
       state.cat = 'all';
       state.series = null;
       state.seriesType = 'all';
+      state.app = 'all';
       searchInputs.forEach(i => i.value = '');
       apply();
     });

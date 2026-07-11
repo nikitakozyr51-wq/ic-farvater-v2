@@ -99,6 +99,7 @@ function buildSeries(doc, itemKeys, itemRename) {
     imageByType: doc.imageByType || {},
     count: items.length,
     items,
+    ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
   };
 }
 
@@ -118,6 +119,7 @@ function buildProduct(doc) {
     description: doc.description == null ? '' : doc.description,
     image: doc.__photoPath || (doc.image == null ? '' : doc.image),
     specs,
+    ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
   };
 }
 
@@ -139,9 +141,13 @@ function buildCategory(doc) {
     nomenclature: (doc.nomenclature || []).map((b) => [b.label, b.value]),
   };
 }
-function writeCategoriesFile(file, arr) {
-  const body = '// ФАЙЛ ГЕНЕРИРУЕТСЯ scripts/generate-data.js из Strapi (категории) — не править руками.\n\nconst CATEGORIES = ' + JSON.stringify(arr, null, 2) + ';\n';
+function writeJsonVarFile(file, varName, arr) {
+  const body = '// ФАЙЛ ГЕНЕРИРУЕТСЯ scripts/generate-data.js из Strapi — не править руками.\n\nconst ' + varName + ' = ' + JSON.stringify(arr, null, 2) + ';\n';
   fs.writeFileSync(path.join(JS_DIR, file), body, 'utf8');
+}
+// Применение (справочник фильтра каталога) → applications-data.js.
+function buildApplication(doc) {
+  return { slug: doc.slug, name: doc.name, order: doc.order == null ? 99 : doc.order };
 }
 function safeLoadCurrentVar(file, varName) {
   try { return loadCurrentVar(file, varName); } catch { return null; }
@@ -203,6 +209,18 @@ function updateCatalogHtml(cats) {
     const r = replaceBetween(o, '<!-- CATS:FOOTERNAV:START -->', '<!-- CATS:FOOTERNAV:END -->', nav);
     if (r !== null && r !== o) { if (WRITE) fs.writeFileSync(fp, r, 'utf8'); console.log(`  → ${rel}: футер-нав ${WRITE ? 'обновлён' : 'изменился бы (CHECK)'}`); }
   }
+}
+// Кнопки фильтра «Применение» из справочника (маркер APPS:FILTER в products.html).
+// Активируется только когда справочник наполнен.
+function updateAppsHtml(apps) {
+  if (!apps.length) { console.log('· справочник применений пуст — фильтр не трогаю'); return; }
+  const F = '              ';
+  const btns = apps.map((a) => `${F}<button class="filter-item" type="button" data-app="${esc(a.slug)}">${esc(a.name.toLowerCase())}</button>`).join('\n');
+  const pPath = path.join(FRONT_ROOT, 'pages', 'products.html');
+  const orig = fs.readFileSync(pPath, 'utf8');
+  const r = replaceBetween(orig, '<!-- APPS:FILTER:START -->', '<!-- APPS:FILTER:END -->', btns);
+  if (r === null) { console.warn('  ! маркер APPS:FILTER не найден'); return; }
+  if (r !== orig) { if (WRITE) fs.writeFileSync(pPath, r, 'utf8'); console.log(`  → products.html: фильтр применений ${WRITE ? 'обновлён' : 'изменился бы (CHECK)'}`); }
 }
 
 // Массивы — по порядку; объекты — порядок ключей игнорируется (сайт читает по имени).
@@ -279,6 +297,9 @@ function writeProductsFile(file, arr) {
     getAll('products', 'populate=*&sort=order:asc'),
   ]);
   const cats = await getAll('categories', 'populate=*&sort=order:asc');
+  let apps = [];
+  try { apps = await getAll('applications', 'sort=order:asc'); }
+  catch { console.log('· тип applications ещё не задеплоен — пропуск'); }
   console.log(`Из Strapi: connector=${conn.length} converter=${conv.length} capacitor=${cap.length} products=${prods.length} categories=${cats.length}`);
 
   // Медиатека: скачать photo (если загружено) — путь приоритетнее строкового image.
@@ -286,6 +307,8 @@ function writeProductsFile(file, arr) {
 
   const builtCats = cats.map(buildCategory);
   updateCatalogHtml(builtCats);
+  const builtApps = apps.map(buildApplication);
+  updateAppsHtml(builtApps);
 
   const targets = [
     { file: 'connectors-data.js', varName: 'CONNECTOR_SERIES', cur: loadCurrentVar('connectors-data.js', 'CONNECTOR_SERIES'), neu: conn.map((d) => buildSeries(d, CONNECTOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
@@ -293,6 +316,7 @@ function writeProductsFile(file, arr) {
     { file: 'capacitors-data.js', varName: 'CAPACITOR_SERIES', cur: loadCurrentVar('capacitors-data.js', 'CAPACITOR_SERIES'), neu: cap.map((d) => buildSeries(d, CAPACITOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
     { file: 'products.js', varName: 'PRODUCTS', cur: loadCurrentVar('products.js', 'PRODUCTS'), neu: prods.map(buildProduct), kind: 'products' },
     { file: 'categories-data.js', varName: 'CATEGORIES', cur: safeLoadCurrentVar('categories-data.js', 'CATEGORIES'), neu: builtCats, kind: 'categories' },
+    { file: 'applications-data.js', varName: 'APPLICATIONS', cur: safeLoadCurrentVar('applications-data.js', 'APPLICATIONS'), neu: builtApps, kind: 'applications' },
   ];
 
   let changed = 0;
@@ -306,7 +330,7 @@ function writeProductsFile(file, arr) {
       diffs.slice(0, 30).forEach((d) => console.log('  ' + d));
       if (WRITE) {
         if (t.kind === 'series') writeSeriesFile(t.file, t.varName, t.neu);
-        else if (t.kind === 'categories') writeCategoriesFile(t.file, t.neu);
+        else if (t.kind === 'categories' || t.kind === 'applications') writeJsonVarFile(t.file, t.varName, t.neu);
         else writeProductsFile(t.file, t.neu);
         console.log(`  → записан ${t.file}`);
       }
