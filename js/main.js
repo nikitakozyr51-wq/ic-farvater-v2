@@ -794,6 +794,23 @@ function splitVariantName(it) {
 // (первоисточник данных каталога) + series.description; собраны и адверсариально
 // сверены 2026-07-11. Дополняются item-полями в variantSpecs(); при совпадении
 // ключа item-значение приоритетнее серии.
+// Категории каталога из categories-data.js (генерится роботом из Strapi-админки).
+// Данные считаются ГОТОВЫМИ, когда контент мигрирован (хоть у одной категории
+// заполнен cardDesc) — до этого CMS_CATS = null и работают встроенные фолбэки
+// ниже по файлу: сайт не зависит от готовности CMS ни в какой момент.
+const CMS_CATS = (typeof CATEGORIES !== 'undefined' && Array.isArray(CATEGORIES)
+  && CATEGORIES.some((c) => c && c.cardDesc))
+  ? CATEGORIES.filter((c) => c && c.slug && c.name) : null;
+// Источник данных категории → глобальный массив серий и его "kind" для карточек.
+const CMS_SOURCE_KIND = { connectors: 'connector', converters: 'converter', capacitors: 'capacitor' };
+function cmsSeriesBySource(source) {
+  if (source === 'connectors' && typeof CONNECTOR_SERIES !== 'undefined') return CONNECTOR_SERIES;
+  if (source === 'converters' && typeof CONVERTER_SERIES !== 'undefined') return CONVERTER_SERIES;
+  if (source === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') return CAPACITOR_SERIES;
+  return null;
+}
+function cmsCat(slug) { return CMS_CATS ? CMS_CATS.find((c) => c.slug === slug) : null; }
+
 // Правило вёрстки (эталон — разъёмы): каждое значение помещается в ОДНУ строку
 // (≤ ~40 символов), ряды одной высоты. Длинные текстовые ряды («применение»)
 // исключены — эта информация живёт в «Описании».
@@ -910,24 +927,29 @@ function initCatalog() {
     return many;
   }
 
-  const CAT_NAMES = {
-    microchips: 'микросхемы',
-    razemy: 'разъёмы',
-    converters: 'преобразователи',
-    capacitors: 'свч-конденсаторы',
-    transistors: 'свч-транзисторы',
-    pcb: 'печатные платы',
-    rantsy: 'реактивные ранцы',
-    snow: 'снегоуборочная техника'
-  };
+  const CAT_NAMES = CMS_CATS
+    ? Object.fromEntries(CMS_CATS.map((c) => [c.slug, c.name.toLowerCase()]))
+    : {
+      microchips: 'микросхемы',
+      razemy: 'разъёмы',
+      converters: 'преобразователи',
+      capacitors: 'свч-конденсаторы',
+      transistors: 'свч-транзисторы',
+      pcb: 'печатные платы',
+      rantsy: 'реактивные ранцы',
+      snow: 'снегоуборочная техника'
+    };
 
   // Landing-only categories (no SKU data in catalog) — the list view renders a single
   // cat-card linking to the category landing (product-detail.html#cat-X) instead of items.
-  const LANDING_ONLY_CATS = {
-    pcb:    { image: '../assets/images/products/pcb.webp',     alt: 'Печатные платы' },
-    rantsy: { image: '../assets/images/products/jetpack.webp', alt: 'Реактивные ранцы' },
-    snow:   { image: '../assets/images/products/snow.webp',    alt: 'Снегоуборочная техника' }
-  };
+  const LANDING_ONLY_CATS = CMS_CATS
+    ? Object.fromEntries(CMS_CATS.filter((c) => c.source === 'none')
+        .map((c) => [c.slug, { image: c.image, alt: c.name }]))
+    : {
+      pcb:    { image: '../assets/images/products/pcb.webp',     alt: 'Печатные платы' },
+      rantsy: { image: '../assets/images/products/jetpack.webp', alt: 'Реактивные ранцы' },
+      snow:   { image: '../assets/images/products/snow.webp',    alt: 'Снегоуборочная техника' }
+    };
 
   // Entry cards (Pencil zCPAQ "entry-cards-6cats · short copy") — first card in
   // filtered grid, leads to category landing page (#cat-X). Landing-only cats
@@ -986,39 +1008,39 @@ function initCatalog() {
     // seriesTypes — Set of normalized variant types this series contains. Used by Type-filter
     // at category level to narrow visible series to those matching the selected type.
     const collectTypes = (s) => new Set((s.items || []).map(i => normalizeType(i.type)).filter(Boolean));
+    const pushSeries = (kindKey, catSlug, src) => src.forEach(s => out.push({
+      type: 'series', kind: kindKey, cat: catSlug, id: s.slug, name: s.name,
+      desc: shortDesc(s.slug, s.description),
+      image: s.image, group: s.group || 'main', href: `#${catSlug}/${s.slug}`,
+      seriesTypes: collectTypes(s)
+    }));
+    const pushProducts = (kindKey, catSlug, catName) => {
+      if (typeof PRODUCTS === 'undefined') return;
+      PRODUCTS.filter(p => p.category === catName).forEach(p => out.push({
+        type: 'product', kind: kindKey, cat: catSlug, id: p.id, name: p.name,
+        desc: chipCardDesc(p), descCased: true,
+        image: p.image, href: `product-detail.html#p-${p.id}`
+      }));
+    };
+    if (CMS_CATS) {
+      // Категории из админки: source говорит, откуда данные.
+      const c = cmsCat(cat);
+      if (!c) return out;
+      const src = cmsSeriesBySource(c.source);
+      if (src) pushSeries(CMS_SOURCE_KIND[c.source], c.slug, src);
+      else if (c.source === 'products') pushProducts('product', c.slug, c.name);
+      return out;
+    }
     if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
-      CONNECTOR_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'connector', cat: 'razemy', id: s.slug, name: s.name,
-        desc: shortDesc(s.slug, s.description),
-        image: s.image, group: s.group || 'main', href: `#razemy/${s.slug}`,
-        seriesTypes: collectTypes(s)
-      }));
+      pushSeries('connector', 'razemy', CONNECTOR_SERIES);
     } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
-      CONVERTER_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'converter', cat: 'converters', id: s.slug, name: s.name,
-        desc: shortDesc(s.slug, s.description),
-        image: s.image, group: s.group || 'main', href: `#converters/${s.slug}`,
-        seriesTypes: collectTypes(s)
-      }));
+      pushSeries('converter', 'converters', CONVERTER_SERIES);
     } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
-      CAPACITOR_SERIES.forEach(s => out.push({
-        type: 'series', kind: 'capacitor', cat: 'capacitors', id: s.slug, name: s.name,
-        desc: shortDesc(s.slug, s.description),
-        image: s.image, group: s.group || 'main', href: `#capacitors/${s.slug}`,
-        seriesTypes: collectTypes(s)
-      }));
-    } else if (cat === 'microchips' && typeof PRODUCTS !== 'undefined') {
-      PRODUCTS.filter(p => p.category === 'Микросхемы').forEach(p => out.push({
-        type: 'product', kind: 'microchip', cat: 'microchips', id: p.id, name: p.name,
-        desc: chipCardDesc(p), descCased: true,
-        image: p.image, href: `product-detail.html#p-${p.id}`
-      }));
-    } else if (cat === 'transistors' && typeof PRODUCTS !== 'undefined') {
-      PRODUCTS.filter(p => p.category === 'СВЧ-транзисторы').forEach(p => out.push({
-        type: 'product', kind: 'transistor', cat: 'transistors', id: p.id, name: p.name,
-        desc: chipCardDesc(p), descCased: true,
-        image: p.image, href: `product-detail.html#p-${p.id}`
-      }));
+      pushSeries('capacitor', 'capacitors', CAPACITOR_SERIES);
+    } else if (cat === 'microchips') {
+      pushProducts('microchip', 'microchips', 'Микросхемы');
+    } else if (cat === 'transistors') {
+      pushProducts('transistor', 'transistors', 'СВЧ-транзисторы');
     }
     return out;
   }
@@ -1027,13 +1049,10 @@ function initCatalog() {
   // Used when search query is active with no specific category filter.
   // User must be able to find ANY SKU by typing exact code (e.g. "ет-2рмг14б4ш1а2").
   function getAllItems() {
-    const out = [
-      ...getItems('razemy'),
-      ...getItems('converters'),
-      ...getItems('capacitors'),
-      ...getItems('microchips'),
-      ...getItems('transistors')
-    ];
+    const searchCats = CMS_CATS
+      ? CMS_CATS.filter((c) => c.source !== 'none').map((c) => c.slug)
+      : ['razemy', 'converters', 'capacitors', 'microchips', 'transistors'];
+    const out = searchCats.flatMap((c) => getItems(c));
     // Also index individual SKU variants inside each series.items[]
     // Index variant SKU codes — partnumber + displayName + displaySub all included so user can find
     // exact items by typing "0R5" (capacitor partnumber) or short codes.
@@ -1280,15 +1299,14 @@ function initCatalog() {
   // Render variants of a single series in 4-col grid (replaces Series Detail page)
   function renderSeriesVariants(cat, slug) {
     let series = null, prefix = '', catLabel = CAT_NAMES[cat] || cat;
-    if (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
-      series = CONNECTOR_SERIES.find(s => s.slug === slug);
-      prefix = 's-c';
-    } else if (cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
-      series = CONVERTER_SERIES.find(s => s.slug === slug);
-      prefix = 's-v';
-    } else if (cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
-      series = CAPACITOR_SERIES.find(s => s.slug === slug);
-      prefix = 's-k';
+    // Источник серии: из категории админки (source) либо legacy-маппинг по слагу.
+    const srcName = CMS_CATS
+      ? (cmsCat(cat) || {}).source
+      : ({ razemy: 'connectors', converters: 'converters', capacitors: 'capacitors' })[cat];
+    const srcArr = cmsSeriesBySource(srcName);
+    if (srcArr) {
+      series = srcArr.find(s => s.slug === slug);
+      prefix = { connectors: 's-c', converters: 's-v', capacitors: 's-k' }[srcName];
     }
     if (!series) return 0;
     const seriesName = cyrillize(series.name);
@@ -1353,16 +1371,18 @@ function initCatalog() {
   // Each row: name + short desc + → arrow. Click navigates to that category.
   // Literal NBSP ( ) after short prepositions — no-hanging-prepositions rule.
   // Entities (&nbsp;) would pollute the search haystack; normalize() folds   → space.
-  const CAT_LIST_DESC = {
-    microchips:  'цифровые и аналоговые микросхемы',
-    razemy:      '23 серии ЕТ для ответственных применений',
-    converters:  'преобразователи напряжения dc/dc · ac/dc',
-    capacitors:  'свч-конденсаторы arc70 · аналог atc',
-    transistors: 'свч-транзисторы ldmos для усилителей мощности',
-    pcb:         'печатные платы одно- · двух- · многослойные',
-    rantsy:      'турбореактивные ранцы для спасательных и промышленных задач',
-    snow:        'снегоуборочная техника для экстремальных условий'
-  };
+  const CAT_LIST_DESC = CMS_CATS
+    ? Object.fromEntries(CMS_CATS.map((c) => [c.slug, (c.listDesc || c.cardDesc || '').toLowerCase()]))
+    : {
+      microchips:  'цифровые и аналоговые микросхемы',
+      razemy:      '23 серии ЕТ для ответственных применений',
+      converters:  'преобразователи напряжения dc/dc · ac/dc',
+      capacitors:  'свч-конденсаторы arc70 · аналог atc',
+      transistors: 'свч-транзисторы ldmos для усилителей мощности',
+      pcb:         'печатные платы одно- · двух- · многослойные',
+      rantsy:      'турбореактивные ранцы для спасательных и промышленных задач',
+      snow:        'снегоуборочная техника для экстремальных условий'
+    };
   function renderCategoryListRows() {
     if (!listGrid) return;
     listHeader.innerHTML = '';
@@ -1370,7 +1390,8 @@ function initCatalog() {
     if (existingBanner) existingBanner.remove();
     listGrid.innerHTML = '';
     if (listMore) listMore.hidden = true;
-    ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'].forEach(cat => {
+    (CMS_CATS ? CMS_CATS.map((c) => c.slug)
+      : ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow']).forEach(cat => {
       const row = document.createElement('a');
       row.className = 'cat-card cat-card--small';
       row.href = `#${cat}`;
@@ -1395,10 +1416,12 @@ function initCatalog() {
     const group = document.getElementById('typeFilterGroup');
     const itemsEl = document.getElementById('typeFilterItems');
     if (!group || !itemsEl) return;
-    const seriesSource = cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined' ? CONNECTOR_SERIES
-                       : cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined' ? CONVERTER_SERIES
-                       : cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined' ? CAPACITOR_SERIES
-                       : null;
+    const seriesSource = CMS_CATS
+      ? cmsSeriesBySource((cmsCat(cat) || {}).source)
+      : (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined' ? CONNECTOR_SERIES
+        : cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined' ? CONVERTER_SERIES
+        : cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined' ? CAPACITOR_SERIES
+        : null);
     if (!seriesSource) {
       group.hidden = true;
       return;
@@ -1517,7 +1540,9 @@ function initCatalog() {
       const tg = document.getElementById('typeFilterGroup');
       if (tg) tg.hidden = true;
       state.seriesType = 'all';
-    } else if (inListMode && !['razemy', 'converters', 'capacitors'].includes(state.cat)) {
+    } else if (inListMode && !(CMS_CATS
+      ? !!cmsSeriesBySource((cmsCat(state.cat) || {}).source)
+      : ['razemy', 'converters', 'capacitors'].includes(state.cat))) {
       const tg = document.getElementById('typeFilterGroup');
       if (tg) tg.hidden = true;
       state.seriesType = 'all';
@@ -1540,6 +1565,9 @@ function initCatalog() {
 
     const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0) + (state.seriesType && state.seriesType !== 'all' ? 1 : 0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
+
+    // Висящие предлоги в перерендеренном списке (CMS-тексты приходят без NBSP).
+    if (window.applyNbsp && listWrap) window.applyNbsp(listWrap);
 
     let hash = '';
     if (state.cat !== 'all') hash = `#${state.cat}`;
@@ -1623,7 +1651,9 @@ function initCatalog() {
     });
   }
 
-  const validCats = ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
+  const validCats = CMS_CATS
+    ? ['all', ...CMS_CATS.map((c) => c.slug)]
+    : ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
   function applyHash() {
     const h = window.location.hash.replace('#', '');
     // Support sub-hash: #razemy/et-2rmg (category + series slug)
@@ -1894,7 +1924,9 @@ const CATEGORY_LANDINGS = {
 // Always derived from the canonical order minus the current category, takes the first 4 —
 // tail categories (pcb / rantsy / snow) intentionally never appear as related cards;
 // their RELATED_CAT_INFO entries are reserved for a future reorder.
-const RELATED_CAT_ORDER = ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
+const RELATED_CAT_ORDER = CMS_CATS
+  ? CMS_CATS.map((c) => c.slug)
+  : ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
 const RELATED_CATS = Object.fromEntries(
   RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
 );
@@ -1908,6 +1940,36 @@ const RELATED_CAT_INFO = {
   rantsy:      { label: 'реактивные ранцы', desc: 'тяга 80&nbsp;кг&nbsp;· до&nbsp;100&nbsp;км/ч', image: '../assets/images/products/jetpack.webp' },
   snow:        { label: 'снегоуборочная техника', desc: 'для&nbsp;экстремальных условий', image: '../assets/images/products/snow.webp' }
 };
+
+// ===== CMS-переопределение лендингов и related-карточек =====
+// Категория из админки с заполненным лендинг-контентом (подзаголовок / описание /
+// характеристики / номенклатура) переопределяет встроенный конфиг; незаполненные
+// поля наследуются из встроенного (плавная миграция). Категории, которых нет
+// в хардкоде (созданные заказчиком), получают лендинг целиком из админки.
+if (CMS_CATS) {
+  for (const c of CMS_CATS) {
+    const fb = CATEGORY_LANDINGS[c.slug] || {};
+    const hasCms = c.subtitle || c.description || (c.bullets && c.bullets.length) || (c.nomenclature && c.nomenclature.length);
+    if (!hasCms && !fb.name) continue;   // ни контента, ни фолбэка — лендинга нет
+    CATEGORY_LANDINGS[c.slug] = {
+      name: c.name || fb.name,
+      eyebrowCategory: [c.slug, (c.name || fb.name || '').toLowerCase()],
+      subtitle: c.subtitle || fb.subtitle || '',
+      image: c.image || fb.image || '',
+      bulletsTitle: c.bulletsTitle || fb.bulletsTitle,
+      description: c.description
+        ? String(c.description).split(/\n{2,}/).map((s) => s.trim()).filter(Boolean)
+        : (fb.description || []),
+      bullets: (c.bullets && c.bullets.length) ? c.bullets : (fb.bullets || []),
+      nomenclature: (c.nomenclature && c.nomenclature.length) ? c.nomenclature : (fb.nomenclature || [])
+    };
+    RELATED_CAT_INFO[c.slug] = {
+      label: (c.name || fb.name || '').toLowerCase(),
+      desc: c.cardDesc || (RELATED_CAT_INFO[c.slug] || {}).desc || '',
+      image: c.image || (RELATED_CAT_INFO[c.slug] || {}).image || ''
+    };
+  }
+}
 
 /** Product Detail — populate fields from data based on URL hash.
  *  Hash formats: #p-<id> (PRODUCTS by id), #s-c-<slug> (connector series),

@@ -129,6 +129,7 @@
             </div>
             <div class="filter-group__items">
               <button class="filter-item filter-item--active" type="button" data-cat="all">все</button>
+              <!-- CATS:FILTER:START -->
               <button class="filter-item" type="button" data-cat="microchips">микросхемы</button>
               <button class="filter-item" type="button" data-cat="razemy">разъёмы</button>
               <button class="filter-item" type="button" data-cat="converters">преобразователи</button>
@@ -137,6 +138,7 @@
               <button class="filter-item" type="button" data-cat="pcb">печатные платы</button>
               <button class="filter-item" type="button" data-cat="rantsy">реактивные ранцы</button>
               <button class="filter-item" type="button" data-cat="snow">снегоуборочная техника</button>
+              <!-- CATS:FILTER:END -->
             </div>
           </div>
           <div class="filter-group">
@@ -185,6 +187,7 @@
           </div>
           <div class="catalog__pills">
             <button class="catalog__pill catalog__pill--active" type="button" data-cat="all">все</button>
+            <!-- CATS:PILLS:START -->
             <button class="catalog__pill" type="button" data-cat="microchips">микросхемы</button>
             <button class="catalog__pill" type="button" data-cat="razemy">разъёмы</button>
             <button class="catalog__pill" type="button" data-cat="converters">преобразователи</button>
@@ -193,6 +196,7 @@
             <button class="catalog__pill" type="button" data-cat="pcb">печатные платы</button>
             <button class="catalog__pill" type="button" data-cat="rantsy">реактивные ранцы</button>
             <button class="catalog__pill" type="button" data-cat="snow">снегоуборочная техника</button>
+            <!-- CATS:PILLS:END -->
           </div>
         </div>
 
@@ -203,6 +207,7 @@
             <button type="submit" aria-label="Найти">→</button>
           </form>
           <div class="catalog__grid" id="catalogGrid" data-animate="fade-up-stagger">
+            <!-- CATS:GRID:START -->
             <article class="cat-card" data-cat="microchips" data-name="микросхемы цифровые аналоговые">
               <a href="#microchips" class="cat-card__link">
                 <div class="cat-card__img">
@@ -291,6 +296,7 @@
                 </div>
               </a>
             </article>
+            <!-- CATS:GRID:END -->
             <p class="catalog__empty" id="catalogEmpty" hidden>Ничего не&nbsp;найдено</p>
           </div>
 
@@ -326,6 +332,7 @@
           <div class="footer__nav-col footer__nav-col--products">
             <p class="footer__nav-label">Каталог</p>
             <ul class="footer__nav footer__nav--products">
+              <!-- CATS:FOOTERNAV:START -->
               <li><a href="products.html#razemy">разъёмы</a></li>
               <li><a href="products.html#microchips">микросхемы</a></li>
               <li><a href="products.html#converters">преобразователи</a></li>
@@ -333,6 +340,7 @@
               <li><a href="products.html#transistors">СВЧ-транзисторы</a></li>
               <li><a href="products.html#rantsy">реактивные ранцы</a></li>
               <li><a href="products.html#snow">снегоуборочная техника</a></li>
+              <!-- CATS:FOOTERNAV:END -->
             </ul>
           </div>
           <div class="footer__nav-col footer__nav-col--site">
@@ -387,11 +395,12 @@
   <script src="../js/vendor/gsap.min.js" defer></script>
   <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
   <!-- Data files (must load before main.js so initCatalog can read them) -->
+  <script src="../js/categories-data.min.js?v=70ad499f" defer></script>
   <script src="../js/products.min.js?v=3d9027fe" defer></script>
   <script src="../js/connectors-data.min.js?v=7afb021b" defer></script>
   <script src="../js/converters-data.min.js?v=7f67d819" defer></script>
   <script src="../js/capacitors-data.min.js?v=7954ac7d" defer></script>
-  <script src="../js/main.min.js?v=0d1fb831" defer></script>
+  <script src="../js/main.min.js?v=f5e3b7ea" defer></script>
   <script src="../js/animations.min.js?v=26333db2" defer></script>
   <script src="../js/nbsp.min.js?v=a2583633" defer></script>
 </body>

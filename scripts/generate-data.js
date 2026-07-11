@@ -121,6 +121,90 @@ function buildProduct(doc) {
   };
 }
 
+// Категория каталога → categories-data.js. Управляет плитками, фильтрами,
+// лендингами и порядком разделов; source говорит фронту, откуда брать товары.
+function buildCategory(doc) {
+  return {
+    slug: doc.slug,
+    name: doc.nameRu,
+    source: doc.source || 'none',
+    order: doc.order == null ? 99 : doc.order,
+    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
+    cardDesc: doc.cardDesc || '',
+    listDesc: doc.listDesc || '',
+    subtitle: doc.subtitle || '',
+    bulletsTitle: doc.bulletsTitle || '',
+    description: doc.description || '',
+    bullets: (doc.landingBullets || []).map((b) => [b.label, b.value]),
+    nomenclature: (doc.nomenclature || []).map((b) => [b.label, b.value]),
+  };
+}
+function writeCategoriesFile(file, arr) {
+  const body = '// ФАЙЛ ГЕНЕРИРУЕТСЯ scripts/generate-data.js из Strapi (категории) — не править руками.\n\nconst CATEGORIES = ' + JSON.stringify(arr, null, 2) + ';\n';
+  fs.writeFileSync(path.join(JS_DIR, file), body, 'utf8');
+}
+function safeLoadCurrentVar(file, varName) {
+  try { return loadCurrentVar(file, varName); } catch { return null; }
+}
+
+// ---------- Статический HTML каталога из категорий (SEO) ----------
+// Плитки/фильтр/пилюли products.html и футер-нав «Каталог» на всех страницах
+// перегенерируются МЕЖДУ МАРКЕРАМИ <!-- CATS:*:START/END -->. Активируется
+// только когда категории наполнены (есть cardDesc) — до миграции HTML не трогаем.
+const FRONT_HTML = ['index.html', 'pages/about.html', 'pages/products.html', 'pages/product-detail.html', 'pages/contacts.html', 'pages/privacy-policy.html', 'pages/consent.html'];
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function navLabel(c) { return c.name.toLowerCase().replace(/свч/g, 'СВЧ'); }
+function replaceBetween(html, start, end, content) {
+  const si = html.indexOf(start), ei = html.indexOf(end);
+  if (si === -1 || ei === -1 || ei < si) return null;
+  return html.slice(0, si + start.length) + '\n' + content + '\n' + html.slice(ei);
+}
+function renderCatalogHtml(cats) {
+  const I = '            ';
+  const tiles = cats.map((c) => {
+    const href = c.source === 'none' ? `product-detail.html#cat-${esc(c.slug)}` : `#${esc(c.slug)}`;
+    return `${I}<article class="cat-card" data-cat="${esc(c.slug)}" data-name="${esc((c.name + ' ' + c.cardDesc).toLowerCase())}">
+${I}  <a href="${href}" class="cat-card__link">
+${I}    <div class="cat-card__img">
+${I}      ${c.image ? `<img width="1200" height="1200" src="${esc(c.image)}" alt="${esc(c.name)}" loading="lazy">` : ''}
+${I}    </div>
+${I}    <div class="cat-card__info">
+${I}      <h3 class="cat-card__name">${esc(c.name)}</h3>
+${I}      ${c.cardDesc ? `<p class="cat-card__desc">${esc(c.cardDesc)}</p>` : ''}
+${I}    </div>
+${I}  </a>
+${I}</article>`;
+  }).join('\n');
+  const F = '              ';
+  const filters = cats.map((c) => `${F}<button class="filter-item" type="button" data-cat="${esc(c.slug)}">${esc(navLabel(c))}</button>`).join('\n');
+  const pills = cats.map((c) => `${F}<button class="catalog__pill" type="button" data-cat="${esc(c.slug)}">${esc(navLabel(c))}</button>`).join('\n');
+  return { tiles, filters, pills };
+}
+function updateCatalogHtml(cats) {
+  const ready = cats.length > 0 && cats.some((c) => c.cardDesc);
+  if (!ready) { console.log('· категории без контента (cardDesc пуст) — статический HTML каталога не трогаю'); return; }
+  const { tiles, filters, pills } = renderCatalogHtml(cats);
+  const pPath = path.join(FRONT_ROOT, 'pages', 'products.html');
+  const orig = fs.readFileSync(pPath, 'utf8');
+  let next = orig;
+  for (const [mark, content] of [['CATS:GRID', tiles], ['CATS:FILTER', filters], ['CATS:PILLS', pills]]) {
+    const r = replaceBetween(next, `<!-- ${mark}:START -->`, `<!-- ${mark}:END -->`, content);
+    if (r === null) { console.warn(`  ! маркер ${mark} не найден в products.html`); continue; }
+    next = r;
+  }
+  if (next !== orig) { if (WRITE) fs.writeFileSync(pPath, next, 'utf8'); console.log(`  → products.html: грид/фильтр/пилюли ${WRITE ? 'обновлены' : 'изменились бы (CHECK)'}`); }
+  const F = '              ';
+  for (const rel of FRONT_HTML) {
+    const fp = path.join(FRONT_ROOT, rel);
+    if (!fs.existsSync(fp)) continue;
+    const prefix = rel.includes('/') ? '' : 'pages/';
+    const nav = cats.map((c) => `${F}<li><a href="${prefix}products.html#${esc(c.slug)}">${esc(navLabel(c))}</a></li>`).join('\n');
+    const o = fs.readFileSync(fp, 'utf8');
+    const r = replaceBetween(o, '<!-- CATS:FOOTERNAV:START -->', '<!-- CATS:FOOTERNAV:END -->', nav);
+    if (r !== null && r !== o) { if (WRITE) fs.writeFileSync(fp, r, 'utf8'); console.log(`  → ${rel}: футер-нав ${WRITE ? 'обновлён' : 'изменился бы (CHECK)'}`); }
+  }
+}
+
 // Массивы — по порядку; объекты — порядок ключей игнорируется (сайт читает по имени).
 function deepEqualUnordered(a, b) {
   if (a === b) return true;
@@ -194,16 +278,21 @@ function writeProductsFile(file, arr) {
     getAll('capacitor-series-list', 'populate=*&sort=order:asc'),
     getAll('products', 'populate=*&sort=order:asc'),
   ]);
-  console.log(`Из Strapi: connector=${conn.length} converter=${conv.length} capacitor=${cap.length} products=${prods.length}`);
+  const cats = await getAll('categories', 'populate=*&sort=order:asc');
+  console.log(`Из Strapi: connector=${conn.length} converter=${conv.length} capacitor=${cap.length} products=${prods.length} categories=${cats.length}`);
 
   // Медиатека: скачать photo (если загружено) — путь приоритетнее строкового image.
-  await resolvePhotos(conn); await resolvePhotos(conv); await resolvePhotos(cap); await resolvePhotos(prods);
+  await resolvePhotos(conn); await resolvePhotos(conv); await resolvePhotos(cap); await resolvePhotos(prods); await resolvePhotos(cats);
+
+  const builtCats = cats.map(buildCategory);
+  updateCatalogHtml(builtCats);
 
   const targets = [
     { file: 'connectors-data.js', varName: 'CONNECTOR_SERIES', cur: loadCurrentVar('connectors-data.js', 'CONNECTOR_SERIES'), neu: conn.map((d) => buildSeries(d, CONNECTOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
     { file: 'converters-data.js', varName: 'CONVERTER_SERIES', cur: loadCurrentVar('converters-data.js', 'CONVERTER_SERIES'), neu: conv.map((d) => buildSeries(d, CONVERTER_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
     { file: 'capacitors-data.js', varName: 'CAPACITOR_SERIES', cur: loadCurrentVar('capacitors-data.js', 'CAPACITOR_SERIES'), neu: cap.map((d) => buildSeries(d, CAPACITOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
     { file: 'products.js', varName: 'PRODUCTS', cur: loadCurrentVar('products.js', 'PRODUCTS'), neu: prods.map(buildProduct), kind: 'products' },
+    { file: 'categories-data.js', varName: 'CATEGORIES', cur: safeLoadCurrentVar('categories-data.js', 'CATEGORIES'), neu: builtCats, kind: 'categories' },
   ];
 
   let changed = 0;
@@ -217,6 +306,7 @@ function writeProductsFile(file, arr) {
       diffs.slice(0, 30).forEach((d) => console.log('  ' + d));
       if (WRITE) {
         if (t.kind === 'series') writeSeriesFile(t.file, t.varName, t.neu);
+        else if (t.kind === 'categories') writeCategoriesFile(t.file, t.neu);
         else writeProductsFile(t.file, t.neu);
         console.log(`  → записан ${t.file}`);
       }
