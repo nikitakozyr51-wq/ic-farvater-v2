@@ -61,6 +61,32 @@ function pick(src, keys, rename = {}) {
   return o;
 }
 
+// Фото из медиатеки Strapi (поле photo) → локальный файл в assets/images/cms/catalog/.
+// Возвращает относительный путь для data-файлов ('../assets/...', как существующие пути)
+// или '' если фото нет/не скачалось (тогда используется старое строковое поле image).
+// Имя файла стабильно по hash — повторно не качаем, диффы не дёргаются.
+const FRONT_ROOT = path.resolve(JS_DIR, '..');
+async function downloadPhoto(photo) {
+  if (!photo || !photo.url) return '';
+  const url = photo.url.startsWith('http') ? photo.url : STRAPI_URL + photo.url;
+  const fname = ((photo.hash || 'img') + (photo.ext || '')).replace(/^_+/, '');
+  const dir = path.join(FRONT_ROOT, 'assets', 'images', 'cms', 'catalog');
+  const dest = path.join(dir, fname);
+  const rel = `../assets/images/cms/catalog/${fname}`;
+  if (fs.existsSync(dest)) return rel;
+  const res = await fetch(url, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
+  if (!res.ok) { console.warn(`  ! photo ${fname} → ${res.status}`); return ''; }
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  console.log(`  ↓ photo → ${rel}`);
+  return rel;
+}
+// Пред-проход: скачать photo у всех доков, положить путь в doc.__photoPath.
+async function resolvePhotos(docs) {
+  for (const d of docs) d.__photoPath = await downloadPhoto(d.photo);
+  return docs;
+}
+
 function buildSeries(doc, itemKeys, itemRename) {
   const items = (doc.items || []).map((it) => pick(it, itemKeys, itemRename));
   return {
@@ -69,7 +95,7 @@ function buildSeries(doc, itemKeys, itemRename) {
     group: doc.group,
     tu: doc.tu == null ? '' : doc.tu,
     description: doc.description == null ? '' : doc.description,
-    image: doc.image == null ? '' : doc.image,
+    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
     imageByType: doc.imageByType || {},
     count: items.length,
     items,
@@ -90,7 +116,7 @@ function buildProduct(doc) {
     category: doc.category ? doc.category.nameRu : '',
     subcategory: doc.subcategory == null ? '' : doc.subcategory,
     description: doc.description == null ? '' : doc.description,
-    image: doc.image == null ? '' : doc.image,
+    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
     specs,
   };
 }
@@ -169,6 +195,9 @@ function writeProductsFile(file, arr) {
     getAll('products', 'populate=*&sort=order:asc'),
   ]);
   console.log(`Из Strapi: connector=${conn.length} converter=${conv.length} capacitor=${cap.length} products=${prods.length}`);
+
+  // Медиатека: скачать photo (если загружено) — путь приоритетнее строкового image.
+  await resolvePhotos(conn); await resolvePhotos(conv); await resolvePhotos(cap); await resolvePhotos(prods);
 
   const targets = [
     { file: 'connectors-data.js', varName: 'CONNECTOR_SERIES', cur: loadCurrentVar('connectors-data.js', 'CONNECTOR_SERIES'), neu: conn.map((d) => buildSeries(d, CONNECTOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
