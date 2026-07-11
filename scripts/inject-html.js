@@ -84,6 +84,8 @@ function escapeForContext(value, before) {
   return String(value);
 }
 
+const { renderHomeBlocks } = require('./render-home-blocks');
+
 const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
 
 // SELFTEST: словарь значений из самих маркеров HTML (то, что seed залил бы в Strapi).
@@ -198,6 +200,9 @@ function buildDictFromMarkers() {
       console.log(`  ${rel}: без изменений`);
     }
   }
+
+  // Конструктор главной (D4): dynamic zone homepage.blocks → секции между HOME:BLOCKS.
+  if (!SELFTEST) await renderHomeBlocks({ strapiUrl: STRAPI_URL, token: TOKEN, write: WRITE });
 
   console.log(`\nМаркеров в HTML: ${allMarkerKeys.size}`);
   if (SELFTEST) {
