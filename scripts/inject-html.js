@@ -40,10 +40,11 @@ const SINGLE_TYPES = [
   { prefix: 'homepage', api: 'homepage' },
   { prefix: 'about-page', api: 'about-page' },
   { prefix: 'contacts-page', api: 'contacts-page' },
+  { prefix: 'catalog-page', api: 'catalog-page' },
 ];
 
 // HTML-файлы, в которых ищем маркеры.
-const HTML_FILES = ['index.html', 'pages/about.html', 'pages/contacts.html', 'pages/privacy-policy.html', 'pages/consent.html'];
+const HTML_FILES = ['index.html', 'pages/about.html', 'pages/contacts.html', 'pages/products.html', 'pages/privacy-policy.html', 'pages/consent.html'];
 
 async function fetchSingle(api) {
   const res = await fetch(`${STRAPI_URL}/api/${api}?populate=*`, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
