@@ -114,10 +114,12 @@ function renderCategorySlider(b, counter, catalog) {
   if (!cat) return '';
   const n = b.count || 8;
   let items = [];
+  // Позиции БЕЗ фото на главную не берём — пустая серая карточка в карусели
+  // выглядит как битая (в каталоге такие позиции остаются).
   const src = { connectors: catalog.connectors, converters: catalog.converters, capacitors: catalog.capacitors }[cat.source];
-  if (src) items = src.slice(0, n).map((s) => ({ name: s.name, desc: '', image: s.image }));
+  if (src) items = src.filter((s) => s.image).slice(0, n).map((s) => ({ name: s.name, desc: '', image: s.image }));
   else if (cat.source === 'products' && catalog.products) {
-    items = catalog.products.filter((p) => p.category === cat.name).slice(0, n)
+    items = catalog.products.filter((p) => p.category === cat.name && p.image).slice(0, n)
       .map((p) => ({ name: p.name, desc: p.subcategory || '', image: p.image }));
   }
   if (!items.length) return '';
