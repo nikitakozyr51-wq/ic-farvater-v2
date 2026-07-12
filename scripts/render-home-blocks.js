@@ -21,9 +21,16 @@ const ROOT = process.env.FRONTEND_DIR || path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
 
 function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+// Тексты из старых маркеров содержат entities (&nbsp;) и <br> — декодируем ДО esc,
+// иначе на странице видно литеральное «&nbsp;».
+function deEnt(s) {
+  return String(s == null ? '' : s)
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+    .replace(/<br[^>]*>/g, '\n').replace(/&shy;/g, '');
+}
 // Минимальный markdown richtext-полей: абзацы по пустой строке + **bold** / *em*.
 function mdParas(text) {
-  return String(text || '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+  return deEnt(text).split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
     .map((p) => '<p>' + esc(p).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/\n/g, '<br>') + '</p>');
 }
 function loadVar(file, varName) {
@@ -58,7 +65,7 @@ async function downloadBlockPhoto(strapiUrl, token, photo) {
 // ---------- Рендеры секций (копии существующей вёрстки, счётчик подставляется) ----------
 function renderTextPhoto(b, counter, photoPath) {
   const side = b.photoSide === 'right' ? ' uy-grid--image-right' : '';
-  const eyebrow = b.eyebrow ? `${esc(b.eyebrow)} · (${counter})` : `(${counter})`;
+  const eyebrow = b.eyebrow ? `${esc(deEnt(b.eyebrow))} · (${counter})` : `(${counter})`;
   const cta = (b.ctaText && b.ctaUrl)
     ? `\n            <a href="${esc(b.ctaUrl)}" class="btn-pill btn-pill--solid uy-grid__btn">${esc(b.ctaText)} →</a>` : '';
   return `    <section class="section section--about">
@@ -70,7 +77,7 @@ function renderTextPhoto(b, counter, photoPath) {
           <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">${eyebrow}</p>
-              <h2 class="uy-grid__title">${esc(b.title)}</h2>
+              <h2 class="uy-grid__title">${esc(deEnt(b.title)).replace(/\n/g, '<br class="is-desktop-only">')}</h2>
             </div>
             <div class="uy-grid__body">
               ${mdParas(b.body).join('\n              ')}
@@ -86,14 +93,14 @@ function renderPromoCards(b, counter, photoPaths) {
               ${photoPaths[i] ? `<img width="1200" height="800" src="${esc(photoPaths[i])}" alt="${esc(c.name)}" loading="lazy">` : ''}
             </div>
             <div class="promise-card__info">
-              <h3 class="promise-card__name">${esc(c.name)}</h3>
-              <p class="promise-card__desc">${esc(c.text || '')}</p>${(c.ctaText && c.ctaUrl) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(c.ctaText)} →</a>` : ''}
+              <h3 class="promise-card__name">${esc(deEnt(c.name))}</h3>
+              <p class="promise-card__desc">${esc(deEnt(c.text))}</p>${(c.ctaText && c.ctaUrl) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(c.ctaText)} →</a>` : ''}
             </div>
           </article>`).join('\n');
   return `    <section class="section section--promise">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
-          <h2 class="section-head__title">${esc(b.title)}<span class="section-head__counter">(${counter})</span></h2>
+          <h2 class="section-head__title">${esc(deEnt(b.title))}<span class="section-head__counter">(${counter})</span></h2>
         </header>
         <div class="promise-grid" data-animate="fade-up-stagger">
 ${cards}
@@ -130,7 +137,7 @@ function renderCategorySlider(b, counter, catalog) {
   return `    <section class="section section--products">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
-          <h2 class="section-head__title">${esc(b.title || cat.name)}<span class="section-head__counter">(${counter})</span></h2>
+          <h2 class="section-head__title">${esc(deEnt(b.title || cat.name))}<span class="section-head__counter">(${counter})</span></h2>
         </header>
         <div class="product-carousel">
 ${arrow('prev', 'Предыдущие карточки', 'M19 12H5M12 5L5 12L12 19')}
