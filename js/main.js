@@ -1208,9 +1208,16 @@ function initCatalog() {
 
   const state = { search: '', cat: 'all', series: null, seriesType: 'all', app: 'all', view: 'grid' };
   // Фильтр «Применение» активен только когда справочник наполнен в админке
-  // (applications-data.js непуст) И данные размечены — до этого кнопки ведут
-  // себя как раньше (визуальный выбор без фильтрации).
-  const APPS_READY = typeof APPLICATIONS !== 'undefined' && Array.isArray(APPLICATIONS) && APPLICATIONS.length > 0;
+  // (applications-data.js непуст) И данные РАЗМЕЧЕНЫ (хоть у одного товара/серии
+  // проставлены галочки) — иначе выбор применения давал бы пустую выдачу.
+  // До готовности кнопки ведут себя как раньше (визуальный выбор без фильтрации).
+  const hasAppTags = () =>
+    (typeof CONNECTOR_SERIES !== 'undefined' && CONNECTOR_SERIES.some(s => s.apps && s.apps.length))
+    || (typeof CONVERTER_SERIES !== 'undefined' && CONVERTER_SERIES.some(s => s.apps && s.apps.length))
+    || (typeof CAPACITOR_SERIES !== 'undefined' && CAPACITOR_SERIES.some(s => s.apps && s.apps.length))
+    || (typeof PRODUCTS !== 'undefined' && PRODUCTS.some(p => p.apps && p.apps.length));
+  const APPS_READY = typeof APPLICATIONS !== 'undefined' && Array.isArray(APPLICATIONS)
+    && APPLICATIONS.length > 0 && hasAppTags();
   let searchTimer = null;
   // Both desktop sidebar filter-items[data-view] AND mobile toolbar view-link[data-view] —
   // single selector handles both, JS toggles state.view on click.
