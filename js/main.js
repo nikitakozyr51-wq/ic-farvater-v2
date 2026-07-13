@@ -870,7 +870,14 @@ const SERIES_SPECS = {
 // любого товара оставались статические разъёмные спеки из HTML-шаблона.
 function variantSpecs(kindKey, series, item) {
   const specs = {};
-  const pn = item.partnumber || splitVariantName(item)[1];
+  // Фолбэк для разъёмов: у connector-item нет поля partnumber, а имя варианта
+  // начинается с самого номера («ЕТ-2РМГ14Б4Ш1А2», «ЕТ-МР1-10-1-В Вилка») —
+  // берём первый токен имени, если он похож на партномер (есть цифра, ≥5 симв.)
+  let pn = item.partnumber || splitVariantName(item)[1];
+  if (!pn) {
+    const t = String(item.name || '').split(/\s+/)[0];
+    if (t.length >= 5 && /\d/.test(t) && /[A-Za-zА-Яа-яЁё]/.test(t)) pn = t;
+  }
   if (pn) specs['партномер'] = pn;
   if (item.type) specs['тип'] = String(item.type).toLowerCase();
   if (kindKey === 'capacitor') {
