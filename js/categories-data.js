@@ -278,7 +278,7 @@ const CATEGORIES = [
     "name": "СВЧ-транзисторы",
     "source": "products",
     "order": 5,
-    "image": "../assets/images/products/transistors.webp",
+    "image": "../assets/images/cms/catalog/PD_55015_E_b918818630.webp",
     "cardDesc": "LDMOS для усилителей мощности",
     "listDesc": "свч-транзисторы ldmos для усилителей мощности",
     "subtitle": "LDMOS для усилителей мощности · До киловатт · Частоты до ГГц",
