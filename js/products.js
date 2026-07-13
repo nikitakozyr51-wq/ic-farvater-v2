@@ -29,6 +29,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1309EN3.3T",
     "image": "../assets/images/products/items/ET1309EN3.3T 1.webp",
     "specs": {
+      "Партномер": "ET1309EN3.3T",
       "Тип корпуса": "TO-263-3",
       "Тип": "Управление питанием (Power management)",
       "Входное напряжение": "15 В",
@@ -44,6 +45,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1309ES035",
     "image": "../assets/images/products/items/550_420__1309ES035 1.webp",
     "specs": {
+      "Партномер": "ET1309ES035",
       "Тип корпуса": "SOT-23, TO-92, SOT-89, SOP-8, TO-92L",
       "Тип": "Управление питанием (Power management)",
       "Входное напряжение": "2,495–36 В",
@@ -60,6 +62,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1309ES055",
     "image": "../assets/images/products/items/550_420__1309ES035 1.webp",
     "specs": {
+      "Партномер": "ET1309ES055",
       "Тип корпуса": "SOT-23, TO-92, SOT-89, SOP-8, TO-92L",
       "Тип": "Управление питанием (Power management)",
       "Входное напряжение": "2,495–36 В",
@@ -76,6 +79,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1309ES065",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "ET1309ES065",
       "Тип корпуса": "SOT-23, TO-92, SOT-89, SOP-8, TO-92L",
       "Тип": "Управление питанием (Power management)",
       "Входное напряжение": "2,495–36 В",
@@ -92,6 +96,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1645RU1U",
     "image": "../assets/images/products/items/550_420__ET1645RU1U 1.webp",
     "specs": {
+      "Партномер": "ET1645RU1U",
       "Тип корпуса": "32TSOP1",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -106,6 +111,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1645RU3U",
     "image": "../assets/images/products/items/ET1645RU3U 1.webp",
     "specs": {
+      "Партномер": "ET1645RU3U",
       "Тип корпуса": "44TSOP2",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -120,6 +126,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1645RU4",
     "image": "../assets/images/products/items/ET1645RU4 1.webp",
     "specs": {
+      "Партномер": "ET1645RU4",
       "Тип корпуса": "48TSOP1",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -134,6 +141,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1645RU4",
     "image": "../assets/images/products/items/ET1645RU4 1.webp",
     "specs": {
+      "Партномер": "ET1645RU4-9",
       "Тип корпуса": "48TSOP2",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -148,6 +156,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1645RU7YA",
     "image": "../assets/images/products/items/ET1645RU7YA 1.webp",
     "specs": {
+      "Партномер": "ET1645RU7YA",
       "Тип корпуса": "100TQFP (20mm x 14mm)",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-60°С…+85°С °C",
@@ -162,6 +171,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1663RA06V4",
     "image": "../assets/images/products/items/ET1663RA06V4.webp",
     "specs": {
+      "Партномер": "ET1663RA06V4",
       "Тип корпуса": "48TSOP1",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -176,6 +186,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1636RR1",
     "image": "../assets/images/products/items/ET1636RR1 1.webp",
     "specs": {
+      "Партномер": "ET1636RR1",
       "Тип корпуса": "CQFP44",
       "Тип": "ПАМЯТЬ (MEMORY)",
       "Температурный диапазон": "-55°С…+125°С °C",
@@ -190,6 +201,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5559IN4U",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "ET5559IN4U",
       "Тип корпуса": "SSOP-24",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -204,6 +216,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5559IN10BU",
     "image": "https://ekb-test.ru/upload/uf/20d/ut6ov4lt6vb47k0eowau6ere5pt9k1sx/ET5559IN10BU.png",
     "specs": {
+      "Партномер": "ET5559IN10BU",
       "Тип корпуса": "SOP8",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -218,6 +231,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5559IN14AU",
     "image": "https://ekb-test.ru/upload/uf/46b/oy7z68a95a497jttny9tk0ut93c5ta1w/ET5559IN14AU.png",
     "specs": {
+      "Партномер": "ET5559IN14AU",
       "Тип корпуса": "SO-8",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+125°С °C",
@@ -232,6 +246,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5559IN28U",
     "image": "../assets/images/products/items/5559IN28U.webp",
     "specs": {
+      "Партномер": "ET5559IN28U",
       "Тип корпуса": "SOP8",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+125°С °C",
@@ -246,6 +261,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5600VG1U",
     "image": "https://ekb-test.ru/upload/uf/4b4/a44f127hodycume6jr1h8wzvhlnkiwib/ET5600VG1U.png",
     "specs": {
+      "Партномер": "ET5600VG1U",
       "Тип корпуса": "LQFP64M, LQFP128",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+85°С °C",
@@ -260,6 +276,7 @@ const PRODUCTS = [
     "description": "Микросхема ET2011VV034",
     "image": "https://ekb-test.ru/upload/uf/9a9/ebe4w6j36jv4h48vgbf3iiv3ydzol1wa/ET2011VV034.png",
     "specs": {
+      "Партномер": "ET2011VV034",
       "Тип корпуса": "SO-16, QSOP-16",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-55°С…+125°С °C",
@@ -274,6 +291,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5572IN1AU",
     "image": "https://ekb-test.ru/upload/uf/8ec/527kh6udm7rz6eovsu3cdcingr6zdr91/ET5572IN1AU.png",
     "specs": {
+      "Партномер": "ET5572IN1AU",
       "Тип корпуса": "TSSOP48",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+105°С °C"
@@ -287,6 +305,7 @@ const PRODUCTS = [
     "description": "Микросхема ET5572IN2AU",
     "image": "https://ekb-test.ru/upload/iblock/057/g6nr2g6sktci3qfsk00nbtx8ql3z2d7o/ET5572IN2AU.png",
     "specs": {
+      "Партномер": "ET5572IN2AU",
       "Тип корпуса": "TSSOP24",
       "Тип": "ИНТЕРФЕЙСЫ (INTERFACES)",
       "Температурный диапазон": "-40°С…+105°С °C"
@@ -300,6 +319,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1986VE-100",
     "image": "https://ekb-test.ru/upload/iblock/5fd/gqwgifcm153l80ml1bni4kzgbuojt2ql/ET1986VE_100.png",
     "specs": {
+      "Партномер": "ET1986VE-100",
       "Тип корпуса": "LQFP100",
       "Тип": "МИКРОКОНТРОЛЛЕРЫ (MCU)",
       "Температурный диапазон": "-40°С…+105°С °C",
@@ -314,6 +334,7 @@ const PRODUCTS = [
     "description": "Микросхема ET1986VE-64",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "ET1986VE-64",
       "Тип": "МИКРОКОНТРОЛЛЕРЫ (MCU)",
       "Напряжение питания": "2,2 ÷ 3,6 В"
     }
@@ -326,6 +347,7 @@ const PRODUCTS = [
     "description": "Микросхема ET557BQ",
     "image": "https://ekb-test.ru/upload/iblock/c1a/xf5zeywbgvw5oytaj96hlqza8m70q813/CQFP44.png",
     "specs": {
+      "Партномер": "ET557BQ",
       "Тип корпуса": "CQFP44",
       "Тип": "ПЛИС И ЗАГРУЗОЧНАЯ ПАМЯТЬ (FPGA AND CONFIGURATION PROM)",
       "Температурный диапазон": "-55…125 °C",
@@ -340,6 +362,7 @@ const PRODUCTS = [
     "description": "Микросхема ET557BQ_1",
     "image": "https://ekb-test.ru/upload/iblock/c1a/xf5zeywbgvw5oytaj96hlqza8m70q813/CQFP44.png",
     "specs": {
+      "Партномер": "ET557BQ-24",
       "Тип корпуса": "CQFP44",
       "Тип": "ПЛИС И ЗАГРУЗОЧНАЯ ПАМЯТЬ (FPGA AND CONFIGURATION PROM)",
       "Температурный диапазон": "-55…125 °C",
@@ -354,6 +377,7 @@ const PRODUCTS = [
     "description": "Программируемая логическая ИС (ПЛИС) изготовленная по КМОП-технологии",
     "image": "https://ekb-test.ru/upload/iblock/f5e/pydny6io2937vu53ockd086szqovb3p3/ET5576BQ.png",
     "specs": {
+      "Партномер": "ET5576BQ",
       "Тип": "ПЛИС И ЗАГРУЗОЧНАЯ ПАМЯТЬ (FPGA AND CONFIGURATION PROM)",
       "Температурный диапазон": "-55…125 °C"
     }
@@ -366,6 +390,7 @@ const PRODUCTS = [
     "description": "Программируемая логическая ИС (ПЛИС) изготовленная по КМОП-технологии",
     "image": "https://ekb-test.ru/upload/iblock/f5e/pydny6io2937vu53ockd086szqovb3p3/ET5576BQ.png",
     "specs": {
+      "Партномер": "ET5576BQ-26",
       "Тип": "ПЛИС И ЗАГРУЗОЧНАЯ ПАМЯТЬ (FPGA AND CONFIGURATION PROM)",
       "Температурный диапазон": "-55…125 °C"
     }
@@ -378,6 +403,7 @@ const PRODUCTS = [
     "description": "Микросхема 1310ПН1У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1310ПН1У",
       "Тип корпуса": "24-х выводной металлокерамический корпус Н06.24-1В"
     }
   },
@@ -389,6 +415,7 @@ const PRODUCTS = [
     "description": "Микросхема 1309ЕН3.3Т",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1309ЕН3.3Т",
       "Тип корпуса": "8-выводной металлокерамический корпус 4116.8-3"
     }
   },
@@ -400,6 +427,7 @@ const PRODUCTS = [
     "description": "Микросхема 1309ЕС035",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1309ЕС035",
       "Тип корпуса": "8-ми выводной металлокерамический корпус Н02.8-1В"
     }
   },
@@ -411,6 +439,7 @@ const PRODUCTS = [
     "description": "Микросхема 1309ЕС055",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1309ЕС055",
       "Тип корпуса": "8-ми выводной металлокерамический корпус Н02.8-1В"
     }
   },
@@ -422,6 +451,7 @@ const PRODUCTS = [
     "description": "Микросхема 1309ЕС065",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1309ЕС065",
       "Тип корпуса": "8-ми выводной металлокерамический корпус Н02.8-1В"
     }
   },
@@ -433,6 +463,7 @@ const PRODUCTS = [
     "description": "Микросхема 1645РУ1А(Б)У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1645РУ1А(Б)У",
       "Тип корпуса": "64-х выводной металлокерамический корпус Н18.64-3В"
     }
   },
@@ -444,6 +475,7 @@ const PRODUCTS = [
     "description": "Микросхема 1645РУ3А(Б)У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1645РУ3А(Б)У",
       "Тип корпуса": "64-х выв. металлокерамический корпус Н18.64-3В/МК 5153.64-2"
     }
   },
@@ -455,6 +487,7 @@ const PRODUCTS = [
     "description": "Микросхема 1645РУ4АУ",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1645РУ4АУ",
       "Тип корпуса": "64-выводной металлокерамический корпус 5134.64-6"
     }
   },
@@ -466,6 +499,7 @@ const PRODUCTS = [
     "description": "Микросхема 1645РУ6У1",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1645РУ6У1",
       "Тип корпуса": "64-в. металлокерам. корп. Н18.64-2В, 64-в. металлокерам. корп. МК 5153.64-2"
     }
   },
@@ -477,6 +511,7 @@ const PRODUCTS = [
     "description": "Микросхема 1645РУ7Я",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1645РУ7Я",
       "Тип корпуса": "BGA МК 8307.144-АНЗ (16 х 16 мм)"
     }
   },
@@ -488,6 +523,7 @@ const PRODUCTS = [
     "description": "Микросхема 1663РА06В4",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1663РА06В4",
       "Тип корпуса": "108-х выводной металлокерамический корпус 4226.108-2.03"
     }
   },
@@ -499,6 +535,7 @@ const PRODUCTS = [
     "description": "Микросхема 1636РР1А(Б)У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1636РР1А(Б)У",
       "Тип корпуса": "42-х выводной металлокерамический корпус Н14.42-1В"
     }
   },
@@ -510,6 +547,7 @@ const PRODUCTS = [
     "description": "Микросхема 5559ИН4У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5559ИН4У",
       "Тип корпуса": "28-и выводной металлокерамический корпус Н09.28-1В"
     }
   },
@@ -521,6 +559,7 @@ const PRODUCTS = [
     "description": "Микросхема 5559ИН10БУ",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5559ИН10БУ",
       "Тип корпуса": "8-выводной микро корпус Н02.8-1В, 8-выводной пластиковый корпус SO-8"
     }
   },
@@ -532,6 +571,7 @@ const PRODUCTS = [
     "description": "Микросхема 5559ИН14АУ",
     "image": "https://ekb-test.ru/upload/uf/46b/oy7z68a95a497jttny9tk0ut93c5ta1w/ET5559IN14AU.png",
     "specs": {
+      "Партномер": "5559ИН14АУ",
       "Тип корпуса": "8-выводной металлокерамический корпус МК 5213.8-1"
     }
   },
@@ -543,6 +583,7 @@ const PRODUCTS = [
     "description": "Микросхема 5559ИН28У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5559ИН28У",
       "Тип корпуса": "Тип корпуса: Н02.8-1В"
     }
   },
@@ -554,6 +595,7 @@ const PRODUCTS = [
     "description": "Микросхема 5600ВГ1У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5600ВГ1У",
       "Тип корпуса": "64-х выводной металлокерамический корпус Н18.64-1В"
     }
   },
@@ -565,6 +607,7 @@ const PRODUCTS = [
     "description": "Микросхема 2011BB034",
     "image": "https://ekb-test.ru/upload/iblock/546/rv5n5ss5dlqpvkjqxbvg9dyh9dmu7v3h/2011BB034.png",
     "specs": {
+      "Партномер": "2011BB034",
       "Тип корпуса": "20-выводной металлокерамический корпус МК 4140.20-1"
     }
   },
@@ -576,6 +619,7 @@ const PRODUCTS = [
     "description": "Микросхема 5572ИН1АУ1",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5572ИН1АУ1",
       "Тип корпуса": "48-выводной металлокерамический корпус Н16.48-1В"
     }
   },
@@ -587,6 +631,7 @@ const PRODUCTS = [
     "description": "Микросхема 5572ИН2АУ",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5572ИН2АУ",
       "Тип корпуса": "24-выводной металлокерамический корпус: Н06.24-1В"
     }
   },
@@ -598,6 +643,7 @@ const PRODUCTS = [
     "description": "Микросхема 1986ВЕ91Т",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "1986ВЕ91Т",
       "Тип корпуса": "132-х выводной металлокерамический корпус 4229.132-3"
     }
   },
@@ -609,6 +655,7 @@ const PRODUCTS = [
     "description": "Микросхема 5578РС015",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5578РС015",
       "Тип корпуса": "Н09.28-1В"
     }
   },
@@ -620,6 +667,7 @@ const PRODUCTS = [
     "description": "Микросхема 5576РС1У",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5576РС1У",
       "Тип корпуса": "28-и выводной металлокерамический корпус Н09.28-1В"
     }
   },
@@ -631,6 +679,7 @@ const PRODUCTS = [
     "description": "Микросхема 5576ХС4Т",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5576ХС4Т",
       "Тип корпуса": "256-выводной металлокерамический корпус 4244.256-3"
     }
   },
@@ -642,6 +691,7 @@ const PRODUCTS = [
     "description": "Микросхема 5576ХС1Т",
     "image": "../assets/images/products/items/Irtysh.webp",
     "specs": {
+      "Партномер": "5576ХС1Т",
       "Тип корпуса": "240-выводной металлокерамический корпус 4245.240-6"
     }
   },
@@ -11628,6 +11678,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1 ГГц ET1008",
     "image": "../assets/images/cms/catalog/ET_2028_408450d998.png",
     "specs": {
+      "Партномер": "ET1008",
       "Мощность": "90 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "18 дБ",
@@ -11646,6 +11697,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1,5 ГГц ET1006",
     "image": "../assets/images/cms/catalog/ET_1006_0dc8b55bb4.jpg",
     "specs": {
+      "Партномер": "ET1006",
       "Мощность": "70 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "20 дБ",
@@ -11664,6 +11716,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1 ГГц ET2022",
     "image": "../assets/images/cms/catalog/ET_2022_c41f20318d.jpg",
     "specs": {
+      "Партномер": "ET2022",
       "Мощность": "50 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "20 дБ",
@@ -11682,6 +11735,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 250 ГГц ET1028",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "ET1028",
       "Мощность": "400 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "17 дБ",
@@ -11700,6 +11754,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1 ГГц ET09100",
     "image": "../assets/images/products/items/ET09100.webp",
     "specs": {
+      "Партномер": "ET09100",
       "Мощность": "30 Вт",
       "Рабочее напряжение": "13,6 В",
       "Усиление": "14 дБ",
@@ -11718,6 +11773,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 2,5 ГГц ET25007",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "ET25007",
       "Мощность": "3 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "17 дБ",
@@ -11736,6 +11792,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 4 ГГц ET6004H",
     "image": "../assets/images/products/items/ET6004H 1.webp",
     "specs": {
+      "Партномер": "ET6004H",
       "Мощность": "35 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "16 дБ",
@@ -11754,6 +11811,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1 ГГц ET0506",
     "image": "../assets/images/cms/catalog/ET_1503_V_30a8751ac9.png",
     "specs": {
+      "Партномер": "ET0506",
       "Мощность": "60 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "19 дБ",
@@ -11773,6 +11831,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 0,5 ГГц ET0520",
     "image": "../assets/images/cms/catalog/ET_1503_V_30a8751ac9.png",
     "specs": {
+      "Партномер": "ET0520",
       "Мощность": "200 Вт",
       "Рабочее напряжение": "50 В",
       "Усиление": "20 дБ",
@@ -11791,6 +11850,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 1500 МГц ET1503V",
     "image": "../assets/images/products/items/ET1503V.webp",
     "specs": {
+      "Партномер": "ET1503V",
       "Мощность": "30 Вт",
       "Рабочее напряжение": "50 В",
       "Усиление": "28 дБ",
@@ -11809,6 +11869,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 500 МГц ET0535",
     "image": "../assets/images/products/items/ET0535.webp",
     "specs": {
+      "Партномер": "ET0535",
       "Мощность": "300 Вт",
       "Рабочее напряжение": "50 В",
       "Усиление": "16,2 дБ",
@@ -11826,6 +11887,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 2 ГГц ET1001",
     "image": "../assets/images/cms/catalog/ET_1001_e2255b9488.jpg",
     "specs": {
+      "Партномер": "ET1001",
       "Мощность": "10 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "23 дБ",
@@ -11843,6 +11905,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 500 МГц ET574F",
     "image": "../assets/images/products/items/ET574F.webp",
     "specs": {
+      "Партномер": "ET574F",
       "Мощность": "700 Вт",
       "Рабочее напряжение": "50 В",
       "Усиление": "17,7 дБ",
@@ -11860,6 +11923,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 2 ГГц ET2006C",
     "image": "../assets/images/products/items/ET2006C.webp",
     "specs": {
+      "Партномер": "ET2006C",
       "Мощность": "24 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "15 дБ",
@@ -11877,6 +11941,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 2 ГГц ETM1001",
     "image": "../assets/images/cms/catalog/ET_2201_N_7f8929ec70.png",
     "specs": {
+      "Партномер": "ETM1001",
       "Мощность": "10 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "13 дБ",
@@ -11894,6 +11959,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 2,2 ГГц ET2201N",
     "image": "../assets/images/products/items/ET2201N.webp",
     "specs": {
+      "Партномер": "ET2201N",
       "Мощность": "10 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "14 дБ",
@@ -11911,6 +11977,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор 700-3500 МГц ET3135",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "ET3135",
       "Мощность": "20 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "от 15,4 до 22,9 дБ",
@@ -11928,6 +11995,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D1008UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D1008UK",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "80 Вт",
       "Рабочее напряжение": "28 В",
@@ -11946,6 +12014,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2022UK",
     "image": "../assets/images/cms/catalog/D2022_UK_Seme_LAB_e3626d9ad1.png",
     "specs": {
+      "Партномер": "D2022UK",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "45 Вт",
       "Рабочее напряжение": "28 В",
@@ -11964,6 +12033,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D1028UK",
     "image": "../assets/images/cms/catalog/D1028_UK_Seme_LAB_e293f53a3c.png",
     "specs": {
+      "Партномер": "D1028UK",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "300 Вт",
       "Рабочее напряжение": "28 В",
@@ -11982,6 +12052,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор PD55015-E",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "PD55015-E",
       "Тип": "Сдвоенный LDMOS с общим истоком",
       "Мощность": "15 Вт",
       "Рабочее напряжение": "12,5 В",
@@ -12000,6 +12071,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор PD55003",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "PD55003",
       "Тип": "Радиочастотный N-канальный LDMOS",
       "Мощность": "3 Вт",
       "Рабочее напряжение": "12,5 В",
@@ -12018,6 +12090,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор NPTB00025",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "NPTB00025",
       "Тип": "Радиочастотный N-канальный LDMOS",
       "Мощность": "25 Вт",
       "Рабочее напряжение": "28 В",
@@ -12036,6 +12109,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLF171A (MRF171A)",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLF171A (MRF171A)",
       "Тип": "Нитрид-галлиевый (GaN) радиочастотный HEMT",
       "Мощность": "45 Вт",
       "Рабочее напряжение": "28 В",
@@ -12055,6 +12129,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор MFR174",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "MFR174",
       "Тип": "Радиочастотный N-канальный LDMOS",
       "Мощность": "125 Вт",
       "Рабочее напряжение": "28 В",
@@ -12074,6 +12149,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D1002UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D1002UK",
       "Мощность": "40 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "16 дБ",
@@ -12092,6 +12168,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLF278",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLF278",
       "Тип": "Радиочастотный N-канальный LDMOS",
       "Мощность": "300 Вт",
       "Рабочее напряжение": "50 В",
@@ -12110,6 +12187,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLF404",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLF404",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "4 Вт",
       "Рабочее напряжение": "12,5 В",
@@ -12128,6 +12206,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLF574",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLF574",
       "Тип": "Радиочастотный LDMOS",
       "Мощность": "600 Вт",
       "Рабочее напряжение": "50 В",
@@ -12146,6 +12225,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D1207UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D1207UK",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "20 Вт",
       "Рабочее напряжение": "12,5 В",
@@ -12164,6 +12244,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2001UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D2001UK",
       "Тип": "Сдвоенный N-канальный радиочастотный LDMOS с общим истоком",
       "Мощность": "2,5 Вт",
       "Рабочее напряжение": "28 В",
@@ -12182,6 +12263,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2202UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D2202UK",
       "Мощность": "5 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "10 дБ",
@@ -12199,6 +12281,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLS6G3135",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLS6G3135",
       "Мощность": "20 Вт",
       "Рабочее напряжение": "28 В",
       "Тип корпуса": "Керамический корпус с фланцами",
@@ -12215,6 +12298,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2208UK (SemeLAB)",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D2208UK (SemeLAB)",
       "Мощность": "40 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "10 дБ",
@@ -12232,6 +12316,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор BLF246",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "BLF246",
       "Мощность": "80 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "16 дБ",
@@ -12250,6 +12335,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2213UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D2213UK",
       "Мощность": "20 Вт",
       "Рабочее напряжение": "12,5 В",
       "Усиление": "10 дБ",
@@ -12267,6 +12353,7 @@ const PRODUCTS = [
     "description": "Высокочастотный транзистор D2002UK",
     "image": "../assets/images/products/items/0eie6w0m_LDMOS_Microwave_Transistors 1.webp",
     "specs": {
+      "Партномер": "D2002UK",
       "Мощность": "5 Вт",
       "Рабочее напряжение": "28 В",
       "Усиление": "13 дБ",
