@@ -756,16 +756,33 @@ const GENERIC_TYPE_IMAGES = {
 //   1. series.imageByType[item.type] — exact key match
 //   2. series.imageByType[k] where normalizeType(k) === normalizeType(item.type)
 //      (handles e.g. "Вилка приборная" matching key "Вилка")
-//   3. GENERIC_TYPE_IMAGES[normalizeType(item.type)] — global fallback
-//   4. series.image — series default
+//   3. series.imageByType[item.case] — корпус (ИРТЫШ: full brick / 1/2 brick / 1/4 brick)
+//   4. series.imageByType[серийная мощность из партномера] — ЭТВА700… → ключ "700".
+//      Ключ — номер серии в партномере, а не фактическая мощность: у ЭТВА700-*О12
+//      мощность 600 Вт, но корпус и фото — от 700-й серии (так на ekb-test)
+//   5. series.imageByType[item.capacitance] — ёмкость конденсатора; в данных
+//      встречаются оба разделителя («1,0» и «1.0»), пробуем оба
+//   6. GENERIC_TYPE_IMAGES[normalizeType(item.type)] — global fallback
+//   7. series.image — series default
 function resolveSeriesItemImage(series, item) {
-  if (series && series.imageByType && item && item.type) {
-    const img = series.imageByType[item.type];
-    if (img) return img;
-    const norm = normalizeType(item.type);
-    if (norm) {
-      const entry = Object.entries(series.imageByType).find(([k]) => normalizeType(k) === norm);
-      if (entry) return entry[1];
+  const ibt = series && series.imageByType;
+  if (ibt && item) {
+    if (item.type && ibt[item.type]) return ibt[item.type];
+    if (item.type) {
+      const norm = normalizeType(item.type);
+      if (norm) {
+        const entry = Object.entries(ibt).find(([k]) => normalizeType(k) === norm);
+        if (entry) return entry[1];
+      }
+    }
+    if (item.case && ibt[item.case]) return ibt[item.case];
+    const pm = String(item.partnumber || '').match(/^ЭТ[А-Я]+?([\d,]+)-/);
+    if (pm && ibt[pm[1]]) return ibt[pm[1]];
+    if (item.capacitance) {
+      const c = String(item.capacitance);
+      if (ibt[c]) return ibt[c];
+      const alt = c.indexOf(',') !== -1 ? c.replace(',', '.') : c.replace('.', ',');
+      if (ibt[alt]) return ibt[alt];
     }
   }
   if (item && item.type) {
@@ -815,9 +832,9 @@ function cmsCat(slug) { return CMS_CATS ? CMS_CATS.find((c) => c.slug === slug) 
 // (≤ ~40 символов), ряды одной высоты. Длинные текстовые ряды («применение»)
 // исключены — эта информация живёт в «Описании».
 const SERIES_SPECS = {
-  arc70a: [['аналог', 'ATC 100A'], ['тип', 'MLCC'], ['тке', '0±30 ppm/°C'], ['ту', 'ТКЕС.434410.002 ТУ']],
-  arc70c: [['аналог', 'ATC 100C'], ['корпус', '2225'], ['ёмкость', '0,5–3000 пФ'], ['допуск', '±1% … ±5%'], ['температура', '−55…+200 °C'], ['тке', '0±30 ppm/°C']],
-  arc70e: [['аналог', 'ATC 100E'], ['корпус', '3838'], ['ёмкость', '0,5–5100 пФ'], ['допуск', '±0,05 пФ … ±5%'], ['температура', '−55…+200 °C'], ['тке', '0±30 ppm/°C']],
+  arc70a: [['аналог', 'ATC700A · 0505C/P · DLC70A · К15-39'], ['тип', 'MLCC'], ['тке', '0±30 ppm/°C'], ['ту', 'ТКЕС.434410.002 ТУ']],
+  arc70c: [['аналог', 'ATC700C'], ['корпус', '2225'], ['ёмкость', '0,5–3000 пФ'], ['допуск', '±1% … ±5%'], ['температура', '−55…+200 °C'], ['тке', '0±30 ppm/°C']],
+  arc70e: [['аналог', 'ATC700E'], ['корпус', '3838'], ['ёмкость', '0,5–5100 пФ'], ['допуск', '±0,05 пФ … ±5%'], ['температура', '−55…+200 °C'], ['тке', '0±30 ppm/°C']],
   irtysh: [['вход', '24 / 28 / 300 / 375 В'], ['выход', '3,3–48 В (9 номиналов)'], ['мощность', '50–600 Вт'], ['корпус', '1/4, 1/2, full brick'], ['температура', '−55…+100 °C (исп. C/H/M)'], ['совместимость', 'pin-to-pin с VICOR']],
   volga: [['вход', '115 / 230 В, однофазная сеть'], ['выход', '5–48 В (6 номиналов)'], ['мощность', '50–2000 Вт'], ['корпус', 'исполнения A1–A6'], ['температура', '−50…+100 °C (исп. Р/С)'], ['совместимость', 'аналог Vicor, TRACO, VPT']],
   enisei: [['вход', '27 В (17–36 В)'], ['мощность', '7,5–1200 Вт'], ['выходы', '5–27 В, 1–2 канала'], ['температура', '−40…+100 °C (исп. С)'], ['корпуса', 'F1–F8'], ['совместимость', 'аналог Vicor, TRACO, VPT']],
