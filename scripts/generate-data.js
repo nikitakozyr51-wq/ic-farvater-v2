@@ -275,8 +275,12 @@ function writeSeriesFile(file, varName, arr) {
     `    group: ${JSON.stringify(s.group)},`,
     `    tu: ${JSON.stringify(s.tu)},`,
     `    description: ${JSON.stringify(s.description)},`,
+    // Опциональные ключи из buildSeries — обязаны сериализоваться, иначе
+    // «файл записан», а новых данных в нём нет (git clean, коммита нет).
+    ...(s.cardCaption ? [`    cardCaption: ${JSON.stringify(s.cardCaption)},`] : []),
     `    image: ${JSON.stringify(s.image)},`,
     `    imageByType: ${JSON.stringify(s.imageByType)},`,
+    ...(s.apps ? [`    apps: ${JSON.stringify(s.apps)},`] : []),
     `    count: ${s.count},`,
     '    items: [',
     s.items.map((it) => '      ' + JSON.stringify(it)).join(',\n'),
