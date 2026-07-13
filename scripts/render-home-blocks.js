@@ -28,6 +28,10 @@ function deEnt(s) {
     .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
     .replace(/<br[^>]*>/g, '\n').replace(/&shy;/g, '');
 }
+// ctaText из админки может уже содержать декоративную стрелку («запросить расчёт →»).
+// Снимаем любой хвост из пробелов/&nbsp;/стрелок, чтобы шаблонная « →» не задваивалась
+// (стрелка — элемент вёрстки, а не текста; редактор вводит только подпись кнопки).
+function ctaLabel(s) { return String(s == null ? '' : s).replace(/(?:\s|&nbsp;|→)+$/g, '').trim(); }
 // Минимальный markdown richtext-полей: абзацы по пустой строке + **bold** / *em*.
 function mdParas(text) {
   return deEnt(text).split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
@@ -67,7 +71,7 @@ function renderTextPhoto(b, counter, photoPath) {
   const side = b.photoSide === 'right' ? ' uy-grid--image-right' : '';
   const eyebrow = b.eyebrow ? `${esc(deEnt(b.eyebrow))} · (${counter})` : `(${counter})`;
   const cta = (b.ctaText && b.ctaUrl)
-    ? `\n            <a href="${esc(b.ctaUrl)}" class="btn-pill btn-pill--solid uy-grid__btn">${esc(b.ctaText)} →</a>` : '';
+    ? `\n            <a href="${esc(b.ctaUrl)}" class="btn-pill btn-pill--solid uy-grid__btn">${esc(ctaLabel(b.ctaText))} →</a>` : '';
   return `    <section class="section section--about">
       <div class="container">
         <div class="uy-grid${side}">
@@ -94,7 +98,7 @@ function renderPromoCards(b, counter, photoPaths) {
             </div>
             <div class="promise-card__info">
               <h3 class="promise-card__name">${esc(deEnt(c.name))}</h3>
-              <p class="promise-card__desc">${esc(deEnt(c.text))}</p>${(c.ctaText && c.ctaUrl) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(c.ctaText)} →</a>` : ''}
+              <p class="promise-card__desc">${esc(deEnt(c.text))}</p>${(c.ctaText && c.ctaUrl) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(ctaLabel(c.ctaText))} →</a>` : ''}
             </div>
           </article>`).join('\n');
   return `    <section class="section section--promise">
