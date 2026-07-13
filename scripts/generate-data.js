@@ -99,6 +99,7 @@ function buildSeries(doc, itemKeys, itemRename) {
     imageByType: doc.imageByType || {},
     count: items.length,
     items,
+    ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
     ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
   };
 }
@@ -119,6 +120,7 @@ function buildProduct(doc) {
     description: doc.description == null ? '' : doc.description,
     image: doc.__photoPath || (doc.image == null ? '' : doc.image),
     specs,
+    ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
     ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
   };
 }
