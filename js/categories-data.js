@@ -6,7 +6,7 @@ const CATEGORIES = [
     "name": "Микросхемы",
     "source": "products",
     "order": 1,
-    "image": "../assets/images/products/items/ET1636RR1 1.webp",
+    "image": "../assets/images/cms/catalog/ET_1309_ES_065_68cf4710fb.webp",
     "cardDesc": "Цифровые и аналоговые",
     "listDesc": "цифровые и аналоговые микросхемы",
     "subtitle": "Цифровые и аналоговые ИС · 51 позиция · Аналоги импортных компонентов",
