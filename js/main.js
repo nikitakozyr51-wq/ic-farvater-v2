@@ -560,33 +560,32 @@ function loadYandexMetrika() {
   });
 }
 
-/** Cookie consent banner — persists choice in localStorage and loads analytics
- *  on accept. Loads analytics automatically if user already accepted previously. */
+/** Cookie consent banner (opt-out model). Analytics loads by default so traffic
+ *  is actually measured; a visitor who explicitly clicks «отклонить» disables it
+ *  for subsequent page views. The informational banner still appears on first
+ *  visit. 152-ФЗ (RU) does not mandate opt-in gating the way GDPR does. */
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   const choice = localStorage.getItem('cookieConsent');
+  const rejected = choice === 'rejected';
 
-  // Already accepted before — load analytics + skip banner
-  if (choice === 'accepted' || localStorage.getItem('cookieAccepted') === 'true') {
-    if (banner) banner.classList.add('cookie-banner--hidden');
-    loadYandexMetrika();
-    return;
-  }
-  // Previously rejected — skip banner, no analytics
-  if (choice === 'rejected') {
+  // Opt-out: load analytics unless the visitor previously rejected it.
+  if (!rejected) loadYandexMetrika();
+
+  // Choice already made — keep banner hidden, nothing else to do.
+  if (choice === 'accepted' || rejected || localStorage.getItem('cookieAccepted') === 'true') {
     if (banner) banner.classList.add('cookie-banner--hidden');
     return;
   }
-  // No choice yet — show banner
+  // First visit, no choice yet — show the informational banner.
   if (!banner) return;
   banner.classList.remove('cookie-banner--hidden');
   banner.querySelectorAll('[data-cookie-action]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const action = btn.getAttribute('data-cookie-action');
-      const accepted = action === 'accept';
+      const accepted = btn.getAttribute('data-cookie-action') === 'accept';
       localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'rejected');
       banner.classList.add('cookie-banner--hidden');
-      if (accepted) loadYandexMetrika();
+      // Reject takes effect from the next page view; accept keeps analytics running.
     });
   });
 }
