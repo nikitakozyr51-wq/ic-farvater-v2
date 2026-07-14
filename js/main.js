@@ -1204,6 +1204,9 @@ function initCatalog() {
         a.textContent = `поискать во${NBSP}всех категориях`;
         empty.appendChild(a);
         empty.append('.');
+      } else if (APPS_READY && state.app !== 'all') {
+        const appName = ((typeof APPLICATIONS !== 'undefined' && APPLICATIONS.find((a) => a.slug === state.app)) || {}).name || '';
+        empty.textContent = `в${NBSP}разделе «${catLabel}» нет позиций для${NBSP}применения «${cyrillize(appName).toLowerCase()}».`;
       } else {
         empty.textContent = `в${NBSP}разделе «${catLabel}» пока нет товаров.`;
       }
@@ -1286,6 +1289,66 @@ function initCatalog() {
       listMore.hidden = true;
     }
     return count;
+  }
+
+  // Кросс-категорийный вид фильтра «Применение» (раздел «Все» + выбранное
+  // применение). Собирает размеченные позиции из всех разделов + карточки
+  // лендинг-разделов «везде» (напр. платы), у которых нет своих позиций.
+  function renderAppView(appSlug) {
+    const realCats = CMS_CATS
+      ? CMS_CATS.filter((c) => c.source !== 'none').map((c) => c.slug)
+      : ['razemy', 'converters', 'capacitors', 'microchips', 'transistors'];
+    const items = realCats
+      .flatMap((c) => getItems(c))
+      .filter((it) => it.apps && it.apps.includes(appSlug));
+    const landingCats = (CMS_CATS || [])
+      .filter((c) => c.source === 'none' && c.apps && c.apps.includes(appSlug));
+    const appName = ((typeof APPLICATIONS !== 'undefined' && APPLICATIONS.find((a) => a.slug === appSlug)) || {}).name || '';
+    const total = items.length + landingCats.length;
+    listHeader.innerHTML = '';
+    listGrid.innerHTML = '';
+    const hdr = document.createElement('div');
+    hdr.className = 'catalog__list-subheader';
+    const nameEl = document.createElement('span');
+    nameEl.className = 'catalog__list-subheader__title';
+    nameEl.textContent = cyrillize(appName).toLowerCase();
+    const cntEl = document.createElement('span');
+    cntEl.className = 'catalog__list-subheader__count';
+    cntEl.textContent = `${total} ${pluralize(total, 'товар', 'товара', 'товаров')}`;
+    hdr.append(nameEl, cntEl);
+    listGrid.appendChild(hdr);
+    if (total === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'catalog__list-empty';
+      empty.textContent = 'в этом применении пока нет позиций.';
+      listGrid.appendChild(empty);
+      if (listMore) listMore.hidden = true;
+      return 0;
+    }
+    // Лендинг-разделы «везде» первыми (разъёмы/платы), затем серии и товары.
+    landingCats.forEach((c) => {
+      const card = document.createElement('a');
+      card.className = 'cat-card cat-card--small';
+      card.href = `product-detail.html#cat-${c.slug}`;
+      card.innerHTML = `
+        <div class="cat-card__img">${c.image ? `<img src="${c.image}" alt="${c.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}</div>
+        <div class="cat-card__info"><h3 class="cat-card__name">${cyrillize(c.name)}</h3><p class="cat-card__desc">перейти к&nbsp;разделу</p></div>`;
+      listGrid.appendChild(card);
+    });
+    const renderSlice = (from, to) => items.slice(from, to).forEach((it) => listGrid.appendChild(buildCard(it)));
+    renderSlice(0, PAGE_SIZE);
+    if (items.length > PAGE_SIZE) {
+      listMore.hidden = false;
+      let page = 1;
+      listMore.onclick = () => {
+        page++;
+        renderSlice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE);
+        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
+      };
+    } else {
+      listMore.hidden = true;
+    }
+    return total;
   }
 
   function buildCard(it) {
@@ -1559,6 +1622,13 @@ function initCatalog() {
       if (emptyMsg) emptyMsg.hidden = true;
       // Type filter at category level — visible for series-based cats (razemy/converters/capacitors).
       renderTypeFilter(state.cat, null);
+    } else if (APPS_READY && state.app !== 'all') {
+      // Кросс-категорийный вид «Применение»: раздел «Все» + выбранное применение →
+      // показываем все размеченные позиции (серии/товары) из всех разделов сразу.
+      grid.hidden = true;
+      listWrap.hidden = false;
+      renderAppView(state.app);
+      if (emptyMsg) emptyMsg.hidden = true;
     } else if (state.view === 'list') {
       // Default (cat=all, no search) + list view → category rows per Pencil rN0pk.
       grid.hidden = true;

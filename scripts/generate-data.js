@@ -87,8 +87,38 @@ async function resolvePhotos(docs) {
   return docs;
 }
 
-function buildSeries(doc, itemKeys, itemRename) {
+// ── Правило «раздел каталога → применения» (фильтр «Применение») ────────────
+// Заказчик задаёт применения на уровне РАЗДЕЛА (правки 2026-07-14), а не
+// отдельной позиции, поэтому проставляем apps всем сериям/товарам раздела
+// автоматически — новые позиции наследуют применение своего раздела без ручной
+// разметки. Если у позиции в Strapi проставлены собственные галочки
+// applications — они в приоритете (ручное уточнение перекрывает правило).
+// «Промышленность» (industry) исключена из справочника по правкам.
+const APP_ORDER = ['telecom', 'radar', 'aviation', 'space', 'medical'];
+const APP_EVERYWHERE = APP_ORDER.slice();            // «везде» — во всех применениях
+const CATEGORY_APPS = {
+  microchips:  ['telecom'],
+  capacitors:  ['telecom', 'radar'],            // СВЧ
+  transistors: ['telecom', 'radar'],            // СВЧ
+  converters:  ['aviation', 'radar'],
+  razemy:      APP_EVERYWHERE,                   // разъёмы — везде
+  pcb:         APP_EVERYWHERE,                   // платы — везде
+};
+const EXCLUDED_APPS = new Set(['industry']);
+
+// apps позиции: приоритет ручным галочкам Strapi, иначе — правило раздела.
+function appsForCategory(catSlug, strapiApps) {
+  const own = (strapiApps || [])
+    .map((a) => a && a.slug)
+    .filter(Boolean)
+    .filter((s) => !EXCLUDED_APPS.has(s));
+  if (own.length) return own;
+  return CATEGORY_APPS[catSlug] ? CATEGORY_APPS[catSlug].slice() : [];
+}
+
+function buildSeries(doc, itemKeys, itemRename, catSlug) {
   const items = (doc.items || []).map((it) => pick(it, itemKeys, itemRename));
+  const apps = appsForCategory((doc.category && doc.category.slug) || catSlug, doc.applications);
   return {
     slug: doc.slug,
     name: doc.name,
@@ -100,7 +130,7 @@ function buildSeries(doc, itemKeys, itemRename) {
     count: items.length,
     items,
     ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
-    ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
+    ...(apps.length ? { apps } : {}),
   };
 }
 
@@ -112,6 +142,7 @@ const ITEM_RENAME = { case: 'caseType' };
 function buildProduct(doc) {
   const specs = {};
   for (const s of (doc.specs || [])) specs[s.label] = s.value;
+  const apps = appsForCategory(doc.category ? doc.category.slug : '', doc.applications);
   return {
     id: doc.order,
     name: doc.nameDisplay,
@@ -121,7 +152,7 @@ function buildProduct(doc) {
     image: doc.__photoPath || (doc.image == null ? '' : doc.image),
     specs,
     ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
-    ...((doc.applications || []).length ? { apps: doc.applications.map((a) => a.slug).filter(Boolean) } : {}),
+    ...(apps.length ? { apps } : {}),
   };
 }
 
@@ -141,6 +172,9 @@ function buildCategory(doc) {
     description: doc.description || '',
     bullets: (doc.landingBullets || []).map((b) => [b.label, b.value]),
     nomenclature: (doc.nomenclature || []).map((b) => [b.label, b.value]),
+    // apps раздела — для кросс-категорийного вида фильтра «Применение»
+    // (в т.ч. лендинг-разделы вроде плат, у которых нет своих позиций).
+    ...(CATEGORY_APPS[doc.slug] ? { apps: CATEGORY_APPS[doc.slug].slice() } : {}),
   };
 }
 function writeJsonVarFile(file, varName, arr) {
@@ -313,13 +347,13 @@ function writeProductsFile(file, arr) {
 
   const builtCats = cats.map(buildCategory);
   updateCatalogHtml(builtCats);
-  const builtApps = apps.map(buildApplication);
+  const builtApps = apps.map(buildApplication).filter((a) => !EXCLUDED_APPS.has(a.slug));
   updateAppsHtml(builtApps);
 
   const targets = [
-    { file: 'connectors-data.js', varName: 'CONNECTOR_SERIES', cur: loadCurrentVar('connectors-data.js', 'CONNECTOR_SERIES'), neu: conn.map((d) => buildSeries(d, CONNECTOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
-    { file: 'converters-data.js', varName: 'CONVERTER_SERIES', cur: loadCurrentVar('converters-data.js', 'CONVERTER_SERIES'), neu: conv.map((d) => buildSeries(d, CONVERTER_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
-    { file: 'capacitors-data.js', varName: 'CAPACITOR_SERIES', cur: loadCurrentVar('capacitors-data.js', 'CAPACITOR_SERIES'), neu: cap.map((d) => buildSeries(d, CAPACITOR_ITEM_KEYS, ITEM_RENAME)), kind: 'series' },
+    { file: 'connectors-data.js', varName: 'CONNECTOR_SERIES', cur: loadCurrentVar('connectors-data.js', 'CONNECTOR_SERIES'), neu: conn.map((d) => buildSeries(d, CONNECTOR_ITEM_KEYS, ITEM_RENAME, 'razemy')), kind: 'series' },
+    { file: 'converters-data.js', varName: 'CONVERTER_SERIES', cur: loadCurrentVar('converters-data.js', 'CONVERTER_SERIES'), neu: conv.map((d) => buildSeries(d, CONVERTER_ITEM_KEYS, ITEM_RENAME, 'converters')), kind: 'series' },
+    { file: 'capacitors-data.js', varName: 'CAPACITOR_SERIES', cur: loadCurrentVar('capacitors-data.js', 'CAPACITOR_SERIES'), neu: cap.map((d) => buildSeries(d, CAPACITOR_ITEM_KEYS, ITEM_RENAME, 'capacitors')), kind: 'series' },
     { file: 'products.js', varName: 'PRODUCTS', cur: loadCurrentVar('products.js', 'PRODUCTS'), neu: prods.map(buildProduct), kind: 'products' },
     { file: 'categories-data.js', varName: 'CATEGORIES', cur: safeLoadCurrentVar('categories-data.js', 'CATEGORIES'), neu: builtCats, kind: 'categories' },
     { file: 'applications-data.js', varName: 'APPLICATIONS', cur: safeLoadCurrentVar('applications-data.js', 'APPLICATIONS'), neu: builtApps, kind: 'applications' },
