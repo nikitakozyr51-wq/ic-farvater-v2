@@ -11,6 +11,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "байонет · до +200 °C",
     image: "../assets/images/products/connectors/et-snc23.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 142,
     items: [
       {"name":"ЕТ-CНЦ23-4/14Р-6-В","type":"Розетка","tu":"ТКЕС.434410.014 ТУ"},
@@ -166,6 +167,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "герметичные · до +200 °C",
     image: "../assets/images/products/connectors/et-2rmg.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 30,
     items: [
       {"name":"ЕТ-2РМГ14Б4Ш1А2","type":"Вилка","tu":"ТКЕС.434410.039 ТУ"},
@@ -209,6 +211,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "резьбовые · до +150 °C",
     image: "../assets/images/products/connectors/et-2rmt.webp",
     imageByType: {"Вилка":"../assets/images/products/connectors/et-2rmt-vilka.webp","Розетка":"../assets/images/products/connectors/et-2rmt-rozetka.webp"},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 316,
     items: [
       {"name":"ЕТ-2РМДТ18Б4Г5А1В","type":"Розетка","tu":"ТКЕС.434410.016 ТУ"},
@@ -538,6 +541,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "силовые · до 850 В",
     image: "../assets/images/products/connectors/et-2rtt.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 310,
     items: [
       {"name":"ЕТ-2РТТ16Б1Г2В","type":"Розетка","tu":"ТКЕС.434410.005 ТУ"},
@@ -861,6 +865,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "байонет · малогабаритные",
     image: "../assets/images/products/connectors/et-mr1.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 19,
     items: [
       {"name":"ЕТ-МР1-10-1-В Вилка с кожухом","type":"Вилка с кожухом","tu":"ТКЕС.434410.032 ТУ"},
@@ -893,6 +898,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "быстросъёмные · одноконтактные",
     image: "../assets/images/products/connectors/et-onc-bs.webp",
     imageByType: {"Вилка":"../assets/images/products/connectors/et-onc-bs-vilka.webp","Розетка":"../assets/images/products/connectors/et-onc-bs-rozetka.webp"},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 42,
     items: [
       {"name":"ЕТ-ОНЦ-БС-1-10/14-В1-1-В","type":"Вилка","tu":"ТКЕС.434410.024 ТУ"},
@@ -948,6 +954,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "радиочастотные · герметичные",
     image: "../assets/images/products/connectors/et-rrs.webp",
     imageByType: {"Вилка":"../assets/images/products/connectors/et-rrs-vilka.webp","Розетка":"../assets/images/products/connectors/et-rrs-rozetka.webp"},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 54,
     items: [
       {"name":"ЕТ-РРС3-10А-0-1-В","type":"Розетка кабельная","tu":"ТКЕС.434410.045 ТУ"},
@@ -1014,6 +1021,7 @@ var CONNECTOR_SERIES = [
     description: "Радиочастотные соединители ЕТ-РС и ЕТ-РСГ (герметичное исполнение) для коммутации высокочастотных и СВЧ-цепей. Низкие потери на передачу, стабильное волновое сопротивление, защита от климатических воздействий. Применяются в антенно-фидерных трактах, измерительной аппаратуре и системах радиосвязи. ТКЕС.434410.026 ТУ.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 47,
     items: [
       {"name":"ЕТ-РС10АТВ Вилка","type":"Вилка","tu":"ТКЕС.434410.026 ТУ"},
@@ -1073,6 +1081,7 @@ var CONNECTOR_SERIES = [
     description: "Штепсельные цилиндрические разъёмы ЕТ-ШР для коммутации цепей постоянного и переменного тока в промышленной, бортовой и специальной аппаратуре. Металлический корпус с байонетным сочленением, широкий ряд контактных групп и покрытий. Отечественная замена классической серии ШР с улучшенными характеристиками климатической и механической устойчивости.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 36,
     items: [
       {"name":"ЕТ-ШР16П2ЭГ5 Розетка блочная","type":"Розетка блочная","tu":"ТКЕС.434410.003 ТУ"},
@@ -1122,6 +1131,7 @@ var CONNECTOR_SERIES = [
     cardCaption: "MIL-DTL-38999 · до +200 °C",
     image: "../assets/images/products/connectors/et-snc144.webp",
     imageByType: {"Вилка":"../assets/images/products/connectors/et-snc144-vilka.webp","Розетка":"../assets/images/products/connectors/et-snc144-rozetka.webp"},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 448,
     items: [
       {"name":"ЕТ-144-КП11F","type":"Кожух для СНЦ144","tu":"ТКЕС.434410.049 ТУ"},
@@ -1582,6 +1592,7 @@ var CONNECTOR_SERIES = [
     description: "Технологические заглушки ЕТ-ЭК (для кабельных розеток) и ЕТ-ЭП (для приборных вилок). Защищают контактную пару от пыли, влаги и механических повреждений при хранении, транспортировке и перерывах в эксплуатации. Совместимы с соединителями ЕТ-2РМТ, ЕТ-2РМГ, ЕТ-2РТТ, ЕТ-СНЦ и другими сериями ЕТ.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 27,
     items: [
       {"name":"ЕТ-ЭК-18","type":"Заглушка для СНЦ23","tu":"ТКЕС.434410.014 ТУ"},
@@ -1621,6 +1632,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-СНЦ28 для коммутации силовых и сигнальных цепей в приборах и радиоустановках. Байонетное сочленение, экранированный металлический корпус, защита от электромагнитных помех и климатических воздействий. Применяются в авионике, системах управления и специальной РЭА. ТКЕС.434410.012 ТУ.",
     image: "../assets/images/products/connectors/et-snc28.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 10,
     items: [
       {"name":"ЕТ-СНЦ28-10/18В-1-В","type":"Вилка","tu":"ТКЕС.434410.012 ТУ"},
@@ -1643,6 +1655,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-2РМП — перспективная серия с приборным исполнением для внутреннего монтажа в РЭА. Продукция находится в разработке, ТУ на стадии утверждения. Предварительный конструктив — размеры корпуса 14–30, количество контактов 4–32. Актуальные характеристики и сроки запуска уточняйте у менеджера.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 5,
     items: [
       {"name":"ЕТ-2РМП14Б4Ш1В1","type":"Вилка","tu":"0"},
@@ -1660,6 +1673,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические низкочастотные соединители ЕТ-ОНЦ-БМ-1(2) с байонетным сочленением — для цепей постоянного, переменного (до 3 МГц) и импульсного токов. Рабочее напряжение 150 В, температура -60…+85 °C, одиночный удар 10 000 м/с², многократный 1500 м/с², вибрация 1–5000 Гц. Контакты Ø1,0 мм, до 102 штук в одном корпусе, покрытие серебром или золотом. Минимальная наработка 5000 ч, ресурс 250 циклов, хранение 7 лет. ТКЕС.434410.047 ТУ.",
     image: "../assets/images/products/connectors/et-onc-bm.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 5,
     items: [
       {"name":"ЕТ-ОНЦ-БМ-1-10/10-В1-1-В","type":"Вилка","tu":"ТКЕС.434410.047 ТУ"},
@@ -1677,6 +1691,7 @@ var CONNECTOR_SERIES = [
     description: "Разъёмы блочные малогабаритные ЕТ-РБМ4 — перспективная серия на стадии разработки. ТУ не утверждены. Предназначены для межмодульной коммутации в компактной аппаратуре. Сроки запуска и технические характеристики уточняйте у менеджера.",
     image: "../assets/images/products/connectors/et-rbm4.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 0,
     items: [
 
@@ -1690,6 +1705,7 @@ var CONNECTOR_SERIES = [
     description: "Разъёмы блочные низкочастотные ЕТ-РБН2 — перспективная серия на стадии разработки. ТУ не утверждены. Предварительный конструктив включает приборные вилки и кабельные розетки с количеством контактов 18–34. Применение — коммутация сигнальных и низковольтных цепей в РЭА. Актуальные характеристики уточняйте у менеджера.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 6,
     items: [
       {"name":"ЕТ-РБН2-4-18Г2В","type":"Розетка","tu":"в разработке"},
@@ -1708,6 +1724,7 @@ var CONNECTOR_SERIES = [
     description: "Врубные низкочастотные соединители ЕТ-РВН1 — перспективная серия на стадии разработки. ТУ не утверждены. Предназначены для автоматического сочленения при стыковке блоков РЭА. Сроки запуска и технические характеристики уточняйте у менеджера.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 0,
     items: [
 
@@ -1721,6 +1738,7 @@ var CONNECTOR_SERIES = [
     description: "Врубные соединители ЕТ-РВН2 для автоматического сочленения при стыковке блоков и модулей. Применяются в стойках, этажерках и выдвижных узлах РЭА, где требуется быстрая сборка-разборка без инструмента. Обеспечивают надёжный электрический контакт при многократных циклах. ТКЕС.434410.020 ТУ.",
     image: "../assets/images/products/connectors/et-rvn2.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 2,
     items: [
       {"name":"ЕТ-РВН2-5-1Г7В","type":"Розетка","tu":"ТКЕС.434410.020 ТУ"},
@@ -1735,6 +1753,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-СНЦ127 для коммутации электрических цепей в приборах и радиоустановках. Байонетное сочленение, всеклиматическое исполнение, приборные и кабельные варианты с прямым или угловым корпусом. ТКЕС.434410.007 ТУ.",
     image: "../assets/images/products/connectors/et-snc127.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 22,
     items: [
       {"name":"ЕТ-СНЦ127-10/14ВП117-1-В","type":"Вилка","tu":"ТКЕС.434410.007 ТУ"},
@@ -1769,6 +1788,7 @@ var CONNECTOR_SERIES = [
     description: "Соединители ЕТ-СНЦ13 — цилиндрические разъёмы серии СНЦ13 для коммутации цепей в РЭА. Часть позиций линейки находится в разработке, часть доступна к заказу. Актуальный статус и характеристики уточняйте у менеджера.",
     image: "../assets/images/products/connectors/et-snc13.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 8,
     items: [
       {"name":"ЕТ-СНЦ13-10/10Р-6-В","type":"Розетка","tu":"ТКЕС.434410.036 ТУ"},
@@ -1789,6 +1809,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-СНЦ146 — перспективная серия на стадии разработки. ТУ не утверждены. Предназначены для коммутации цепей в приборах и радиоустановках с повышенными требованиями к надёжности. Сроки запуска и технические характеристики уточняйте у менеджера.",
     image: "../assets/images/products/connectors/et-snc146.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 0,
     items: [
 
@@ -1802,6 +1823,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-СНЦ147 — перспективная серия на стадии разработки. ТУ не утверждены. Предварительный ряд включает приборные вилки и кабельные розетки с количеством контактов от 3 до 22. Актуальные характеристики и сроки запуска уточняйте у менеджера.",
     image: "",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 16,
     items: [
       {"name":"ЕТ-СНЦ147-12/12ВО11-NW3","type":"Вилка","tu":"в разработке"},
@@ -1830,6 +1852,7 @@ var CONNECTOR_SERIES = [
     description: "Цилиндрические соединители ЕТ-СНЦ233 — перспективная серия на стадии разработки. ТУ не утверждены. Предназначены для коммутации цепей в РЭА с байонетным сочленением и экранированием корпуса. Сроки запуска и технические характеристики уточняйте у менеджера.",
     image: "../assets/images/products/connectors/et-snc233.webp",
     imageByType: {},
+    apps: ["telecom","radar","aviation","space","medical"],
     count: 0,
     items: [
 

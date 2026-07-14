@@ -25,10 +25,5 @@ const APPLICATIONS = [
     "slug": "medical",
     "name": "Медицина",
     "order": 5
-  },
-  {
-    "slug": "industry",
-    "name": "Промышленность",
-    "order": 6
   }
 ];

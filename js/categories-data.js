@@ -67,6 +67,9 @@ const CATEGORIES = [
         "корпуса",
         "dip, soic, qfp, qfn, bga, металлокерамика"
       ]
+    ],
+    "apps": [
+      "telecom"
     ]
   },
   {
@@ -135,6 +138,13 @@ const CATEGORIES = [
         "ресурс",
         "500 циклов, срок хранения 7 лет"
       ]
+    ],
+    "apps": [
+      "telecom",
+      "radar",
+      "aviation",
+      "space",
+      "medical"
     ]
   },
   {
@@ -203,6 +213,10 @@ const CATEGORIES = [
         "позиций",
         "626 в каталоге"
       ]
+    ],
+    "apps": [
+      "aviation",
+      "radar"
     ]
   },
   {
@@ -271,6 +285,10 @@ const CATEGORIES = [
         "позиций",
         "273 в каталоге"
       ]
+    ],
+    "apps": [
+      "telecom",
+      "radar"
     ]
   },
   {
@@ -339,6 +357,10 @@ const CATEGORIES = [
         "форм-фактор",
         "кристалл / корпусной прибор"
       ]
+    ],
+    "apps": [
+      "telecom",
+      "radar"
     ]
   },
   {
@@ -407,6 +429,13 @@ const CATEGORIES = [
         "контроль качества",
         "адаптерный и летающий щуп, aoi, контроль импеданса ±5 / 10%"
       ]
+    ],
+    "apps": [
+      "telecom",
+      "radar",
+      "aviation",
+      "space",
+      "medical"
     ]
   },
   {

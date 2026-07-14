@@ -10,6 +10,7 @@ var CONVERTER_SERIES = [
     description: "Модульные DC/DC-преобразователи напряжения ИРТЫШ с полной PIN-TO-PIN совместимостью с продукцией VICOR. Входное напряжение 24 В (18–36 В), 28 В (9–36 В), 300 В (180–375 В) или 375 В (250–425 В); выходные 3,3/5/8/12/15/24/28/36/48 В; мощность 50–600 Вт. Форм-факторы 1/2, 1/4 и full brick (117×55,9×12,7 мм), три температурных исполнения: C (−20…+100 °C), H (−40…+100 °C), M (−55…+100 °C). Применяются в бортовых системах электропитания, промышленной автоматике, средствах связи и специальной аппаратуре.",
     image: "../assets/images/products/items/Irtysh.webp",
     imageByType: {"1/2 brick":"../assets/images/products/items/irtysh-half-brick.jpg","1/4 brick":"../assets/images/products/items/irtysh-quarter-brick.jpg","full brick":"../assets/images/products/items/irtysh-full-brick.jpg"},
+    apps: ["aviation","radar"],
     count: 370,
     items: [
       {"name":"Модульный преобразователь DC/DC Иртыш 3,3 В / 264 Вт ET-F300C-3V3P264R23","type":"DC/DC","subseries":"ET-F300","partnumber":"ET-F300C-3V3P264R23","vin":"\"300\" (180..375)","vout":"3,3","case":"full brick","size":"117 × 55,9 × 12,7","temp":"\"C\"  (-20..100)","power":"264","current":"80","datasheet":"ET-F300.pdf","displayName":"DC/DC Иртыш 3,3 В / 264 Вт","displaySub":"ET-F300C-3V3P264R23"},
@@ -392,6 +393,7 @@ var CONVERTER_SERIES = [
     description: "Модульные AC/DC-преобразователи ВОЛГА для питания радиоэлектронной аппаратуры от однофазной сети переменного тока 115 В (80–140 В) или 230 В (176–242 В). Выходные напряжения 5/12/15/24/27/48 В, мощность 50–2000 Вт, корпусные исполнения A1–A6. Две температурные версии: Р (−50…+100 °C) и С (−40…+100 °C). Применяются в системах электропитания измерительной, промышленной и специальной аппаратуры — отечественный функциональный аналог решений Vicor, TRACO POWER и VPT.",
     image: "../assets/images/products/items/volga.jpg",
     imageByType: {"50":"../assets/images/products/items/volga-50.jpg","100":"../assets/images/products/items/volga-100.jpg","300":"../assets/images/products/items/volga-300.jpg","700":"../assets/images/products/items/volga-700.jpg","1200":"../assets/images/products/items/volga-1200.jpg","2000":"../assets/images/products/items/volga-2000.jpg"},
+    apps: ["aviation","radar"],
     count: 124,
     items: [
       {"name":"Модульный преобразователь AC-DC Волга 5 В / 50 Вт ЭТВА50-115О05ПГККС","type":"AC/DC","partnumber":"ЭТВА50-115О05ПГККС","vin":"\"115\" (80..140)","vout":"5","case":"A1","size":"101 × 51 × 19","temp":"\"С\" (-40..100)","power":"50","displayName":"AC-DC Волга 5 В / 50 Вт","displaySub":"ЭТВА50-115О05ПГККС"},
@@ -528,6 +530,7 @@ var CONVERTER_SERIES = [
     description: "Модульные DC/DC-преобразователи ЕНИСЕЙ с номинальным входом 27 В (17–36 В) — отечественный функциональный аналог решений Vicor, TRACO POWER и VPT. Мощностной ряд от 7,5 до 1200 Вт, одно- и двухканальные выходы 5/12/15/24/27 В. Температурное исполнение С (−40…+100 °C). Применяются в стабилизированном электропитании бортовой и стационарной РЭА, системах автоматики, связи и спецтехники.",
     image: "../assets/images/products/items/enisei.jpg",
     imageByType: {"20":"../assets/images/products/items/enisey-20.jpg","30":"../assets/images/products/items/enisey-30.jpg","50":"../assets/images/products/items/enisey-50.jpg","80":"../assets/images/products/items/enisey-80.jpg","200":"../assets/images/products/items/enisey-200.jpg","600":"../assets/images/products/items/enisey-600.jpg","1200":"../assets/images/products/items/enisey-1200.jpg","7,5":"../assets/images/products/items/enisey-7-5.jpg"},
+    apps: ["aviation","radar"],
     count: 80,
     items: [
       {"name":"Модульный преобразователь DC/DC Енисей 5 В / 7,5 Вт ЭТЕНД7,5-27ФО05МФС","type":"DC/DC","partnumber":"ЭТЕНД7,5-27ФО05МФС","vin":"\"27Ф\" (17..36(80))","vout":"5","case":"F1","size":"30 × 20 × 10","temp":"\"С\" (-40..100)","power":"7,5","displayName":"DC/DC Енисей 5 В / 7,5 Вт ЭТЕНД7,5-27ФО05МФС","displaySub":""},
@@ -620,6 +623,7 @@ var CONVERTER_SERIES = [
     description: "Модульные AC/DC-преобразователи КАМА с универсальным входом 230 В (176–242 В) и мощностным рядом 50–1000 Вт. Выходные напряжения 5/12/15/24/27/48 В, корпусные исполнения F5–F8. Доступны в двух температурных версиях: Р (−60…+100 °C) и С (−40…+100 °C). Используются в системах вторичного электропитания промышленной, измерительной и специальной аппаратуры — импортозамещающее решение с отечественной сертификацией.",
     image: "../assets/images/products/items/kama.jpg",
     imageByType: {"50":"../assets/images/products/items/kama-50.jpg","100":"../assets/images/products/items/kama-100.jpg","200":"../assets/images/products/items/kama-200.jpg","500":"../assets/images/products/items/kama-500.jpg","1000":"../assets/images/products/items/kama-1000.jpg"},
+    apps: ["aviation","radar"],
     count: 52,
     items: [
       {"name":"Модульный преобразователь с универсальным входом Кама 5 В / 50 Вт ЭТКАВ50-230О05МФС","partnumber":"ЭТКАВ50-230О05МФС","vin":"\"230\" (176..242)","vout":"5","case":"F5","size":"84,5 × 53 × 12,5","temp":"\"С\" (-40..100)","power":"50","displayName":"с универсальным входом Кама 5 В / 50 Вт","displaySub":"ЭТКАВ50-230О05МФС"},
