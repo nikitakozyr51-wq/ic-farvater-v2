@@ -139,7 +139,7 @@ const PRODUCTS = [
     "category": "Микросхемы",
     "subcategory": "Микросхемы ЭКБ ТЕСТ",
     "description": "Микросхема памяти в корпусе 48TSOP2, напряжение питания 3,3 В. Функционирует при температурах от -40 до +85 °C. Служит для хранения данных и конфигурационной информации в вычислительных и управляющих блоках.",
-    "image": "../assets/images/products/items/ET1645RU4 1.webp",
+    "image": "../assets/images/cms/catalog/ET_1645_RU_4_3c3b23c9c8.webp",
     "specs": {
       "Партномер": "ET1645RU4-9",
       "Тип корпуса": "48TSOP2",
@@ -360,7 +360,7 @@ const PRODUCTS = [
     "category": "Микросхемы",
     "subcategory": "Микросхемы ЭКБ ТЕСТ",
     "description": "Загрузочная память с функцией ПЛИС (FPGA and Configuration PROM) в корпусе CQFP44. Функционирует при температурах от -55 до +125 °C. Обеспечивает хранение и загрузку конфигурации в бортовой спецаппаратуре.",
-    "image": "https://ekb-test.ru/upload/iblock/c1a/xf5zeywbgvw5oytaj96hlqza8m70q813/CQFP44.png",
+    "image": "../assets/images/cms/catalog/ET_557_BQ_06ce64541c.webp",
     "specs": {
       "Партномер": "ET557BQ-24",
       "Тип корпуса": "CQFP44",
