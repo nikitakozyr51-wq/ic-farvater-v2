@@ -94,7 +94,51 @@
         "url": "https://ic-farvater.ru/",
         "name": "IC Фарватер",
         "publisher": { "@id": "https://ic-farvater.ru/#organization" },
-        "inLanguage": "ru-RU"
+        "inLanguage": "ru-RU",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://ic-farvater.ru/pages/products.html?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://ic-farvater.ru/#service-supply",
+        "name": "Поставка ЭКБ",
+        "serviceType": "Поставка электронных компонентов",
+        "description": "Прямые поставки электронной компонентной базы от российских производителей со склада в Санкт-Петербурге, без посредников. Сертификаты соответствия и протоколы испытаний, отгрузка 1–3 рабочих дня. Работаем с предприятиями ОПК, Минобороны, Роскосмоса.",
+        "areaServed": { "@type": "Country", "name": "Россия" },
+        "provider": { "@id": "https://ic-farvater.ru/#organization" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://ic-farvater.ru/#service-cable-assembly",
+        "name": "Кабельные сборки",
+        "serviceType": "Изготовление кабельных сборок",
+        "description": "Изготовление кабельных сборок и жгутов по конструкторской документации заказчика. Контроль качества каждой сборки в лаборатории «ЭКБ Тест», испытания по ГОСТ и ТУ. От мелких партий до серийного производства.",
+        "areaServed": { "@type": "Country", "name": "Россия" },
+        "provider": { "@id": "https://ic-farvater.ru/#organization" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://ic-farvater.ru/#service-testing",
+        "name": "Лабораторные испытания",
+        "serviceType": "Испытания ЭКБ",
+        "description": "Электрические, климатические и механические испытания в партнёрской лаборатории «ЭКБ Тест». Входной контроль и сертификация по ГОСТ РВ, испытания при −60…+200 °С, вибрация 5–5000 Гц при 50g.",
+        "areaServed": { "@type": "Country", "name": "Россия" },
+        "provider": { "@id": "https://ic-farvater.ru/#organization" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://ic-farvater.ru/#service-import-substitution",
+        "name": "Импортозамещение",
+        "serviceType": "Подбор аналогов ЭКБ",
+        "description": "Подбор российских аналогов снятых с производства и попавших под санкции импортных компонентов. Более 5000 верифицированных аналогов в базе, техническая экспертиза и согласование замены, поддержка при внесении в конструкторскую документацию.",
+        "areaServed": { "@type": "Country", "name": "Россия" },
+        "provider": { "@id": "https://ic-farvater.ru/#organization" }
       }
     ]
   }
