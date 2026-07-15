@@ -224,7 +224,7 @@ const CATEGORIES = [
     "name": "СВЧ-конденсаторы",
     "source": "capacitors",
     "order": 4,
-    "image": "../assets/images/products/capacitors.webp",
+    "image": "../assets/images/cms/catalog/arc_case_5_24f2864c3d.webp",
     "cardDesc": "ARC70 · для СВЧ-модулей",
     "listDesc": "свч-конденсаторы arc70 · аналог atc",
     "subtitle": "MLCC серии ARC70 · 273 позиции · Аналог ATC700A / 700C / 700E",
