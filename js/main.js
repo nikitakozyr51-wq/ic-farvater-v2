@@ -2076,6 +2076,7 @@ if (CMS_CATS) {
       subtitle: c.subtitle || fb.subtitle || '',
       image: c.image || fb.image || '',
       bulletsTitle: c.bulletsTitle || fb.bulletsTitle,
+      nomenclatureTitle: c.nomenclatureTitle || fb.nomenclatureTitle,
       description: c.description
         ? String(c.description).split(/\n{2,}/).map((s) => s.trim()).filter(Boolean)
         : (fb.description || []),
@@ -2187,6 +2188,7 @@ function initProductDetail() {
         specs: landing.specs,
         bullets: landing.bullets,
         bulletsTitle: landing.bulletsTitle,
+        nomenclatureTitle: landing.nomenclatureTitle,
         nomenclature: landing.nomenclature,
         items: items
       };
@@ -2371,6 +2373,11 @@ function initProductDetail() {
   const nomTable = document.getElementById('pdNomenclatureTable');
   if (nomSection && nomTable) {
     if (kind === 'landing' && Array.isArray(data.nomenclature)) {
+      // Заголовок секции (04): по умолчанию «Номенклатура», заказчик переопределяет
+      // из админки (nomenclatureTitle). <sup>-счётчик — СИБЛИНГ <h2>, а не потомок
+      // (в отличие от bullets), поэтому textContent безопасен, appendChild не нужен.
+      const nomTitleEl = nomSection.querySelector('.pd-nomenclature__title');
+      if (nomTitleEl) nomTitleEl.textContent = data.nomenclatureTitle || 'Номенклатура';
       nomTable.innerHTML = '';
       data.nomenclature.forEach(([label, value]) => {
         const row = document.createElement('div');

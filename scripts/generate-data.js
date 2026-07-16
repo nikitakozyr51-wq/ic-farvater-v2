@@ -169,6 +169,7 @@ function buildCategory(doc) {
     listDesc: doc.listDesc || '',
     subtitle: doc.subtitle || '',
     bulletsTitle: doc.bulletsTitle || '',
+    nomenclatureTitle: doc.nomenclatureTitle || '',
     description: doc.description || '',
     bullets: (doc.landingBullets || []).map((b) => [b.label, b.value]),
     nomenclature: (doc.nomenclature || []).map((b) => [b.label, b.value]),
