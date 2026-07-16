@@ -2077,9 +2077,9 @@ if (CMS_CATS) {
       image: c.image || fb.image || '',
       bulletsTitle: c.bulletsTitle || fb.bulletsTitle,
       nomenclatureTitle: c.nomenclatureTitle || fb.nomenclatureTitle,
-      description: c.description
-        ? String(c.description).split(/\n{2,}/).map((s) => s.trim()).filter(Boolean)
-        : (fb.description || []),
+      // Строка (не массив!) — признак «текст из админки»: рендер отличает его от
+      // хардкод-массивов ниже (те содержат доверенный HTML с &nbsp;) по типу значения.
+      description: c.description ? String(c.description) : (fb.description || []),
       bullets: (c.bullets && c.bullets.length) ? c.bullets : (fb.bullets || []),
       nomenclature: (c.nomenclature && c.nomenclature.length) ? c.nomenclature : (fb.nomenclature || [])
     };
@@ -2089,6 +2089,55 @@ if (CMS_CATS) {
       image: c.image || (RELATED_CAT_INFO[c.slug] || {}).image || ''
     };
   }
+}
+
+// ===== markdown-lite: описание лендинга из админки =====
+// Заказчик пишет в Strapi plain text: пустая строка = новый абзац, одиночный
+// перевод строки = <br>, строки с «•»/«-»/«*» = маркированный список, «1.»/«1)»
+// = нумерованный, _текст_ = курсив. Текст НЕ доверенный → экранируем ДО тегов.
+// Применяется ТОЛЬКО к лендингам категорий: у товаров/серий описания без
+// переносов строк и режутся по предложениям (см. рендер ниже).
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function mdInline(s) {
+  // _курсив_ только на границах слов — snake_case не задевается.
+  return s.replace(/(^|[\s(«"—–-])_([^_\n]+?)_(?=$|[\s.,;:!?)»"—–-])/g, '$1<em>$2</em>');
+}
+function mdText(s) { return mdInline(escHtml(s)); }
+const MD_OL = /^(\d{1,2})[.)][ \t]+(.*)$/;   // «1. текст» / «1) текст» в начале строки
+const MD_UL = /^([•·▪]|[-*+])[ \t]+(.*)$/;    // «• текст» / «- текст» в начале строки
+
+function renderCmsDescription(raw) {
+  return String(raw).split(/\n{2,}/).map((b) => b.trim()).filter(Boolean).map((block) => {
+    const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+    const out = []; let buf = [], mode = null, start = null;
+    const flush = () => {
+      if (!buf.length) return;
+      if (mode === 'ul') {
+        out.push('<ul class="pd-block__list">' + buf.map((t) => `<li>${mdText(t)}</li>`).join('') + '</ul>');
+      } else if (mode === 'ol') {
+        // start= обязателен: пункты 1./2./3. в тексте идут НЕ подряд (между ними
+        // проза и буллиты) — без start каждый <ol> считал бы заново «1./1./1.».
+        out.push('<ol class="pd-block__list pd-block__list--num"' + (start > 1 ? ` start="${start}"` : '') + '>'
+          + buf.map((t) => `<li>${mdText(t)}</li>`).join('') + '</ol>');
+      } else {
+        out.push('<p>' + buf.map(mdText).join('<br>') + '</p>');
+      }
+      buf = []; mode = null; start = null;
+    };
+    for (const line of lines) {
+      let m, type, text;
+      if ((m = line.match(MD_OL))) { type = 'ol'; text = m[2]; }
+      else if ((m = line.match(MD_UL))) { type = 'ul'; text = m[2]; }
+      else { type = 'p'; text = line; }
+      if (type !== mode) flush();
+      if (type === 'ol' && start === null) start = parseInt(m[1], 10);
+      mode = type; buf.push(text);
+    }
+    flush();
+    return out.join('');
+  }).join('');
 }
 
 /** Product Detail — populate fields from data based on URL hash.
@@ -2297,16 +2346,22 @@ function initProductDetail() {
     if (counter) descTitleEl.appendChild(counter);
   }
 
-  // Description — can be string (single para) or array (multi-para per Pencil v4 landings)
+  // Description — три источника, три обработки:
+  //  · массив  = хардкод CATEGORY_LANDINGS — доверенный HTML (внутри живут &nbsp;),
+  //              НЕ экранировать;
+  //  · строка + landing = текст заказчика из админки — markdown-lite с экранированием;
+  //  · строка + товар/серия = одноабзацный текст без переносов — режем по предложениям
+  //    (767 товаров + 30 серий, поведение сохраняем как было).
   const descBody = document.querySelector('.pd-block--description .pd-block__body');
   if (descBody && data.description) {
-    let paras;
     if (Array.isArray(data.description)) {
-      paras = data.description;
+      descBody.innerHTML = data.description.map(s => `<p>${String(s).trim()}</p>`).join('');
+    } else if (kind === 'landing') {
+      descBody.innerHTML = renderCmsDescription(data.description);
     } else {
-      paras = String(data.description).split(/(?<=[.])\s+/).filter(Boolean);
+      descBody.innerHTML = String(data.description).split(/(?<=[.])\s+/).filter(Boolean)
+        .map(s => `<p>${String(s).trim()}</p>`).join('');
     }
-    descBody.innerHTML = paras.map(s => `<p>${String(s).trim()}</p>`).join('');
   }
 
   // Specs table — Variant page only.

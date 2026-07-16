@@ -1191,6 +1191,26 @@
 }
 .pd-block__body p:last-child { margin-bottom: 0; }
 
+/* Списки в описании — markdown-lite из админки (renderCmsDescription в main.js).
+   Маркер «—» как у .accordion-item__bullets; метрики = .pd-block__body p (15/1.55/muted).
+   ВАЖНО: не ставить display:flex на ol — флекс гасит ::marker и нумерация исчезает,
+   поэтому отступы через li + li, а не gap. */
+.pd-block__body ul,
+.pd-block__body ol { margin: 0 0 14px; padding: 0; }
+.pd-block__body ul:last-child,
+.pd-block__body ol:last-child { margin-bottom: 0; }
+.pd-block__body li {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+.pd-block__body li + li { margin-top: 8px; }
+.pd-block__body ul > li { position: relative; padding-left: 20px; }
+.pd-block__body ul > li::before { content: '—'; position: absolute; left: 0; }
+/* ol — нативная нумерация (reset снял list-style): только она уважает start="N". */
+.pd-block__body ol { list-style: decimal; padding-left: 20px; }
+.pd-block__body ol > li::marker { color: var(--c-text-muted); }
+
 /* Specs table — 7 rows, label left + value right, divider between rows */
 .pd-specs { display: flex; flex-direction: column; }
 .pd-specs__row {
@@ -1501,6 +1521,7 @@
   }
   .pd-block__title { font-size: 30px; line-height: 1.15; }
   .pd-block__body p { font-size: 16px; }
+  .pd-block__body li { font-size: 16px; }
 
   /* Specs rows compact on desktop — Pencil W3oj8 mnlsk/mIx3O: height 42 */
   .pd-specs__row { height: 42px; }
