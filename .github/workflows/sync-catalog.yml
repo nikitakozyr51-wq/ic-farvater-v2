@@ -48,6 +48,12 @@ jobs:
           FRONTEND_DIR: ${{ github.workspace }}
         run: node scripts/inject-html.js --write
 
+      # Шаг 1в — статические страницы каталога (подход A): категории/варианты/товары
+      # из только что обновлённых js/*-data.js + sitemap. Байт-стабилен: без правок
+      # в данных ничего не переписывает → diff-детектор ниже не срабатывает зря.
+      - name: Generate catalog pages
+        run: node scripts/generate-catalog-pages.mjs
+
       # Шаг 2 — есть ли изменения? Если нет — на этом всё (сайт не трогаем).
       - name: Detect changes
         id: diff

@@ -205,7 +205,8 @@ function replaceBetween(html, start, end, content) {
 function renderCatalogHtml(cats) {
   const I = '            ';
   const tiles = cats.map((c) => {
-    const href = c.source === 'none' ? `product-detail.html#cat-${esc(c.slug)}` : `#${esc(c.slug)}`;
+    // landing-only категории → реальная страница лендинга (подход A, была hash-ссылка)
+    const href = c.source === 'none' ? `${esc(c.slug)}.html` : `#${esc(c.slug)}`;
     return `${I}<article class="cat-card" data-cat="${esc(c.slug)}" data-name="${esc((c.name + ' ' + c.cardDesc).toLowerCase())}">
 ${I}  <a href="${href}" class="cat-card__link">
 ${I}    <div class="cat-card__img">

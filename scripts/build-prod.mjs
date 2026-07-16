@@ -11,7 +11,7 @@
 //               .min.css / .min.js — это deploy-артефакты, на них ссылается HTML.
 
 import { build, transform } from 'esbuild';
-import { readFile, writeFile, stat } from 'node:fs/promises';
+import { readFile, writeFile, stat, readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -22,15 +22,23 @@ const log = (...a) => console.log('[build-prod]', ...a);
 const CRITICAL = ['css/reset.css', 'css/tokens.css', 'css/base.css', 'css/layout.css'];
 const CSS_NON_CRITICAL = ['css/components.css', 'css/inner-page.css', 'css/animations.css'];
 const JS_APP = [
-  'js/main.js', 'js/animations.js', 'js/nbsp.js',
+  'js/main.js', 'js/animations.js', 'js/nbsp.js', 'js/catalog-urls.js',
   'js/products.js', 'js/connectors-data.js', 'js/converters-data.js',
   'js/capacitors-data.js', 'js/categories-data.js', 'js/applications-data.js',
 ];
-const HTML_PAGES = [
+const HTML_BASE = [
   'index.html',
   'pages/about.html', 'pages/products.html', 'pages/product-detail.html',
   'pages/contacts.html', 'pages/privacy-policy.html', 'pages/consent.html',
 ];
+// + сгенерированные страницы каталога (scripts/generate-catalog-pages.mjs):
+// им тоже нужны свежий critical CSS и ?v=-версии ассетов (иначе после смены
+// хэшей .min.* вернувшиеся посетители получат старые файлы из годового кэша)
+const catalogPages = (await readdir(join(ROOT, 'pages')))
+  .filter(f => f.endsWith('.html'))
+  .map(f => 'pages/' + f)
+  .filter(f => !HTML_BASE.includes(f));
+const HTML_PAGES = [...HTML_BASE, ...catalogPages];
 
 async function minifyCss(path) {
   const src = await readFile(join(ROOT, path), 'utf8');
@@ -82,10 +90,13 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
   log(`   critical inline: ${critical.length} bytes`);
 
   log('2. Инжект в HTML файлы между маркерами');
+  let injectedCatalog = 0;
   for (const h of HTML_PAGES) {
     const ok = await injectCriticalIntoHtml(h, critical);
-    if (ok) log(`   ✓ ${h}`);
+    if (ok && HTML_BASE.includes(h)) log(`   ✓ ${h}`);
+    else if (ok) injectedCatalog++;
   }
+  if (injectedCatalog) log(`   ✓ + ${injectedCatalog} каталожных страниц`);
 
   log('3. Минификация остальных CSS → .min.css');
   for (const f of CSS_NON_CRITICAL) {
@@ -112,7 +123,7 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
   log('5. Версии ассетов в HTML по хэшу содержимого (?v=<md5-8>)');
   const VERSIONED = [
     'css/components.min.css', 'css/inner-page.min.css', 'css/animations.min.css',
-    'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js',
+    'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js', 'js/catalog-urls.min.js',
     'js/products.min.js', 'js/connectors-data.min.js', 'js/converters-data.min.js',
     'js/capacitors-data.min.js', 'js/categories-data.min.js', 'js/applications-data.min.js',
   ];
@@ -122,6 +133,7 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
       hashes[f] = createHash('md5').update(await readFile(join(ROOT, f))).digest('hex').slice(0, 8);
     } catch { /* файл ещё не собран — пропуск */ }
   }
+  let versionedCatalog = 0;
   for (const h of HTML_PAGES) {
     const full = join(ROOT, h);
     let html = await readFile(full, 'utf8');
@@ -132,8 +144,10 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
       html = html.replace(re, (m, pre) => { replaced++; return `${pre}?v=${ver}"`; });
     }
     await writeFile(full, html, 'utf8');
-    log(`   ✓ ${h}: ${replaced} ссылок версионировано`);
+    if (HTML_BASE.includes(h)) log(`   ✓ ${h}: ${replaced} ссылок версионировано`);
+    else versionedCatalog++;
   }
+  if (versionedCatalog) log(`   ✓ + ${versionedCatalog} каталожных страниц версионировано`);
 
   log('Готово.');
 })();

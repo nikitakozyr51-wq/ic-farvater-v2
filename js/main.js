@@ -806,6 +806,21 @@ function splitVariantName(it) {
   return [name, sub];
 }
 
+// ===== Реальные URL каталога (подход A) =====
+// Обёртки над CATALOG_URLS (js/catalog-urls.js — подключён на products/product-detail
+// ПОСЛЕ data-файлов). На страницах без модуля фолбэк на старые hash-адреса — они
+// продолжают работать через редирект в initProductDetail.
+function urlForProduct(p) {
+  return (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.productFile(p) : `product-detail.html#p-${p.id}`;
+}
+function urlForVariant(catSlug, series, idx) {
+  const f = (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.variantFile(catSlug, series, idx) : null;
+  return f || `product-detail.html#v-${series.slug}:${idx}`;
+}
+function urlForCategory(catSlug) {
+  return (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.categoryFile(catSlug) : `product-detail.html#cat-${catSlug}`;
+}
+
 // Характеристики уровня СЕРИИ для карточек вариантов — источник ekb-test.ru
 // (первоисточник данных каталога) + series.description; собраны и адверсариально
 // сверены 2026-07-11. Дополняются item-полями в variantSpecs(); при совпадении
@@ -1042,7 +1057,7 @@ function initCatalog() {
       PRODUCTS.filter(p => p.category === catName).forEach(p => out.push({
         type: 'product', kind: kindKey, cat: catSlug, id: p.id, name: p.name,
         desc: chipCardDesc(p), descCased: true,
-        image: p.image, href: `product-detail.html#p-${p.id}`, apps: p.apps || []
+        image: p.image, href: urlForProduct(p), apps: p.apps || []
       }));
     };
     if (CMS_CATS) {
@@ -1089,7 +1104,7 @@ function initCatalog() {
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
-        href: `product-detail.html#v-${s.slug}:${idx}`
+        href: urlForVariant('razemy', s, idx)
       })));
     }
     if (typeof CONVERTER_SERIES !== 'undefined') {
@@ -1098,7 +1113,7 @@ function initCatalog() {
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
-        href: `product-detail.html#v-${s.slug}:${idx}`
+        href: urlForVariant('converters', s, idx)
       })));
     }
     if (typeof CAPACITOR_SERIES !== 'undefined') {
@@ -1107,7 +1122,7 @@ function initCatalog() {
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
         desc: variantDesc(it),
         image: resolveSeriesItemImage(s, it),
-        href: `product-detail.html#v-${s.slug}:${idx}`
+        href: urlForVariant('capacitors', s, idx)
       })));
     }
     // Landing-only categories (pcb / rantsy / snow) — searchable as single entries
@@ -1117,7 +1132,7 @@ function initCatalog() {
       id: `cat-${cat}`, name: CAT_NAMES[cat],
       desc: CAT_LIST_DESC[cat] || '',
       image: LANDING_ONLY_CATS[cat].image,
-      href: `product-detail.html#cat-${cat}`
+      href: urlForCategory(cat)
     }));
     return out;
   }
@@ -1329,7 +1344,7 @@ function initCatalog() {
     landingCats.forEach((c) => {
       const card = document.createElement('a');
       card.className = 'cat-card cat-card--small';
-      card.href = `product-detail.html#cat-${c.slug}`;
+      card.href = urlForCategory(c.slug);
       card.innerHTML = `
         <div class="cat-card__img">${c.image ? `<img src="${c.image}" alt="${c.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}</div>
         <div class="cat-card__info"><h3 class="cat-card__name">${cyrillize(c.name)}</h3><p class="cat-card__desc">перейти к&nbsp;разделу</p></div>`;
@@ -1379,7 +1394,7 @@ function initCatalog() {
   function makeEntryCard(cat, entry) {
     const a = document.createElement('a');
     a.className = 'cat-card cat-card--entry';
-    a.href = `product-detail.html#cat-${cat}`;
+    a.href = urlForCategory(cat);
     // Pencil zCPAQ bottom row cBPoU: flex space-between, top border 1px D7D3CB, padding [12,0,0,0],
     // "перейти к описанию" LEFT and "→" RIGHT — both 15/500 #112F6E.
     a.innerHTML = `
@@ -1432,7 +1447,7 @@ function initCatalog() {
       // idx is the position in the UNFILTERED items[] — preserves correct variant page link
       // regardless of type filter ("вилка" / "розетка") narrowing the rendered list.
       const origIdx = allItems.indexOf(it);
-      card.href = `product-detail.html#v-${slug}:${origIdx}`;
+      card.href = urlForVariant(cat, series, origIdx);
       // Image lookup via shared helper (series.imageByType → normalized match →
       // GENERIC_TYPE_IMAGES fallback → series.image).
       const img = resolveSeriesItemImage(series, it);
@@ -1605,7 +1620,7 @@ function initCatalog() {
       if (count === 0 && landingOnly && !state.search) {
         const card = document.createElement('a');
         card.className = 'cat-card cat-card--small';
-        card.href = `product-detail.html#cat-${state.cat}`;
+        card.href = urlForCategory(state.cat);
         card.innerHTML = `
           <div class="cat-card__img">
             <img width="1200" height="1200" src="${landingOnly.image}" alt="${landingOnly.alt}" loading="lazy" onerror="this.style.opacity='0'">
@@ -2140,6 +2155,66 @@ function renderCmsDescription(raw) {
   }).join('');
 }
 
+// ===== Редирект со старых hash-адресов на реальные страницы (подход A) =====
+// Все внутренние ссылки уже ведут на реальные URL; сюда попадают закладки,
+// внешние ссылки и легаси #s-*. Неизвестный хэш → null → прежний клиентский
+// рендер остаётся как fallback.
+function findSeriesBySlug(slug) {
+  if (typeof CONNECTOR_SERIES !== 'undefined') { const s = CONNECTOR_SERIES.find(x => x.slug === slug); if (s) return { cat: 'razemy', series: s }; }
+  if (typeof CONVERTER_SERIES !== 'undefined') { const s = CONVERTER_SERIES.find(x => x.slug === slug); if (s) return { cat: 'converters', series: s }; }
+  if (typeof CAPACITOR_SERIES !== 'undefined') { const s = CAPACITOR_SERIES.find(x => x.slug === slug); if (s) return { cat: 'capacitors', series: s }; }
+  return null;
+}
+// Товары-дубли вариантов (351 ИРТЫШ + 86 ARC70A) не имеют своей tovar-страницы —
+// их #p- ведём на страницу варианта. Ключ — партномер с нормализацией гомоглифов.
+function findVariantByPn(name) {
+  const norm = (s) => cyrillize(String(s || '').toUpperCase()).replace(/\s+/g, '');
+  const key = norm(name);
+  const scan = (cat, arr) => {
+    if (!arr) return null;
+    for (const s of arr) {
+      const items = s.items || [];
+      for (let i = 0; i < items.length; i++) {
+        const pn = CATALOG_URLS.variantPn(items[i]);
+        if (pn && norm(pn) === key) return { cat, series: s, idx: i };
+      }
+    }
+    return null;
+  };
+  return scan('razemy', typeof CONNECTOR_SERIES !== 'undefined' ? CONNECTOR_SERIES : null)
+    || scan('converters', typeof CONVERTER_SERIES !== 'undefined' ? CONVERTER_SERIES : null)
+    || scan('capacitors', typeof CAPACITOR_SERIES !== 'undefined' ? CAPACITOR_SERIES : null);
+}
+function realUrlForHash(hash) {
+  try {
+    if (hash.startsWith('#p-')) {
+      if (typeof PRODUCTS === 'undefined') return null;
+      const p = PRODUCTS.find(x => x.id === parseInt(hash.slice(3), 10));
+      if (!p) return null;
+      const dup = findVariantByPn(p.name);
+      return dup ? CATALOG_URLS.variantFile(dup.cat, dup.series, dup.idx) : CATALOG_URLS.productFile(p);
+    }
+    if (hash.startsWith('#v-')) {
+      const [seriesSlug, idxStr] = hash.slice(3).split(':');
+      const idx = parseInt(idxStr, 10);
+      const found = findSeriesBySlug(seriesSlug);
+      return (found && Array.isArray(found.series.items) && found.series.items[idx])
+        ? CATALOG_URLS.variantFile(found.cat, found.series, idx) : null;
+    }
+    if (hash.startsWith('#cat-')) {
+      const key = hash.slice(5);
+      return CATEGORY_LANDINGS[key] ? CATALOG_URLS.categoryFile(key) : null;
+    }
+    // Легаси-формат старых серийных ссылок (рендера не имел, вёл в «товар не найден»)
+    const legacy = /^#s-([cvk])-(.+)$/.exec(hash);
+    if (legacy) {
+      const cat = { c: 'razemy', v: 'converters', k: 'capacitors' }[legacy[1]];
+      return `products.html#${cat}/${legacy[2]}`;
+    }
+  } catch (e) { /* при любой ошибке не мешаем прежнему рендеру */ }
+  return null;
+}
+
 /** Product Detail — populate fields from data based on URL hash.
  *  Hash formats: #p-<id> (PRODUCTS by id), #s-c-<slug> (connector series),
  *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series),
@@ -2149,6 +2224,12 @@ function initProductDetail() {
   if (!document.querySelector('.product-top__title') || !document.querySelector('.section--pd-content')) return;
   const hash = window.location.hash;
   if (!hash || hash === '#') return;
+
+  // Подход A: старые hash-адреса → реальные страницы каталога.
+  if (typeof CATALOG_URLS !== 'undefined') {
+    const real = realUrlForHash(hash);
+    if (real) { window.location.replace(real); return; }
+  }
 
   let data = null, kind = null, catSlug = null, catLabel = null;
 
@@ -2467,7 +2548,7 @@ function initProductDetail() {
       // Other categories — 3 cards linking to other landings
       pool = RELATED_CATS[catSlug].map(key => {
         const info = RELATED_CAT_INFO[key];
-        return info ? { name: info.label, desc: info.desc, image: info.image, href: `product-detail.html#cat-${key}` } : null;
+        return info ? { name: info.label, desc: info.desc, image: info.image, href: urlForCategory(key) } : null;
       }).filter(Boolean);
       if (relatedTitleEl) {
         const counter = relatedTitleEl.querySelector('.pd-related__counter');
@@ -2495,7 +2576,7 @@ function initProductDetail() {
       const currentId = (typeof data.id === 'number') ? data.id : null;
       pool = PRODUCTS.filter(p => p.category === catName && p.id !== currentId).slice(0, 4).map(p => ({
         name: p.name, desc: (p.subcategory || '').toLowerCase(),
-        image: p.image, href: `product-detail.html#p-${p.id}`
+        image: p.image, href: urlForProduct(p)
       }));
     }
     if (pool.length) {

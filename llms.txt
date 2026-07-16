@@ -15,6 +15,16 @@
 - [О компании](https://ic-farvater.ru/pages/about.html): миссия, сертификация, FAQ
 - [Контакты](https://ic-farvater.ru/pages/contacts.html): адрес, телефоны, форма обратной связи, карта
 
+## Разделы каталога (страницы категорий)
+- [Микросхемы](https://ic-farvater.ru/pages/microchips.html)
+- [Разъёмы](https://ic-farvater.ru/pages/razemy.html)
+- [Преобразователи напряжения](https://ic-farvater.ru/pages/converters.html)
+- [СВЧ-конденсаторы](https://ic-farvater.ru/pages/capacitors.html)
+- [СВЧ-транзисторы](https://ic-farvater.ru/pages/transistors.html)
+- [Печатные платы](https://ic-farvater.ru/pages/pcb.html)
+Каждая серия и каждый партномер каталога имеет собственную страницу вида
+https://ic-farvater.ru/pages/razem-…, preobrazovatel-…, kondensator-…, tovar-… (полный список — в sitemap.xml).
+
 ## Продукция
 - Микросхемы — цифровые и аналоговые ИС, АЦП/ЦАП, контроллеры питания
 - Разъёмы ЕТ-серии — ЕТ-СНЦ23, ЕТ-2РМГ, ЕТ-2РМТ, ЕТ-2РМД и др. (вилки/розетки/заглушки/кожухи)
