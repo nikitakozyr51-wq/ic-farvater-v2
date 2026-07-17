@@ -154,7 +154,7 @@ const CATEGORIES = [
     "name": "Преобразователи напряжения",
     "source": "converters",
     "order": 3,
-    "image": "../assets/images/products/items/Irtysh.webp",
+    "image": "../assets/images/cms/catalog/irtysh_cover_20f8fbfc31.webp",
     "cardDesc": "DC/DC и AC/DC — ИРТЫШ, ВОЛГА, ЕНИСЕЙ, КАМА",
     "listDesc": "преобразователи напряжения dc/dc · ac/dc",
     "subtitle": "DC/DC модульные · 626 позиций · Pin-to-pin замена Vicor",

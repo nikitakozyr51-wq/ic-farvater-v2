@@ -8,8 +8,8 @@ var CONVERTER_SERIES = [
     group: "main",
     tu: "",
     description: "Модульные DC/DC-преобразователи напряжения ИРТЫШ с полной PIN-TO-PIN совместимостью с продукцией VICOR. Входное напряжение 24 В (18–36 В), 28 В (9–36 В), 300 В (180–375 В) или 375 В (250–425 В); выходные 3,3/5/8/12/15/24/28/36/48 В; мощность 50–600 Вт. Форм-факторы 1/2, 1/4 и full brick (117×55,9×12,7 мм), три температурных исполнения: C (−20…+100 °C), H (−40…+100 °C), M (−55…+100 °C). Применяются в бортовых системах электропитания, промышленной автоматике, средствах связи и специальной аппаратуре.",
-    image: "../assets/images/products/items/Irtysh.webp",
-    imageByType: {"1/2 brick":"../assets/images/products/items/irtysh-half-brick.jpg","1/4 brick":"../assets/images/products/items/irtysh-quarter-brick.jpg","full brick":"../assets/images/products/items/irtysh-full-brick.jpg"},
+    image: "../assets/images/products/items/irtysh-main.webp",
+    imageByType: {"1/2 brick":"../assets/images/products/items/irtysh-half-brick.webp","1/4 brick":"../assets/images/products/items/irtysh-quarter-brick.webp","full brick":"../assets/images/products/items/irtysh-full-brick.webp"},
     apps: ["aviation","radar"],
     count: 370,
     items: [
@@ -391,8 +391,8 @@ var CONVERTER_SERIES = [
     group: "main",
     tu: "",
     description: "Модульные AC/DC-преобразователи ВОЛГА для питания радиоэлектронной аппаратуры от однофазной сети переменного тока 115 В (80–140 В) или 230 В (176–242 В). Выходные напряжения 5/12/15/24/27/48 В, мощность 50–2000 Вт, корпусные исполнения A1–A6. Две температурные версии: Р (−50…+100 °C) и С (−40…+100 °C). Применяются в системах электропитания измерительной, промышленной и специальной аппаратуры — отечественный функциональный аналог решений Vicor, TRACO POWER и VPT.",
-    image: "../assets/images/products/items/volga.jpg",
-    imageByType: {"50":"../assets/images/products/items/volga-50.jpg","100":"../assets/images/products/items/volga-100.jpg","300":"../assets/images/products/items/volga-300.jpg","700":"../assets/images/products/items/volga-700.jpg","1200":"../assets/images/products/items/volga-1200.jpg","2000":"../assets/images/products/items/volga-2000.jpg"},
+    image: "../assets/images/products/items/volga.webp",
+    imageByType: {"50":"../assets/images/products/items/volga-50.webp","100":"../assets/images/products/items/volga-100.webp","300":"../assets/images/products/items/volga-300.webp","700":"../assets/images/products/items/volga-700.webp","1200":"../assets/images/products/items/volga-1200.webp","2000":"../assets/images/products/items/volga-2000.webp"},
     apps: ["aviation","radar"],
     count: 124,
     items: [
@@ -528,8 +528,8 @@ var CONVERTER_SERIES = [
     group: "main",
     tu: "",
     description: "Модульные DC/DC-преобразователи ЕНИСЕЙ с номинальным входом 27 В (17–36 В) — отечественный функциональный аналог решений Vicor, TRACO POWER и VPT. Мощностной ряд от 7,5 до 1200 Вт, одно- и двухканальные выходы 5/12/15/24/27 В. Температурное исполнение С (−40…+100 °C). Применяются в стабилизированном электропитании бортовой и стационарной РЭА, системах автоматики, связи и спецтехники.",
-    image: "../assets/images/products/items/enisei.jpg",
-    imageByType: {"20":"../assets/images/products/items/enisey-20.jpg","30":"../assets/images/products/items/enisey-30.jpg","50":"../assets/images/products/items/enisey-50.jpg","80":"../assets/images/products/items/enisey-80.jpg","200":"../assets/images/products/items/enisey-200.jpg","600":"../assets/images/products/items/enisey-600.jpg","1200":"../assets/images/products/items/enisey-1200.jpg","7,5":"../assets/images/products/items/enisey-7-5.jpg"},
+    image: "../assets/images/products/items/enisei.webp",
+    imageByType: {"20":"../assets/images/products/items/enisey-20.webp","30":"../assets/images/products/items/enisey-30.webp","50":"../assets/images/products/items/enisey-50.webp","80":"../assets/images/products/items/enisey-80.webp","200":"../assets/images/products/items/enisey-200.webp","600":"../assets/images/products/items/enisey-600.webp","1200":"../assets/images/products/items/enisey-1200.webp","7,5":"../assets/images/products/items/enisey-7-5.webp"},
     apps: ["aviation","radar"],
     count: 80,
     items: [
@@ -621,8 +621,8 @@ var CONVERTER_SERIES = [
     group: "main",
     tu: "",
     description: "Модульные AC/DC-преобразователи КАМА с универсальным входом 230 В (176–242 В) и мощностным рядом 50–1000 Вт. Выходные напряжения 5/12/15/24/27/48 В, корпусные исполнения F5–F8. Доступны в двух температурных версиях: Р (−60…+100 °C) и С (−40…+100 °C). Используются в системах вторичного электропитания промышленной, измерительной и специальной аппаратуры — импортозамещающее решение с отечественной сертификацией.",
-    image: "../assets/images/products/items/kama.jpg",
-    imageByType: {"50":"../assets/images/products/items/kama-50.jpg","100":"../assets/images/products/items/kama-100.jpg","200":"../assets/images/products/items/kama-200.jpg","500":"../assets/images/products/items/kama-500.jpg","1000":"../assets/images/products/items/kama-1000.jpg"},
+    image: "../assets/images/products/items/kama.webp",
+    imageByType: {"50":"../assets/images/products/items/kama-50.webp","100":"../assets/images/products/items/kama-100.webp","200":"../assets/images/products/items/kama-200.webp","500":"../assets/images/products/items/kama-500.webp","1000":"../assets/images/products/items/kama-1000.webp"},
     apps: ["aviation","radar"],
     count: 52,
     items: [
