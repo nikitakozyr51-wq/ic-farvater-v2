@@ -13,6 +13,12 @@ const CYRILLIZE_MAP = {
 function cyrillize(s) {
   return String(s || '').split('').map(ch => CYRILLIZE_MAP[ch] || ch).join('');
 }
+// Коды товаров отображаются кириллицей (бренд-стиль): ET1008 → ЕТ1008. ИСКЛЮЧЕНИЕ —
+// микросхемы: их коды показываем латиницей, чтобы название совпадало с партномером
+// (партномер в specs всегда латиницей). Решение Валентины 2026-07-18.
+function codeCyr(name, isChip) {
+  return isChip ? String(name || '') : cyrillize(name);
+}
 
 /** Form submission helper — production hits PHP backend, staging/local returns
  *  mock success after a short delay so we can demo the UI flow without a backend.
@@ -1381,7 +1387,7 @@ function initCatalog() {
         ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
       </div>
       <div class="cat-card__info">
-        <h3 class="cat-card__name">${cyrillize(it.name)}</h3>
+        <h3 class="cat-card__name">${codeCyr(it.name, it.kind === 'microchip')}</h3>
         ${descText ? `<p class="cat-card__desc">${descText}</p>` : ''}
       </div>
     `;
@@ -2359,7 +2365,7 @@ function initProductDetail() {
     const counter = titleEl.querySelector('.product-top__counter');
     const rawName = data.name || data.displayName || '';
     // Landings have lowercase Russian names ("микросхемы"); products/series have UPPERCASE codes ("ET1310PN1U" / "ЕТ-2РМГ(Д)")
-    titleEl.textContent = kind === 'landing' ? rawName : cyrillize(rawName);
+    titleEl.textContent = kind === 'landing' ? rawName : codeCyr(rawName, data.category === 'Микросхемы');
     // Variant counter — reflect 1-based index within parent series (Pencil JbcyB "(NN)").
     // Landings have no counter on H1 (counter shown as section markers below).
     if (counter) {
@@ -2400,9 +2406,9 @@ function initProductDetail() {
   // Image
   const imgEl = document.querySelector('.pd-image__placeholder');
   const labelEl = document.querySelector('.pd-image__label');
-  if (labelEl) labelEl.textContent = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
+  if (labelEl) labelEl.textContent = kind === 'landing' ? (data.name || '') : codeCyr(data.name || '', data.category === 'Микросхемы');
   if (imgEl) {
-    const labelText = kind === 'landing' ? (data.name || '') : cyrillize(data.name || '');
+    const labelText = kind === 'landing' ? (data.name || '') : codeCyr(data.name || '', data.category === 'Микросхемы');
     if (data.image) {
       imgEl.innerHTML = `<img src="${data.image}" alt="${data.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${labelText}</span>'">`;
     } else {
@@ -2528,7 +2534,7 @@ function initProductDetail() {
   }
 
   // Update page title (browser tab) — cyrillize product code
-  document.title = `${cyrillize((data.name || '').toUpperCase())} — IC Фарватер`;
+  document.title = `${codeCyr((data.name || '').toUpperCase(), data.category === 'Микросхемы')} — IC Фарватер`;
 
   // Wire data-kp-product / data-kp-category onto the primary CTA so the КП drawer pre-fills correctly.
   const primaryCta = document.querySelector('.pd-actions__primary[data-action="open-kp-drawer"]');
@@ -2585,7 +2591,7 @@ function initProductDetail() {
         const a = document.createElement('a');
         a.className = 'pd-card';
         a.href = it.href;
-        const cyrName = kind === 'landing' ? it.name : cyrillize(it.name);
+        const cyrName = kind === 'landing' ? it.name : codeCyr(it.name, catSlug === 'microchips');
         a.innerHTML = `
           <div class="pd-card__image" aria-label="${it.name}">
             ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${cyrName}</span>')">` : `<span class="pd-card__image-label">${cyrName}</span>`}
