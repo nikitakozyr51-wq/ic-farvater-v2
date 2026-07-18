@@ -795,11 +795,15 @@ function resolveSeriesItemImage(series, item) {
       if (ibt[alt]) return ibt[alt];
     }
   }
+  // СВОЁ фото серии приоритетнее generic-заглушки по типу: иначе у серий с
+  // собственным снимком (ЕТ-2РТТ, ЕТ-МР1, ЕТ-СНЦ28, ЕТ-2РМГ) на вариантах
+  // показывалось ЧУЖОЕ фото ЕТ-2РМТ. Generic — только когда своего нет.
+  if (series && series.image) return series.image;
   if (item && item.type) {
     const norm = normalizeType(item.type);
     if (norm && GENERIC_TYPE_IMAGES[norm]) return GENERIC_TYPE_IMAGES[norm];
   }
-  return (series && series.image) || '';
+  return '';
 }
 
 // Variant display name/sub split — module level (used by initCatalog cards/search AND
