@@ -577,8 +577,8 @@ function loadYandexMetrika() {
  *  «принять» — так обещает опубликованная политика конфиденциальности §7
  *  («статистические — только при наличии согласия»). Код и политика обязаны
  *  совпадать; менять модель — только вместе с текстом политики.
- *  Ссылка «настройки cookie» в футере позволяет отозвать/изменить выбор
- *  (152-ФЗ ст. 9 ч. 2). */
+ *  Отзыв выбора — очистка данных сайта в браузере или запрос на info@
+ *  (так написано в политике §7 — не убирать этот канал без правки текста). */
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   const stored = localStorage.getItem('cookieConsent') ||
@@ -599,21 +599,6 @@ function initCookieBanner() {
       if (accepted) loadYandexMetrika();
     });
   });
-
-  // «Настройки cookie» в футере — повторный показ баннера для смены выбора.
-  const legal = document.querySelector('.footer__legal');
-  if (legal) {
-    const link = document.createElement('a');
-    link.href = '#';
-    link.textContent = 'настройки cookie';
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('cookieConsent');
-      localStorage.removeItem('cookieAccepted');
-      banner.classList.remove('cookie-banner--hidden');
-    });
-    legal.appendChild(link);
-  }
 }
 
 /** Product carousel — bounded horizontal scroll for card-grids on home page.

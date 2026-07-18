@@ -29,6 +29,10 @@ scripts/*.js
 .github/
 .token
 
+# Photo archive sources — в git (бэкап), но не в Docker-образ
+_upload-photos/
+_photo-review/
+
 # Audit artefacts
 screenshots/
 docs/

@@ -106,6 +106,22 @@ const CATEGORY_APPS = {
 };
 const EXCLUDED_APPS = new Set(['industry']);
 
+// Наши фото вместо строковых хотлинков ekb-test (юр. чистота + resize_cache
+// URL Битрикса нестабильны). Файлы лежат в assets/images/products/items/,
+// исходники — _upload-photos/4-конденсаторы/_обработано. Ключ — имя файла
+// на ekb-test. Приоритет всё равно у медиатеки Strapi (__photoPath).
+const EKB_IMAGE_OVERRIDES = {
+  '11.jpg': '../assets/images/products/items/arc-case-11.webp',
+  '12.jpg': '../assets/images/products/items/arc-case-12.webp',
+  '13.jpg': '../assets/images/products/items/arc-case-13.webp',
+  '14.jpg': '../assets/images/products/items/arc-case-14.webp',
+};
+function localizeImage(url) {
+  if (typeof url !== 'string' || !url.includes('ekb-test.ru')) return url;
+  const base = url.split('/').pop();
+  return EKB_IMAGE_OVERRIDES[base] || url;
+}
+
 // apps позиции: приоритет ручным галочкам Strapi, иначе — правило раздела.
 function appsForCategory(catSlug, strapiApps) {
   const own = (strapiApps || [])
@@ -125,8 +141,8 @@ function buildSeries(doc, itemKeys, itemRename, catSlug) {
     group: doc.group,
     tu: doc.tu == null ? '' : doc.tu,
     description: doc.description == null ? '' : doc.description,
-    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
-    imageByType: doc.imageByType || {},
+    image: doc.__photoPath || localizeImage(doc.image == null ? '' : doc.image),
+    imageByType: Object.fromEntries(Object.entries(doc.imageByType || {}).map(([k, v]) => [k, localizeImage(v)])),
     count: items.length,
     items,
     ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
@@ -149,7 +165,7 @@ function buildProduct(doc) {
     category: doc.category ? doc.category.nameRu : '',
     subcategory: doc.subcategory == null ? '' : doc.subcategory,
     description: doc.description == null ? '' : doc.description,
-    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
+    image: doc.__photoPath || localizeImage(doc.image == null ? '' : doc.image),
     specs,
     ...(doc.cardCaption ? { cardCaption: doc.cardCaption } : {}),
     ...(apps.length ? { apps } : {}),
@@ -164,7 +180,7 @@ function buildCategory(doc) {
     name: doc.nameRu,
     source: doc.source || 'none',
     order: doc.order == null ? 99 : doc.order,
-    image: doc.__photoPath || (doc.image == null ? '' : doc.image),
+    image: doc.__photoPath || localizeImage(doc.image == null ? '' : doc.image),
     cardDesc: doc.cardDesc || '',
     listDesc: doc.listDesc || '',
     subtitle: doc.subtitle || '',

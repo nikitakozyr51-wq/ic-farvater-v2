@@ -12842,7 +12842,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,1 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "0,1 пФ",
       "Корпус": "0505",
@@ -12863,7 +12863,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,2 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "0,2 пФ",
       "Корпус": "0505",
@@ -12884,7 +12884,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,3 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "0,3 пФ",
       "Корпус": "0505",
@@ -12905,7 +12905,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,4 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "0,4 пФ",
       "Корпус": "0505",
@@ -12926,7 +12926,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,5 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "0,5 пФ",
       "Корпус": "0505",
@@ -12947,7 +12947,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,6 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "0,6 пФ",
       "Корпус": "0505",
@@ -12968,7 +12968,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,7 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "0,7 пФ",
       "Корпус": "0505",
@@ -12989,7 +12989,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,8 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "0,8 пФ",
       "Корпус": "0505",
@@ -13010,7 +13010,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 0,9 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "0,9 пФ",
       "Корпус": "0505",
@@ -13031,7 +13031,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.0 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "1.0 пФ",
       "Корпус": "0505",
@@ -13052,7 +13052,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.1 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4a0/qq6siqp1q4sokmjhpu6xhuw9wwqgjj4r/200_200_1/14.jpg",
+    "image": "../assets/images/products/items/arc-case-14.webp",
     "specs": {
       "Ёмкость": "1.1 пФ",
       "Корпус": "0505",
@@ -13073,7 +13073,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.2 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/4da/bob3brjbqp1q8vv36aehyszrzuluftm8/200_200_1/11.jpg",
+    "image": "../assets/images/products/items/arc-case-11.webp",
     "specs": {
       "Ёмкость": "1.2 пФ",
       "Корпус": "0505",
@@ -13094,7 +13094,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.3 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.3 пФ",
       "Корпус": "0505",
@@ -13115,7 +13115,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.4 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.4 пФ",
       "Корпус": "0505",
@@ -13136,7 +13136,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.5 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.5 пФ",
       "Номинальное напряжение": "150 В Код 151 или 300 В Код 301",
@@ -13156,7 +13156,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.6 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.6 пФ",
       "Номинальное напряжение": "150 В Код 151 или 300 В Код 301",
@@ -13176,7 +13176,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.7 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.7 пФ",
       "Корпус": "0505",
@@ -13197,7 +13197,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.8 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.8 пФ",
       "Корпус": "0505",
@@ -13218,7 +13218,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 1.9 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "1.9 пФ",
       "Корпус": "0505",
@@ -13239,7 +13239,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 2.0 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "2.0 пФ",
       "Корпус": "0505",
@@ -13260,7 +13260,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 2.1 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "2.1 пФ",
       "Корпус": "0505",
@@ -13281,7 +13281,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 2.2 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "2.2 пФ",
       "Корпус": "0505",
@@ -13302,7 +13302,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 2.4 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "2.4 пФ",
       "Корпус": "0505",
@@ -13323,7 +13323,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 2.7 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "2.7 пФ",
       "Корпус": "0505",
@@ -13344,7 +13344,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 3.0 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/ccc/nhzzmw9kos8vxxft8iywuln5hey9u637/200_200_1/13.jpg",
+    "image": "../assets/images/products/items/arc-case-13.webp",
     "specs": {
       "Ёмкость": "3.0 пФ",
       "Корпус": "0505",
@@ -13365,7 +13365,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 3.3 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "3.3 пФ",
       "Корпус": "0505",
@@ -13386,7 +13386,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 3.6 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "3.6 пФ",
       "Корпус": "0505",
@@ -13407,7 +13407,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 3.9 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "3.9 пФ",
       "Корпус": "0505",
@@ -13428,7 +13428,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 4.3 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "4.3 пФ",
       "Корпус": "0505",
@@ -13449,7 +13449,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 4.7 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "4.7 пФ",
       "Корпус": "0505",
@@ -13470,7 +13470,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 5.1 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "5.1 пФ",
       "Корпус": "0505",
@@ -13491,7 +13491,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 5.6 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "5.6 пФ",
       "Корпус": "0505",
@@ -13512,7 +13512,7 @@ const PRODUCTS = [
     "category": "СВЧ-конденсаторы",
     "subcategory": "СВЧ-конденсаторы ЭКБ ТЕСТ",
     "description": "СВЧ-конденсатор ARC70A 6.2 пФ",
-    "image": "https://ekb-test.ru/upload/resize_cache/iblock/6e0/mw3t8an92b3l7eoiqzbbad9oastj2xxg/200_200_1/12.jpg",
+    "image": "../assets/images/products/items/arc-case-12.webp",
     "specs": {
       "Ёмкость": "6.2 пФ",
       "Корпус": "0505",
