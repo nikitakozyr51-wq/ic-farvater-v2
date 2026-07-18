@@ -753,8 +753,8 @@ function normalizeType(raw) {
 // electronic module/converter, not a cap, so it would confuse users. Variants of
 // type "Заглушка" fall through to series.image → grey card when series has none.
 const GENERIC_TYPE_IMAGES = {
-  'вилка':    '../assets/images/products/connectors/et-2rmt-vilka.webp',
-  'розетка':  '../assets/images/products/connectors/et-2rmt-rozetka.webp'
+  'вилка':    '../assets/images/products/connectors/et-2rmt-vilka-v2.webp',
+  'розетка':  '../assets/images/products/connectors/et-2rmt-rozetka-v2.webp'
 };
 
 // Resolve the best image for a series item. Order:
