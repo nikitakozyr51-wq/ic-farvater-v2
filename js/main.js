@@ -1160,6 +1160,10 @@ function initCatalog() {
     if (APPS_READY && state.app !== 'all') {
       items = items.filter(it => it.apps && it.apps.includes(state.app));
     }
+    // Товары без фото (серая заглушка) — в конец списка, стабильно, внутри
+    // своего порядка (решение Валентины 2026-07-18). Серии не затрагивает —
+    // у них фото есть всегда; правило работает по факту пустого image.
+    items = items.filter(it => it.image).concat(items.filter(it => !it.image));
     const count = items.length;
     const catLabel = CAT_NAMES[cat] || cat;
     // listHeader (cat-breadcrumb + count) hidden — subheaders are primary headings now.
