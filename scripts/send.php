@@ -186,8 +186,12 @@ $lines[] = "$bodyLabel:";
 $lines[] = $bodyText ?: '(пусто)';
 $lines[] = '';
 $lines[] = str_repeat('-', 40);
-$lines[] = 'Дата: ' . date('d.m.Y H:i') . ' (МСК)';
+$lines[] = 'Дата: ' . date('d.m.Y H:i:s') . ' (МСК)';
 $lines[] = 'IP:   ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+/* Фиксация согласия в письме = журнал доказательств по ст. 9 ч. 3 152-ФЗ
+ * (письма хранятся в ящике info@ — это и есть «технические логи» из consent.html §9). */
+$lines[] = 'Согласие на обработку ПДн: подтверждено (чекбокс отмечен пользователем)';
+$lines[] = 'Текст согласия: https://ic-farvater.ru/pages/consent.html';
 $bodyPlain = implode("\n", $lines);
 
 /* ─── Отправка через SMTP ─── */

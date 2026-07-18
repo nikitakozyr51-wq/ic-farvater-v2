@@ -38,7 +38,8 @@ async function submitForm(form, kind, extra) {
   }
   const fd = new FormData(form);
   fd.set('kind', kind);
-  fd.set('consent', '1');
+  // consent попадает в FormData только из реально отмеченного чекбокса
+  // (name="consent" value="1") — фабриковать его кодом нельзя (152-ФЗ ст. 9 ч. 3).
   if (extra && typeof extra === 'object') {
     for (const [k, v] of Object.entries(extra)) {
       if (v != null && v !== '') fd.set(k, v);
@@ -335,6 +336,12 @@ function initContactForm() {
     e.preventDefault();
     removeFormMessage(form);
 
+    const consentBox = form.querySelector('input[name="consent"]');
+    if (consentBox && !consentBox.checked) {
+      showFormMessage(form, 'подтвердите согласие на обработку персональных данных.', false);
+      return;
+    }
+
     const originalLabel = btn ? btn.innerHTML : '';
     if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
@@ -566,34 +573,47 @@ function loadYandexMetrika() {
   });
 }
 
-/** Cookie consent banner (opt-out model). Analytics loads by default so traffic
- *  is actually measured; a visitor who explicitly clicks «отклонить» disables it
- *  for subsequent page views. The informational banner still appears on first
- *  visit. 152-ФЗ (RU) does not mandate opt-in gating the way GDPR does. */
+/** Cookie consent banner (opt-in). Метрика стартует ТОЛЬКО после явного клика
+ *  «принять» — так обещает опубликованная политика конфиденциальности §7
+ *  («статистические — только при наличии согласия»). Код и политика обязаны
+ *  совпадать; менять модель — только вместе с текстом политики.
+ *  Ссылка «настройки cookie» в футере позволяет отозвать/изменить выбор
+ *  (152-ФЗ ст. 9 ч. 2). */
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
-  const choice = localStorage.getItem('cookieConsent');
-  const rejected = choice === 'rejected';
+  const stored = localStorage.getItem('cookieConsent') ||
+    (localStorage.getItem('cookieAccepted') === 'true' ? 'accepted' : null);
 
-  // Opt-out: load analytics unless the visitor previously rejected it.
-  if (!rejected) loadYandexMetrika();
+  // Opt-in: аналитика только при ранее данном явном согласии.
+  if (stored === 'accepted') loadYandexMetrika();
 
-  // Choice already made — keep banner hidden, nothing else to do.
-  if (choice === 'accepted' || rejected || localStorage.getItem('cookieAccepted') === 'true') {
-    if (banner) banner.classList.add('cookie-banner--hidden');
-    return;
-  }
-  // First visit, no choice yet — show the informational banner.
   if (!banner) return;
-  banner.classList.remove('cookie-banner--hidden');
+  if (!stored) banner.classList.remove('cookie-banner--hidden');
+
   banner.querySelectorAll('[data-cookie-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const accepted = btn.getAttribute('data-cookie-action') === 'accept';
       localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'rejected');
+      localStorage.removeItem('cookieAccepted');
       banner.classList.add('cookie-banner--hidden');
-      // Reject takes effect from the next page view; accept keeps analytics running.
+      if (accepted) loadYandexMetrika();
     });
   });
+
+  // «Настройки cookie» в футере — повторный показ баннера для смены выбора.
+  const legal = document.querySelector('.footer__legal');
+  if (legal) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.textContent = 'настройки cookie';
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('cookieConsent');
+      localStorage.removeItem('cookieAccepted');
+      banner.classList.remove('cookie-banner--hidden');
+    });
+    legal.appendChild(link);
+  }
 }
 
 /** Product carousel — bounded horizontal scroll for card-grids on home page.
@@ -2690,8 +2710,8 @@ function initKpDrawer() {
               <ul class="kp-form__file-list" id="kpFilesList"></ul>
             </div>
             <label class="kp-form__consent">
-              <input type="checkbox" class="kp-form__checkbox" required>
-              <span>согласен(на)&nbsp;на&nbsp;обработку персональных данных в&nbsp;соответствии с&nbsp;<a href="${privacyHref}">политикой конфиденциальности</a></span>
+              <input type="checkbox" class="kp-form__checkbox" name="consent" value="1" required>
+              <span>я&nbsp;даю <a href="${privacyHref.replace('privacy-policy', 'consent')}">согласие на&nbsp;обработку персональных данных</a> и&nbsp;ознакомлен(а) с&nbsp;<a href="${privacyHref}">политикой конфиденциальности</a></span>
             </label>
             <button type="submit" class="kp-form__submit">отправить запрос</button>
           </form>
@@ -2802,10 +2822,20 @@ function initKpDrawer() {
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = form.querySelector('.kp-form__submit');
-      if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
       // Remove old message
       form.querySelectorAll('.kp-form__msg').forEach(el => el.remove());
+
+      const consentBox = form.querySelector('input[name="consent"]');
+      if (consentBox && !consentBox.checked) {
+        const warn = document.createElement('p');
+        warn.className = 'kp-form__msg kp-form__msg--error';
+        warn.textContent = 'Подтвердите согласие на обработку персональных данных.';
+        form.appendChild(warn);
+        return;
+      }
+
+      const btn = form.querySelector('.kp-form__submit');
+      if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
       // Pull product context that openDrawer wrote into the visible chips
       const productName = document.getElementById('kpProductName')?.textContent?.trim();
