@@ -78,7 +78,7 @@ const CATEGORIES = [
     "name": "Разъёмы",
     "source": "connectors",
     "order": 2,
-    "image": "../assets/images/cms/catalog/razemy_cover_snc28_809a65aa37.webp",
+    "image": "../assets/images/cms/catalog/razemy_cover_snc28_air_81e31abfc5.webp",
     "cardDesc": "Серии ЕТ-2РМ и аналоги",
     "listDesc": "23 серии ЕТ для ответственных применений",
     "subtitle": "Герметичные блочные ЕТ-серии · Более 1500 позиций · Замена 2РМГ / 2РМТ / СНЦ / ШР",
