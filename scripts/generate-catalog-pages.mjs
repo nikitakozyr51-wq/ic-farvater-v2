@@ -419,7 +419,7 @@ function renderPage(m) {
   // -------- related (main.js:2461-2523)
   if (m.related && m.related.length) {
     const cards = m.related.map(it => {
-      const cyrName = m.kind === 'landing' ? it.name : cyrillize(it.name);
+      const cyrName = (m.kind === 'landing' || m.catSlug === 'microchips') ? it.name : cyrillize(it.name);
       const img = (it.image && imgExists(it.image))
         ? `<img src="${escAttr(encodeURI(it.image))}" alt="${escAttr(it.name)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${escAttr(cyrName)}</span>')">`
         : `<span class="pd-card__image-label">${esc(cyrName)}</span>`;
@@ -540,19 +540,22 @@ function buildProductModel(p) {
         name: q.name, desc: (q.subcategory || '').toLowerCase(), image: q.image,
         href: fileForProduct(q)
       }));
+  // Микросхемы — коды латиницей (совпадают с партномером); прочие — кириллизация
+  // (бренд-стиль). Зеркало main.js codeCyr, решение Валентины 2026-07-18.
+  const codeName = (p.category === 'Микросхемы') ? p.name : cyrillize(p.name);
   return {
     kind: 'product', file, catSlug, catLabel,
-    h1: cyrillize(p.name), rawName: p.name, counter: '(01)',
+    h1: codeName, rawName: p.name, counter: '(01)',
     trail: p.subcategory || '',
     // в title/meta — метка КАТЕГОРИИ, не subcategory: внутренние подкатегории
     // («Микросхемы ЭКБ ТЕСТ» — имя партнёра) не выносим в заголовки (SEO-ревью)
-    title: clamp(`${cyrillize(p.name)} — ${catLabel}`, 60 - ' | IC Фарватер'.length) + ' | IC Фарватер',
-    metaDesc: composeMeta(`${cyrillize(p.name)} — ${catLabel}. ${subtitle}`, 'Поставка со склада в Санкт-Петербурге, КП по запросу.'),
+    title: clamp(`${codeName} — ${catLabel}`, 60 - ' | IC Фарватер'.length) + ' | IC Фарватер',
+    metaDesc: composeMeta(`${codeName} — ${catLabel}. ${subtitle}`, 'Поставка со склада в Санкт-Петербурге, КП по запросу.'),
     subtitleHtml: esc(nbsp(subtitle)), descHtml,
-    image: p.image, imgLabel: cyrillize(p.name),
+    image: p.image, imgLabel: codeName,
     absImage: p.image && !/^https?:/.test(p.image) && imgExists(p.image) ? `${SITE}/` + encodeURI(p.image.replace(/^\.\.\//, '')) : (/^https?:/.test(p.image) ? p.image : ''),
-    specs: p.specs || {}, kpProduct: cyrillize(p.name.toUpperCase()),
-    related, noindex: false, pn: cyrillize(p.name)
+    specs: p.specs || {}, kpProduct: codeName.toUpperCase(),
+    related, noindex: false, pn: codeName
   };
 }
 
