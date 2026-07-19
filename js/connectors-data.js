@@ -166,7 +166,7 @@ var CONNECTOR_SERIES = [
     description: "Герметичные блочные вилки ЕТ-2РМГ(Д) для внутреннего монтажа в цепях постоянного, переменного (до 3 МГц) и импульсного токов. Рабочее напряжение 560 В, температура -60…+200 °C, вибрация 5–5000 Гц при 50g, одиночный удар 500g, многократный 100g. Количество контактов 4–50, три варианта покрытия: золото, серебро, химический никель. Совместимы с розетками ЕТ-2РМТ / ЕТ-2РМДТ (ТКЕС.434410.016 ТУ). Климатическое исполнение УХЛ, ресурс 500 циклов, срок хранения 7 лет.",
     cardCaption: "герметичные · до +200 °C",
     image: "../assets/images/products/connectors/et-2rmg-v2.webp",
-    imageByType: {},
+    imageByType: {"Вилка":"../assets/images/products/connectors/et-2rmg-vilka-v2.webp","Розетка":"../assets/images/products/connectors/et-2rmg-rozetka-v2.webp"},
     apps: ["telecom","radar","aviation","space","medical"],
     count: 30,
     items: [
@@ -210,7 +210,7 @@ var CONNECTOR_SERIES = [
     description: "Малогабаритные цилиндрические соединители ЕТ-2РМТ и ЕТ-2РМДТ с резьбовым сочленением — для коммутации электрических цепей в приборах и радиоустановках. Рабочее напряжение 560 В, температура -60…+150 °C, токовая нагрузка 5/10/20/40 А (для контактов Ø1,0/1,5/2,0/3,0 мм). Диапазон вибрации 1–5000 Гц, одиночный удар 5000 м/с², корпуса размером 14–45, от 4 до 50 контактов. Покрытие — золото или серебро, всеклиматическое исполнение, одношпоночная поляризация. ТКЕС.434410.016 ТУ, ресурс 500 циклов, хранение 7 лет.",
     cardCaption: "резьбовые · до +150 °C",
     image: "../assets/images/products/connectors/et-2rmt-v2.webp",
-    imageByType: {"Вилка":"../assets/images/products/connectors/et-2rmt-vilka-v2.webp","Розетка":"../assets/images/products/connectors/et-2rmt-rozetka-v2.webp"},
+    imageByType: {"Вилка":"../assets/images/products/connectors/et-2rmt-rozetka-v2.webp","Розетка":"../assets/images/products/connectors/et-2rmt-vilka-v2.webp"},
     apps: ["telecom","radar","aviation","space","medical"],
     count: 316,
     items: [
@@ -953,7 +953,7 @@ var CONNECTOR_SERIES = [
     description: "Герметичные радиочастотные соединители ЕТ-РРС3, ЕТ-РРС4, ЕТ-РРС5 для работы в цепях до 3 МГц при напряжении до 200 В. Предназначены для ответственных задач с повышенными требованиями к герметичности, вибро- и ударостойкости. Многопозиционная поляризация корпуса, всеклиматическое исполнение, применяются в бортовой, корабельной и специальной аппаратуре. ТКЕС.434410.045 ТУ.",
     cardCaption: "радиочастотные · герметичные",
     image: "../assets/images/products/connectors/et-rrs-v2.webp",
-    imageByType: {"Вилка":"../assets/images/products/connectors/et-rrs-vilka-v2.webp","Розетка":"../assets/images/products/connectors/et-rrs-rozetka-v2.webp"},
+    imageByType: {"Вилка":"../assets/images/products/connectors/et-rrs-rozetka-v2.webp","Розетка":"../assets/images/products/connectors/et-rrs-vilka-v2.webp"},
     apps: ["telecom","radar","aviation","space","medical"],
     count: 54,
     items: [
