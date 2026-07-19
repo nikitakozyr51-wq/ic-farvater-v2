@@ -743,9 +743,12 @@ function normalizeType(raw) {
   const t = (raw || '').toLowerCase().trim();
   if (!t) return null;
   if (/заглушк/.test(t)) return 'заглушка';
-  if (/кожух/.test(t))   return 'кожух';
+  // Вилка/розетка проверяются ДО кожуха: «Розетка с кожухом» / «Вилка с кожухом» —
+  // это розетка и вилка (кожух здесь аксессуар). Самостоятельный «Кожух для СНЦ144»
+  // не содержит слов вилка/розетка и попадёт в ветку ниже.
   if (/вилк/.test(t))    return 'вилка';
   if (/розетк|роозетк/.test(t)) return 'розетка';
+  if (/кожух/.test(t))   return 'кожух';
   return t; // fallback for clean types (e.g. "dc/dc" / "ac/dc" in converters)
 }
 
