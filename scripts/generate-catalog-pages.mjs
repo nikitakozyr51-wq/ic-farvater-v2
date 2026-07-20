@@ -461,7 +461,10 @@ function buildLandingModel(catSlug) {
     kind: 'landing', file,
     catSlug: landing.eyebrowCategory[0], catLabel: landing.eyebrowCategory[1],
     h1: name, rawName: name, counter: null, trail: '',
-    title: `${name.charAt(0).toUpperCase() + name.slice(1)} — каталог | IC Фарватер`,
+    // гео + коммерческий интент в title категории: цель — «<раздел> купить/поставка
+    // в Санкт-Петербурге» (страница категории = гео-посадочная). Клампим имя, чтобы
+    // весь title ≤ ~68 симв. даже для длинных названий («Преобразователи напряжения»).
+    title: `${clamp(name.charAt(0).toUpperCase() + name.slice(1), 30)} — поставка со склада в Санкт-Петербурге | IC Фарватер`,
     metaDesc: composeMeta(plainSubtitle, 'Поставка со склада в Санкт-Петербурге, документация и КП по запросу.'),
     subtitleHtml, descHtml,
     image: img, imgLabel: name,
