@@ -2,7 +2,7 @@
 # Base: PHP 8.2 + Apache (совместимо с .htaccess + scripts/send.php)
 # Dokploy/Coolify будет билдить этот Dockerfile из репозитория автоматически.
 
-FROM php:8.2-apache
+FROM php:8.2.35-apache
 
 # Системные утилиты (curl, ca-certificates для SMTP, unzip + git для composer)
 RUN apt-get update && apt-get install -y --no-install-recommends \
