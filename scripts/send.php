@@ -152,7 +152,7 @@ if ($kind === 'kp' && !empty($_FILES['files']) && is_array($_FILES['files']['nam
         $ext = strtolower(pathinfo($nm, PATHINFO_EXTENSION));
         if (!in_array($ext, $ALLOWED_EXT, true)) {
             http_response_code(400);
-            echo json_encode(['ok' => false, 'error' => "Тип «.$ext» не поддерживается"]);
+            echo json_encode(['ok' => false, 'error' => "Тип «.{$ext}» не поддерживается"]);
             exit;
         }
         $totalSize += $files['size'][$i];
