@@ -22,7 +22,9 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 RUN { \
     echo "upload_max_filesize = 10M"; \
     echo "post_max_size = 12M"; \
-    echo "max_file_uploads = 5"; \
+    echo "max_file_uploads = 20"; \
+    echo "display_errors = Off"; \
+    echo "log_errors = On"; \
     echo "memory_limit = 64M"; \
     echo "expose_php = Off"; \
     } > /usr/local/etc/php/conf.d/icfarvater.ini
