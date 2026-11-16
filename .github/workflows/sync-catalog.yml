@@ -2,13 +2,22 @@ name: Sync catalog from Strapi
 
 # Робот синхронизации каталога: тянет данные из Strapi CMS, и ЕСЛИ контент
 # реально изменился — пересобирает минифицированные ассеты и пушит в master.
-# Push в master запускает существующий автодеплой сайта (Dokploy webhook).
-# Если в Strapi ничего не меняли — коммита нет, сайт не трогается.
+# После commit/push этот же job явно вызывает защищённый HTTPS webhook новой Dokploy.
+# GITHUB_TOKEN push не запускает новый Actions workflow; доставка не зависит от второго job.
+# На schedule без изменений нет ни коммита, ни запроса новой сборки.
 
 on:
+  push:
+    branches: [master]
   schedule:
     - cron: '*/10 * * * *'    # каждые ~10 минут (GitHub может задерживать)
-  workflow_dispatch: {}        # кнопка ручного запуска в Actions
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Queue frontend deployment even when CMS content did not change'
+        type: boolean
+        default: false
+        required: false
 
 concurrency:
   group: sync-catalog
@@ -83,3 +92,42 @@ jobs:
           git add -A
           git commit --no-verify -m "data: sync from Strapi"
           git push
+
+      # Queue only: Dokploy performs the build and rolling service update.
+      # The initial recovery release verifies the resulting commit/image on the VPS.
+      - name: Queue frontend deployment on the restored VPS
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'push' || inputs.force_deploy == true
+        env:
+          DOKPLOY_DEPLOY_WEBHOOK: ${{ secrets.DOKPLOY_DEPLOY_WEBHOOK }}
+        run: |
+          if [ -z "$DOKPLOY_DEPLOY_WEBHOOK" ]; then
+            echo '::error::Frontend deployment secret is missing.'
+            exit 1
+          fi
+          export DEPLOY_COMMIT="$(git rev-parse HEAD)"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const payload = {
+            ref: 'refs/heads/' + process.env.GITHUB_REF_NAME,
+            head_commit: {
+              id: process.env.DEPLOY_COMMIT,
+              message: 'Frontend deployment after CMS synchronization',
+            },
+            commits: [],
+          };
+          fs.writeFileSync(process.env.RUNNER_TEMP + '/ic-frontend-deploy.json', JSON.stringify(payload));
+          NODE
+          http_status="$(curl --silent --connect-timeout 10 --max-time 30 \
+            --output "$RUNNER_TEMP/ic-frontend-deploy-response.json" --write-out '%{http_code}' \
+            --request POST --header 'Content-Type: application/json' --header 'X-GitHub-Event: push' \
+            --data-binary "@$RUNNER_TEMP/ic-frontend-deploy.json" "$DOKPLOY_DEPLOY_WEBHOOK")"
+          if [ "$http_status" != '200' ]; then
+            echo "::error::Frontend deployment request was not accepted (HTTP $http_status)."
+            exit 1
+          fi
+          node <<'NODE'
+          const fs = require('node:fs');
+          const result = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/ic-frontend-deploy-response.json', 'utf8'));
+          if (result.message !== 'Application deployed successfully') throw new Error('Unexpected deployment acknowledgement');
+          console.log('Frontend deployment queued; Dokploy tracks build and rollout status.');
+          NODE
