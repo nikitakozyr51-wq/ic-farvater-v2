@@ -24,6 +24,23 @@
  .hero--pencil .hero__sub { top:640px; left:auto; right:0; width:calc((100% - 48px) / 3); }
  .hero--pencil .hero__cta { width:248px; }
 }
+@media (min-width:1441px) {
+ @supports (mask-image:linear-gradient(black, transparent)) {
+  .hero--pencil .hero__bg {
+   /* Continue the blue tones of the approved connector photo out to the viewport edges. */
+   --hero-edge-fade:min(72px, calc((100vw - 1440px) / 2));
+   background:
+    linear-gradient(#001c5b, #001d5a 24%, #001a59 50%, #001858 75%, #001957) left / 50% 100% no-repeat,
+    linear-gradient(#1555bc, #0e46a7 24%, #0a44a7 38%, #0c4ab4 63%, #0747b7 75%, #013594) right / 50% 100% no-repeat;
+  }
+  .hero--pencil .hero__bg img {
+   display:block;
+   max-width:1440px;
+   margin-inline:auto;
+   mask-image:linear-gradient(to right, transparent, black var(--hero-edge-fade), black calc(100% - var(--hero-edge-fade)), transparent);
+  }
+ }
+}
 /* Pencil strokes are inside the frame: keep the first content axis at 48/100,
    while retaining the measured frame height (including its 1px top stroke). */
 .home-products { border-top:0; box-shadow:inset 0 1px 0 var(--c-border); padding-bottom:49px; }
