@@ -34,11 +34,18 @@ var CATALOG_URLS = (function () {
     converters: ['irtysh', 'volga', 'enisei', 'kama'],
     capacitors: ['arc70a', 'arc70c', 'arc70e']
   };
+  var DEVELOPMENT_SERIES = {
+    razemy: [
+      'et-2rmp', 'et-onc-bm', 'et-rbm4', 'et-rbn2', 'et-rvn1', 'et-rvn2',
+      'et-snc127', 'et-snc13', 'et-snc146', 'et-snc147', 'et-snc233'
+    ]
+  };
 
   function seriesFile(catSlug, series) {
-    var enabled = SERIES_PAGES[catSlug];
+    var enabled;
+    if (series.group === 'dev') enabled = DEVELOPMENT_SERIES[catSlug];
+    else if (series.group === 'main' && Array.isArray(series.items) && series.items.length) enabled = SERIES_PAGES[catSlug];
     if (!Array.isArray(enabled) || !enabled.includes(series.slug)) return null;
-    if (series.group !== 'main' || !series.items || !series.items.length) return null;
     return 'seriya-' + catSlug + '-' + series.slug + '.html';
   }
 
