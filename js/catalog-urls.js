@@ -6,6 +6,7 @@
  *
  * Схема имён (все страницы плоско в pages/):
  *   категория  →  <catSlug>.html                       (razemy.html)
+ *   серия      →  seriya-<catSlug>-<series>.html
  *   вариант    →  <prefix>-<series>-<pn-slug>.html     (razem-et-2rmg14b4sh1a2.html)
  *                 (если slug партномера начинается со слага серии — серия не дублируется)
  *   товар      →  tovar-<name-slug>.html               (tovar-et1310pn1u.html)
@@ -25,6 +26,14 @@ var CATALOG_URLS = (function () {
     return out.replace(/-+/g, '-').replace(/^-+|-+$/g, '');
   }
   var CAT_PREFIX = { razemy: 'razem', converters: 'preobrazovatel', capacitors: 'kondensator' };
+  var SERIES_PAGES = { razemy: ['et-2rmg'], converters: ['irtysh'] };
+
+  function seriesFile(catSlug, series) {
+    var enabled = SERIES_PAGES[catSlug];
+    if (!Array.isArray(enabled) || !enabled.includes(series.slug)) return null;
+    if (series.group !== 'main' || !series.items || !series.items.length) return null;
+    return 'seriya-' + catSlug + '-' + series.slug + '.html';
+  }
 
   // Партномер варианта — ровно как variantSpecs (main.js:875-879): partnumber →
   // displaySub → хвостовой токен displayName → первый токен name (≥5 симв, цифра+буква).
@@ -90,6 +99,7 @@ var CATALOG_URLS = (function () {
     slugify: slugify,
     variantPn: variantPn,
     variantFile: variantFile,
+    seriesFile: seriesFile,
     productFile: productFile,
     categoryFile: categoryFile,
     CAT_PREFIX: CAT_PREFIX
