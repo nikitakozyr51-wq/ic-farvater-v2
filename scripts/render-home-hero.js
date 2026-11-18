@@ -3,6 +3,7 @@ const fs=require('node:fs'),path=require('node:path');
 const {inlineHtml,escape:esc}=require('./editorial-text');
 const ROOT=process.env.FRONTEND_DIR||path.resolve(__dirname,'..');
 const MARKERS={hero:['<!-- HOME:HERO:START -->','<!-- HOME:HERO:END -->'],preload:['<!-- HOME:HERO:PRELOAD:START -->','<!-- HOME:HERO:PRELOAD:END -->']};
+const DESKTOP_IMAGE_SIZES='(min-width: 1441px) 1440px, 100vw';
 function replaceRegion(html,markers,content){
  const start=html.indexOf(markers[0]),end=html.indexOf(markers[1]);
  if(start<0||end<=start||html.indexOf(markers[0],start+1)>=0||html.indexOf(markers[1],end+1)>=0)throw Error('Invalid homepage hero boundaries');
@@ -13,7 +14,7 @@ function heroMarkup(data){
  const sourceSet=media=>Object.values(media?.formats||{}).concat(media||[]).filter(f=>f.url&&f.width).sort((a,b)=>a.width-b.width).filter((f,i,a)=>i===a.findIndex(g=>g.width===f.width)).map(f=>`${f.url} ${f.width}w`).join(', ');
  const desktop=data.desktop,mobile=data.mobile||desktop;
  const alt=data.alt??data.mobileAlt??'',mobileAlt=data.mobileAlt??alt;
- const picture=desktop ? `<picture class="hero__bg" data-desktop-alt="${esc(alt)}" data-mobile-alt="${esc(mobileAlt)}"${alt||mobileAlt?'':' aria-hidden="true"'}>${mobile?`<source media="(max-width:1023.98px)" srcset="${esc(sourceSet(mobile))}" sizes="100vw">`:''}<img width="${desktop.width}" height="${desktop.height}" src="${esc(desktop.url)}" srcset="${esc(sourceSet(desktop))}" sizes="100vw" alt="${esc(alt)}" fetchpriority="high" decoding="async"></picture>` : '';
+ const picture=desktop ? `<picture class="hero__bg" data-desktop-alt="${esc(alt)}" data-mobile-alt="${esc(mobileAlt)}"${alt||mobileAlt?'':' aria-hidden="true"'}>${mobile?`<source media="(max-width:1023.98px)" srcset="${esc(sourceSet(mobile))}" sizes="100vw">`:''}<img width="${desktop.width}" height="${desktop.height}" src="${esc(desktop.url)}" srcset="${esc(sourceSet(desktop))}" sizes="${DESKTOP_IMAGE_SIZES}" alt="${esc(alt)}" fetchpriority="high" decoding="async"></picture>` : '';
  const markup=`    <section class="hero hero--pencil" data-header-theme="dark">
       ${picture}
       <div class="container hero__inner">
@@ -24,8 +25,8 @@ function heroMarkup(data){
         </div>
       </div>
     </section>`;
- const preload=(media,condition)=>media?`  <link rel="preload" as="image" href="${esc(media.url)}" imagesrcset="${esc(sourceSet(media))}" imagesizes="100vw" media="${condition}" fetchpriority="high">`:'';
- return {markup,preload:[preload(desktop,'(min-width:1024px)'),preload(mobile,'(max-width:1023.98px)')].filter(Boolean).join('\n')};
+ const preload=(media,condition,sizes)=>media?`  <link rel="preload" as="image" href="${esc(media.url)}" imagesrcset="${esc(sourceSet(media))}" imagesizes="${sizes}" media="${condition}" fetchpriority="high">`:'';
+ return {markup,preload:[preload(desktop,'(min-width:1024px)',DESKTOP_IMAGE_SIZES),preload(mobile,'(max-width:1023.98px)','100vw')].filter(Boolean).join('\n')};
 }
 async function renderHomeHero({homepage,api,write}){
  for(const key of ['heroTitle','heroTitleMobile','heroSubtitle','heroCTA','heroBackground','heroBackgroundMobile','heroBackgroundAlt','heroBackgroundMobileAlt'])if(!Object.hasOwn(homepage,key))throw Error('CMS homepage hero field missing: '+key);
