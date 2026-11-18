@@ -7,10 +7,16 @@
 .hero--pencil .hero__title--desktop { display:none; }
 .hero--pencil .hero__title--mobile { display:block; }
 .hero--pencil .hero__sub { position:absolute; top:558px; left:0; width:100%; max-width:none; margin:0; font-size:14px; font-weight:400; line-height:1.45; color:#F5F3EF; }
-.hero--pencil .hero__cta { position:absolute; top:636px; left:0; display:flex; align-items:center; justify-content:space-between; width:100%; height:48px; min-height:48px; margin:0; padding:0 20px; border:0; border-radius:100px; font-size:14px; font-weight:500; line-height:1.2; background:#F5F3EF; color:#112F6E; }
+.hero--pencil .hero__cta { position:absolute; top:636px; left:0; display:flex; align-items:center; justify-content:space-between; width:100%; height:48px; min-height:48px; margin:0; padding:0 20px; border:0; border-radius:100px; font-size:14px; font-weight:500; line-height:1.2; background:var(--c-bg); color:var(--c-text); box-shadow:inset 0 0 0 1px var(--c-bg); }
 .hero--pencil .hero__cta svg { width:18px; height:18px; flex:0 0 18px; }
 .hero--pencil .hero__cta:focus-visible { outline:2px solid #F5F3EF; outline-offset:4px; }
-@media (hover:hover) { .hero--pencil .hero__cta:hover { background:#F5F3EF; color:#112F6E; opacity:.88; } }
+@media (hover:hover) and (pointer:fine) {
+ .hero--pencil .hero__cta:hover { background:var(--c-text); color:var(--c-bg); }
+ /* Keep the header on the matching side of the pill's color change. */
+ .header .header__tone-overlay--over-light { transition:visibility 0s linear calc(var(--dur-short) * .4); }
+ body:has(.hero--pencil .hero__cta:hover) .header .header__tone-overlay--over-light { visibility:hidden; }
+}
+@media (prefers-reduced-motion:reduce) { .hero--pencil .hero__cta { transition:none; } }
 @media (min-width:1024px) {
  .hero--pencil .hero__title { top:116px; width:min(760px,100%); font-size:clamp(64px,7.222222222vw,104px); }
  .hero--pencil .hero__title--desktop { display:block; }
