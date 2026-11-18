@@ -7,8 +7,9 @@
  * как шаблон — хром (header/footer/critical CSS/скрипты) наследуется автоматически
  * и не может разъехаться с сайтом.
  *
- * Типы страниц (ровно те, что есть на живом сайте, без новых):
+ * Типы страниц:
  *   landing  #cat-<slug>   → pages/<catSlug>.html                    (8)
+ *   series              → pages/seriya-<catSlug>-<series>.html
  *   variant  #v-<slug>:<i> → pages/<prefix>-<series>-<pn>.html       (~2400)
  *   product  #p-<id>       → pages/tovar-<slug>.html                 (без дублей вариантов)
  *
@@ -248,6 +249,7 @@ const nbsp = (s) => String(s == null ? '' : s).replace(NB_MID, '$1$2 ').replace
 
 // ================================================= имена файлов — через CATALOG_URLS
 const fileForVariant = (catSlug, series, idx) => CATALOG_URLS.variantFile(catSlug, series, idx);
+const fileForSeries = (catSlug, series) => CATALOG_URLS.seriesFile(catSlug, series);
 const fileForCategory = (catSlug) => CATALOG_URLS.categoryFile(catSlug);
 const fileForProduct = (p) => CATALOG_URLS.productFile(p);
 
@@ -301,13 +303,15 @@ const imgExists = (rel) => {
 /** Собирает страницу из шаблона. model: см. buildModel*. */
 function renderPage(m) {
   let h = TPL;
+  const isSeries = m.kind === 'series';
+  const isLandingLayout = m.kind === 'landing' || isSeries;
 
   // -------- head: title / description / canonical / robots / og / twitter
   h = replaceOnce(h, /<title>[\s\S]*?<\/title>/, `<title>${esc(m.title)}</title>`, 'title');
   h = replaceOnce(h, /<meta name="description" content="[^"]*">/, `<meta name="description" content="${escAttr(m.metaDesc)}">`, 'meta description');
   h = replaceOnce(h, /<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${SITE}/pages/${m.file}">`, 'canonical');
   h = replaceOnce(h, /<meta name="robots" content="[^"]*">/, `<meta name="robots" content="${m.noindex ? 'noindex, follow' : 'index, follow'}">`, 'robots');
-  h = replaceOnce(h, /<meta property="og:type" content="[^"]*">/, `<meta property="og:type" content="${m.kind === 'landing' ? 'website' : 'product'}">`, 'og:type');
+  h = replaceOnce(h, /<meta property="og:type" content="[^"]*">/, `<meta property="og:type" content="${isLandingLayout ? 'website' : 'product'}">`, 'og:type');
   h = replaceOnce(h, /<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${escAttr(m.title)}">`, 'og:title');
   h = replaceOnce(h, /<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${escAttr(m.metaDesc)}">`, 'og:description');
   h = replaceOnce(h, /<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${SITE}/pages/${m.file}">`, 'og:url');
@@ -338,7 +342,7 @@ function renderPage(m) {
     crumbs.push({ '@type': 'ListItem', position: 4, name: m.h1 });
   }
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs }];
-  if (m.kind !== 'landing') {
+  if (!isLandingLayout) {
     // Brand намеренно НЕ указываем: у серий это имя серии, у товаров — внутренняя
     // подкатегория (утечка «ЭКБ ТЕСТ», находка SEO-ревью). Не выдумываем данные.
     const prod = {
@@ -354,13 +358,14 @@ function renderPage(m) {
   h = replaceOnce(h, /\n<\/head>|\n +<\/head>/, `\n  ${ldTags}\n  ${NOSCRIPT}\n</head>`, '</head>');
 
   // -------- body: data-pd-kind (main.js:2335 ставит его JS'ом; CSS-лейаут зависит)
-  h = replaceOnce(h, /<body\b([^>]*)>/, (all, attrs) => `<body${attrs.replace(/\sdata-pd-(?:kind|category)="[^"]*"/g,'')} data-pd-kind="${m.kind}" data-pd-category="${escAttr(m.catSlug)}">`, 'body');
+  h = replaceOnce(h, /<body\b([^>]*)>/, (all, attrs) => `<body${attrs.replace(/\sdata-pd-(?:kind|category)="[^"]*"/g,'')} data-pd-kind="${isLandingLayout ? 'landing' : m.kind}" data-pd-category="${escAttr(m.catSlug)}"${isSeries ? ' data-series-page' : ''}>`, 'body');
 
   // -------- eyebrow breadcrumb (main.js:2299-2304)
   const trail = m.trail ? `&nbsp;/&nbsp;<span>${esc(String(m.trail).toLowerCase())}</span>` : '';
+  const categoryHref = isSeries ? fileForCategory(m.catSlug) : `products.html#${m.catSlug}`;
   h = replaceOnce(h,
     /<nav class="product-top__eyebrow" aria-label="breadcrumb">[\s\S]*?<\/nav>/,
-    `<nav class="product-top__eyebrow" aria-label="breadcrumb">\n          <a href="products.html">каталог</a>&nbsp;/&nbsp;<a href="products.html#${m.catSlug}">${m.catLabel}</a>${trail}\n        </nav>`,
+    `<nav class="product-top__eyebrow" aria-label="breadcrumb">\n          <a href="products.html">каталог</a>&nbsp;/&nbsp;<a href="${categoryHref}">${m.catLabel}</a>${trail}\n        </nav>`,
     'eyebrow');
 
   // -------- H1 + counter (main.js:2276-2296)
@@ -373,7 +378,7 @@ function renderPage(m) {
   // -------- главное фото (main.js:2320-2330); eager вместо lazy — above the fold
   const label = esc(m.imgLabel);
   const imgInner = (m.image && imgExists(m.image))
-    ? `<img src="${escAttr(encodeURI(m.image))}" alt="${escAttr(m.rawName || m.h1)}" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${escAttr(m.imgLabel)}</span>'">`
+    ? `<img src="${escAttr(encodeURI(m.image))}" alt="${escAttr(m.rawName || m.h1)}" style="width:100%;height:100%;object-fit:contain;"${isSeries ? '' : ` onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;pd-image__label&quot;>${escAttr(m.imgLabel)}</span>'"`}>`
     : `<span class="pd-image__label">${label}</span>`;
   h = replaceOnce(h,
     /<div class="pd-image__placeholder"[\s\S]*?<\/div>\n/,
@@ -381,15 +386,15 @@ function renderPage(m) {
     'pd-image');
 
   // -------- описание (main.js:2337-2365)
-  const descCounter = m.kind === 'landing'
+  const descCounter = isLandingLayout
     ? `<sup class="pd-block__counter pd-block__counter--landing">(02)</sup>`
     : `<sup class="pd-block__counter pd-block__counter--landing"><span class="pd-only-desktop">(01)</span><span class="pd-only-mobile">(02)</span></sup>`;
   h = replaceOnce(h, /<h2 class="pd-block__title">Описание<sup[\s\S]*?<\/h2>/, `<h2 class="pd-block__title">Описание${descCounter}</h2>`, 'desc title');
   h = replaceOnce(h, /<div class="pd-block__body">[\s\S]*?<\/div>\n          <\/div>/, `<div class="pd-block__body">${m.descHtml}</div>\n          </div>`, 'desc body');
-  if (m.kind === 'landing' && !m.descHtml) h = replaceOnce(h, /<div class="pd-block pd-block--description">/, '<div class="pd-block pd-block--description" hidden>', 'empty description');
+  if (isLandingLayout && !m.descHtml) h = replaceOnce(h, /<div class="pd-block pd-block--description">/, '<div class="pd-block pd-block--description" hidden>', 'empty description');
 
   // -------- характеристики (main.js:2371-2397)
-  if (m.kind === 'landing') {
+  if (isLandingLayout) {
     h = replaceOnce(h, /<div class="pd-block pd-block--specs">/, `<div class="pd-block pd-block--specs" hidden>`, 'specs hidden');
   } else {
     const rows = Object.entries(m.specs || {}).map(([k, v]) =>
@@ -413,15 +418,20 @@ function renderPage(m) {
   }
 
   // -------- номенклатура (main.js:2427-2447) — только landing (условие как live)
-  if (m.kind === 'landing' && Array.isArray(m.nomenclature) && m.nomenclature.length) {
-    const nRows = m.nomenclature.map(([l, v]) => `          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">${m.cmsOwned ? esc(l) : l}</span><span class="pd-nomenclature__value">${m.cmsOwned ? esc(v) : v}</span></div>`).join('\n');
+  if (isLandingLayout && (m.nomenclature?.length || m.seriesLinks?.length)) {
+    const nRows = (m.nomenclature || []).map(([l, v]) => `          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">${m.cmsOwned ? esc(l) : l}</span><span class="pd-nomenclature__value">${m.cmsOwned ? esc(v) : v}</span></div>`);
+    if (m.seriesLinks?.length) {
+      const links = m.seriesLinks.map(({ file, name }) => `<a href="${escAttr(file)}">${esc(name)} →</a>`).join('<br>');
+      nRows.push(`          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">серии к заказу</span><span class="pd-nomenclature__value">${links}</span></div>`);
+    }
     h = replaceOnce(h, /<section class="section section--pd-nomenclature" id="pdNomenclatureSection" hidden>/, `<section class="section section--pd-nomenclature" id="pdNomenclatureSection">`, 'nomenclature unhide');
     h = replaceOnce(h, /<h2 class="pd-nomenclature__title">[\s\S]*?<\/h2>/, `<h2 class="pd-nomenclature__title">${esc(m.nomenclatureTitle)}</h2>`, 'nomenclature title');
-    h = replaceOnce(h, /<div class="pd-nomenclature__table" id="pdNomenclatureTable"><\/div>/, `<div class="pd-nomenclature__table" id="pdNomenclatureTable">\n${nRows}\n        </div>`, 'nomenclature rows');
+    if (isSeries) h = replaceOnce(h, /<sup class="pd-nomenclature__counter">\(04\)<\/sup>/, '<sup class="pd-nomenclature__counter">(03)</sup>', 'series specs counter');
+    h = replaceOnce(h, /<div class="pd-nomenclature__table" id="pdNomenclatureTable"><\/div>/, `<div class="pd-nomenclature__table" id="pdNomenclatureTable">\n${nRows.join('\n')}\n        </div>`, 'nomenclature rows');
   }
 
   // -------- CTA: data-kp-* (main.js:2453-2457)
-  if (m.kind === 'landing') {
+  if (isLandingLayout) {
     h = replaceOnce(h, /<span class="pd-only-mobile">запросить расчёт<\/span>/, '<span class="pd-only-mobile">Запросить расчёт</span>', 'category cta label');
   }
   h = replaceOnce(h, /<a href="#" class="pd-actions__primary" data-action="open-kp-drawer">/,
@@ -431,16 +441,19 @@ function renderPage(m) {
   // -------- related (main.js:2461-2523)
   if (m.related && m.related.length) {
     const cards = m.related.map(it => {
-      const cyrName = (m.kind === 'landing' || m.catSlug === 'microchips') ? it.name : cyrillize(it.name);
+      const cyrName = (isLandingLayout || m.catSlug === 'microchips') ? it.name : cyrillize(it.name);
       const img = (it.image && imgExists(it.image))
-        ? `<img src="${escAttr(encodeURI(it.image))}" alt="${escAttr(it.name)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${escAttr(cyrName)}</span>')">`
+        ? `<img src="${escAttr(encodeURI(it.image))}" alt="${escAttr(it.name)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;"${isSeries ? '' : ` onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'pd-card__image-label\\'>${escAttr(cyrName)}</span>')"`}>`
         : `<span class="pd-card__image-label">${esc(cyrName)}</span>`;
       return `          <a href="${escAttr(it.href)}" class="pd-card">\n            <div class="pd-card__image" aria-label="${escAttr(it.name)}">\n              ${img}\n            </div>\n            <div class="pd-card__info">\n              <span class="pd-card__name">${esc(cyrName)}</span>\n              ${it.desc ? `<span class="pd-card__desc">${it.desc}</span>` : ''}\n            </div>\n          </a>`;
     }).join('\n');
-    const relTitle = m.kind === 'landing' ? 'Другие категории' : 'Другие исполнения';
-    const relCounter = m.kind === 'landing' ? '(05)' : '<span class="pd-only-desktop">(03)</span><span class="pd-only-mobile">(04)</span>';
+    const relTitle = isSeries ? 'Исполнения' : m.kind === 'landing' ? 'Другие категории' : 'Другие исполнения';
+    const relCounter = isSeries ? '(04)' : m.kind === 'landing' ? '(05)' : '<span class="pd-only-desktop">(03)</span><span class="pd-only-mobile">(04)</span>';
     h = replaceOnce(h, /<h2 class="pd-related__title" data-animate="fade-up">[\s\S]*?<\/h2>/, `<h2 class="pd-related__title" data-animate="fade-up">${relTitle}<sup class="pd-related__counter">${relCounter}</sup></h2>`, 'related title');
-    h = replaceOnce(h, /<div class="pd-related__grid" id="pdRelatedGrid">[\s\S]*?\n        <\/div>\n      <\/div>\n    <\/section>/, `<div class="pd-related__grid" id="pdRelatedGrid">\n${cards}\n        </div>\n      </div>\n    </section>`, 'related grid');
+    const showAll = isSeries && m.related.length > 24
+      ? '\n        <button type="button" class="catalog__list-more" data-series-show-all aria-controls="pdRelatedGrid" hidden>показать все исполнения</button>'
+      : '';
+    h = replaceOnce(h, /<div class="pd-related__grid" id="pdRelatedGrid">[\s\S]*?\n        <\/div>\n      <\/div>\n    <\/section>/, `<div class="pd-related__grid" id="pdRelatedGrid">\n${cards}\n        </div>${showAll}\n      </div>\n    </section>`, 'related grid');
   } else {
     h = replaceOnce(h, /<section class="section section--pd-related">/, `<section class="section section--pd-related" hidden>`, 'related hidden');
   }
@@ -483,8 +496,45 @@ function buildLandingModel(catSlug) {
     absImage: /^https?:/.test(img) ? img : (img && imgExists(img) ? `${SITE}/` + encodeURI(img.replace(/^\.\.\//, '')) : ''),
     bullets: landing.bullets, bulletsTitle: esc(landing.bulletsTitle || 'Что мы поставляем'),
     nomenclature: landing.nomenclature, nomenclatureTitle: landing.nomenclatureTitle || 'Номенклатура',
+    seriesLinks: catalogSeriesLinks.filter(link => link.catSlug === catSlug),
     kpProduct: cyrillize(name.toUpperCase()),
     related, noindex: false, pn: ''
+  };
+}
+
+function buildSeriesModel(catSlug, catLabel, series) {
+  const name = series.name;
+  const description = series.description || '';
+  const firstSentence = description.split(/(?<=[.!?])\s+/)[0];
+  const image = series.image || '';
+  // The legacy ET-2RMG resource row also stipulates hours absent from the current CMS description.
+  const nomenclature = (SERIES_SPECS[series.slug] || [])
+    .filter(([label]) => series.slug !== 'et-2rmg' || label !== 'ресурс');
+  const types = [...new Set(series.items.map(item => item.type).filter(Boolean))];
+  if (types.length) nomenclature.push(['типы исполнений', types.join(' / ')]);
+  if (series.tu) nomenclature.push(['ТУ', series.tu]);
+  const related = series.items.map((item, index) => {
+    const pn = CATALOG_URLS.variantPn(item) || item.name;
+    const details = [item.type, item.vout && `${item.vout} В`, item.power && `${item.power} Вт`]
+      .filter(Boolean).join(' · ');
+    return {
+      name: pn,
+      desc: esc(details),
+      image: resolveSeriesItemImage(series, item),
+      href: fileForVariant(catSlug, series, index),
+    };
+  });
+  const file = fileForSeries(catSlug, series);
+  return {
+    kind: 'series', file, catSlug, catLabel, cmsOwned: true,
+    h1: name, rawName: name, counter: '(01)', trail: name,
+    title: `${catLabel.charAt(0).toUpperCase() + catLabel.slice(1)} ${name} оптом | IC Фарватер`,
+    metaDesc: composeMeta(`${name} — ${catLabel}. ${firstSentence}`, 'Выберите исполнение и запросите КП на партию.'),
+    subtitleHtml: esc(nbsp(firstSentence)), descHtml: renderCmsDescription(description),
+    image, imgLabel: name,
+    absImage: /^https?:/.test(image) ? image : (image && imgExists(image) ? `${SITE}/${encodeURI(image.replace(/^\.\.\//, ''))}` : ''),
+    nomenclature, nomenclatureTitle: 'Характеристики',
+    related, kpProduct: name, noindex: false,
   };
 }
 
@@ -504,7 +554,7 @@ function buildVariantModel(catSlug, catLabel, vKind, series, item, idx) {
   const arr = vKind === 'connector' ? CONNECTOR_SERIES : vKind === 'converter' ? CONVERTER_SERIES : CAPACITOR_SERIES;
   const related = arr.slice(0, 4).map(s => ({
     name: s.name, desc: shortDesc(s.slug, s.description), image: s.image,
-    href: `products.html#${catSlug}/${s.slug}`
+    href: fileForSeries(catSlug, s) || `products.html#${catSlug}/${s.slug}`
   }));
   const dev = series.group === 'dev';
   const facts = Object.entries(specs).filter(([k]) => !['партномер', 'ту', 'тип', 'статус'].includes(k)).slice(0, 2)
@@ -521,7 +571,9 @@ function buildVariantModel(catSlug, catLabel, vKind, series, item, idx) {
     image, imgLabel: cyrillize(vName),
     absImage: image && !/^https?:/.test(image) && imgExists(image) ? `${SITE}/` + encodeURI(image.replace(/^\.\.\//, '')) : (/^https?:/.test(image) ? image : ''),
     // приоритет как live (main.js:2194, 2455): displaySub → item.partnumber → имя
-    specs, kpProduct: cyrillize(((vSub || item.partnumber || vName)).toUpperCase()),
+    specs, kpProduct: fileForSeries(catSlug, series) && CATALOG_URLS.variantPn(item)
+      ? CATALOG_URLS.variantPn(item)
+      : cyrillize((vSub || item.partnumber || vName).toUpperCase()),
     related, noindex: dev, pn: cyrillize(pn)
   };
 }
@@ -584,6 +636,10 @@ const SERIES_CATS = [
   ['converters', 'преобразователи', 'converter', CONVERTER_SERIES],
   ['capacitors', 'свч-конденсаторы', 'capacitor', CAPACITOR_SERIES],
 ];
+const catalogSeriesLinks = SERIES_CATS.flatMap(([catSlug, , , series]) => series.flatMap(entry => {
+  const file = fileForSeries(catSlug, entry);
+  return file ? [{ catSlug, file, name: entry.name }] : [];
+}));
 
 if (PILOT) {
   models.push(buildLandingModel('razemy'));
@@ -594,9 +650,23 @@ if (PILOT) {
 } else {
   for (const slug of Object.keys(CATEGORY_LANDINGS)) models.push(buildLandingModel(slug));
   for (const [catSlug, catLabel, vKind, arr] of SERIES_CATS) {
-    for (const s of arr) (s.items || []).forEach((it, idx) => models.push(buildVariantModel(catSlug, catLabel, vKind, s, it, idx)));
+    for (const s of arr) {
+      if (fileForSeries(catSlug, s)) models.push(buildSeriesModel(catSlug, catLabel, s));
+      (s.items || []).forEach((it, idx) => models.push(buildVariantModel(catSlug, catLabel, vKind, s, it, idx)));
+    }
   }
   for (const p of PRODUCTS) if (!dedupSkip.has(p.id)) models.push(buildProductModel(p));
+}
+
+// The interactive catalog uses the same URLs on its existing cards.
+// Keep a crawlable path from the default catalog response with JavaScript disabled.
+const catalogPath = path.join(PAGES, 'products.html');
+if (!PILOT && !CHECK && fs.existsSync(catalogPath)) {
+  const catalog = fs.readFileSync(catalogPath, 'utf8');
+  const links = catalogSeriesLinks.map(({ file, name }) => `<li><a href="${escAttr(file)}">${esc(name)}</a></li>`).join('');
+  const fallback = links ? `<noscript><nav aria-label="Серии к заказу"><ul>${links}</ul></nav></noscript>` : '';
+  const updated = replaceOnce(catalog, /<!-- SERIES:LINKS:START -->[\s\S]*?<!-- SERIES:LINKS:END -->/, `<!-- SERIES:LINKS:START -->${fallback}<!-- SERIES:LINKS:END -->`, 'catalog series links');
+  if (updated !== catalog) fs.writeFileSync(catalogPath, updated);
 }
 
 // ================================================= запись (только при диффе)

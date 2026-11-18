@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFooterEmailForm();
   initCatalog();
   initProductDetail();
+  initSeriesCards();
 });
 
 /** Keep the accessible image description aligned with the selected source. */
@@ -680,6 +681,10 @@ function urlForVariant(catSlug, series, idx) {
   const f = (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.variantFile(catSlug, series, idx) : null;
   return f || `product-detail.html#v-${series.slug}:${idx}`;
 }
+function urlForSeries(catSlug, series, catalog = 'products.html') {
+  const file = typeof CATALOG_URLS !== 'undefined' && CATALOG_URLS.seriesFile?.(catSlug, series);
+  return file || `${catalog}#${catSlug}/${series.slug}`;
+}
 function urlForCategory(catSlug) {
   return (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.categoryFile(catSlug) : `product-detail.html#cat-${catSlug}`;
 }
@@ -889,7 +894,7 @@ function initCatalog() {
     const pushSeries = (kindKey, catSlug, src) => src.forEach(s => out.push({
       type: 'series', kind: kindKey, cat: catSlug, id: s.slug, name: s.name,
       desc: shortDesc(s.slug, s.description),
-      image: s.image, group: s.group || 'main', href: `#${catSlug}/${s.slug}`,
+      image: s.image, group: s.group || 'main', href: urlForSeries(catSlug, s, ''),
       seriesTypes: collectTypes(s), apps: s.apps || [], variantTypes:(s.items||[]).map(item=>normalizeType(item.type)),
       variantCount: (s.items || []).filter(item => state.seriesType === 'all' || normalizeType(item.type) === state.seriesType).length
     }));
@@ -1184,7 +1189,7 @@ function initCatalog() {
     return a;
   }
 
-  // Render variants of a single series in 4-col grid (replaces Series Detail page)
+  // Keep the legacy series hash view, including its filters and deep links.
   function renderSeriesVariants(cat, slug) {
     let series = null, catLabel = (cmsCat(cat) || {}).name || CAT_NAMES[cat] || cat;
     // Источник серии: из категории админки (source) либо legacy-маппинг по слагу.
@@ -1360,7 +1365,7 @@ function initCatalog() {
     document.body.classList.toggle('is-catalog-category-list',!filters.count(state)&&!inSearchMode&&state.view==='list');
 
     if (inSeriesMode) {
-      // Series variant grid (no separate Series Detail page)
+      // Legacy series variant grid.
       grid.hidden = true;
       listWrap.hidden = false;
       renderSeriesVariants(state.cat, state.series);
@@ -1955,7 +1960,23 @@ function realUrlForHash(hash) {
  *  #s-v-<slug> (converter series), #s-k-<slug> (capacitor series),
  *  #cat-<slug> (static landings — any CATEGORY_LANDINGS key, incl. pcb / rantsy / snow).
  *  No hash → leave default static content (ET-СНЦ23). */
+function initSeriesCards() {
+  const more = document.querySelector('[data-series-show-all]');
+  if (!more) return;
+  const cards = document.querySelectorAll('#pdRelatedGrid > .pd-card');
+  const remaining = Array.from(cards).slice(24);
+  if (!remaining.length) return;
+  remaining.forEach(card => { card.hidden = true; });
+  more.hidden = false;
+  more.addEventListener('click', () => {
+    remaining.forEach(card => { card.hidden = false; });
+    more.hidden = true;
+    remaining[0].focus();
+  }, { once:true });
+}
+
 function initProductDetail() {
+  if (document.body.hasAttribute('data-series-page')) return;
   if (!document.querySelector('.product-top__title') || !document.querySelector('.section--pd-content')) return;
   const hash = window.location.hash;
   if (!hash || hash === '#') return;
@@ -2308,17 +2329,17 @@ function initProductDetail() {
     } else if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
       pool = CONNECTOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: shortDesc(s.slug, s.description),
-        image: s.image, href: `products.html#razemy/${s.slug}`
+        image: s.image, href: urlForSeries('razemy', s)
       }));
     } else if (catSlug === 'converters' && typeof CONVERTER_SERIES !== 'undefined') {
       pool = CONVERTER_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: shortDesc(s.slug, s.description),
-        image: s.image, href: `products.html#converters/${s.slug}`
+        image: s.image, href: urlForSeries('converters', s)
       }));
     } else if (catSlug === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined') {
       pool = CAPACITOR_SERIES.filter(s => s.slug !== data.slug).slice(0, 4).map(s => ({
         name: s.name, desc: shortDesc(s.slug, s.description),
-        image: s.image, href: `products.html#capacitors/${s.slug}`
+        image: s.image, href: urlForSeries('capacitors', s)
       }));
     } else if ((catSlug === 'microchips' || catSlug === 'transistors') && typeof PRODUCTS !== 'undefined') {
       const catName = catSlug === 'microchips' ? 'Микросхемы' : 'СВЧ-транзисторы';
