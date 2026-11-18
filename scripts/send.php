@@ -4,11 +4,11 @@
  * Отправляет письма через SMTP (PHPMailer). Все секреты — в env vars Dokploy.
  *
  * Принимает multipart/form-data POST со следующими полями:
- *   kind        — "kp" | "contact"
+ *   kind        — "kp" | "contact" | "laboratory"
  *   name        — required
  *   email       — required
  *   phone       — optional
- *   message     — contact form required
+ *   message     — contact/laboratory form required
  *   comment     — kp form optional
  *   product     — kp form optional (название товара)
  *   category    — kp form optional (категория)
@@ -16,7 +16,8 @@
  *   files[]     — до 5 вложений суммарно 10 MB (kp form only)
  *   honeypot    — должно быть пустым (anti-bot)
  *
- * Возвращает JSON { ok: true } или { ok: false, error: "..." }
+ * После принятия письма SMTP возвращает JSON { ok: true, leadId: "..." }.
+ * Ответ антиспама без leadId сохраняет прежнее поведение формы.
  *
  * Конфигурация — env vars (в Dokploy → Application frontend → Environment):
  *   SMTP_HOST       (default: smtp.beget.com)
@@ -114,7 +115,7 @@ if (!$consent) {
     echo json_encode(['ok' => false, 'error' => 'Необходимо согласие на обработку данных']);
     exit;
 }
-if ($kind === 'contact' && !$message) {
+if (in_array($kind, ['contact', 'laboratory'], true) && !$message) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Заполните сообщение']);
     exit;
@@ -168,11 +169,16 @@ if ($kind === 'kp' && !empty($_FILES['files']) && is_array($_FILES['files']['nam
 /* ─── Сборка тела письма ─── */
 $bodyText  = ($kind === 'kp' ? $comment : $message);
 $bodyLabel = ($kind === 'kp' ? 'Комментарий' : 'Сообщение');
-$subject   = ($kind === 'kp' ? 'Новый запрос КП с сайта IC Фарватер'
-                              : 'Новая заявка с сайта IC Фарватер');
+$subject = match ($kind) {
+    'kp' => 'Новый запрос КП с сайта IC Фарватер',
+    'laboratory' => 'Заявка на лабораторные испытания с сайта IC Фарватер',
+    default => 'Новая заявка с сайта IC Фарватер',
+};
+$leadId = bin2hex(random_bytes(16));
 
 $lines = [
     "Новая заявка с сайта ic-farvater.ru ({$kind})",
+    "ID заявки: {$leadId}",
     str_repeat('-', 40),
 ];
 if ($category) $lines[] = "Раздел:   $category";
@@ -222,7 +228,7 @@ try {
     }
 
     $mail->send();
-    echo json_encode(['ok' => true]);
+    echo json_encode(['ok' => true, 'leadId' => $leadId]);
 } catch (Exception $e) {
     error_log('SMTP error: ' . $mail->ErrorInfo);
     http_response_code(500);

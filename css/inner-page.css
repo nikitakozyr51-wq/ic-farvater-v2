@@ -774,6 +774,10 @@
   resize: vertical;
   min-height: 72px;
 }
+select.contact-form__input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
 .contact-form__field--textarea { padding-bottom: 14px; }
 
 /* Consent — textarea field above already has border-bottom; no top border needed (Pencil ff0uT). */

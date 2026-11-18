@@ -50,6 +50,7 @@ async function submitForm(form, kind, extra) {
     let json;
     try { json = await res.json(); }
     catch { return { ok: false, error: 'Сервер вернул некорректный ответ' }; }
+    if (res.ok && json?.ok === true) trackAcceptedLead(kind, json.leadId);
     return json;
   } catch (err) {
     return { ok: false, error: 'Сеть недоступна. Напишите info@ic-farvater.ru' };
@@ -156,9 +157,7 @@ const CONTACT_FILE_MAX_COUNT = 5;
 const CONTACT_FILE_MAX_TOTAL = 10 * 1024 * 1024;
 const CONTACT_FILE_ALLOWED = ['pdf','doc','docx','xls','xlsx','csv','txt','png','jpg','jpeg','zip','rar','7z'];
 
-/** Contact form — finds form by id="contactForm" OR by class .contact-form (fallback).
- *  Placeholder: no backend on localhost/gh-pages — shows success after 600ms simulated send.
- *  Replace setTimeout block with real fetch('/scripts/send.php') when backend is live. */
+/** Contact form for general enquiries and laboratory requests. */
 function initContactForm() {
   const form = document.getElementById('contactForm') || document.querySelector('.contact-form');
   if (!form) return;
@@ -168,6 +167,7 @@ function initContactForm() {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (btn?.disabled) return;
     removeFormMessage(form);
 
     const consentBox = form.querySelector('input[name="consent"]');
@@ -179,7 +179,8 @@ function initContactForm() {
     const originalLabel = btn ? btn.innerHTML : '';
     if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
-    const result = await submitForm(form, 'contact');
+    const kind = form.elements.namedItem('request-topic')?.value === 'laboratory' ? 'laboratory' : 'contact';
+    const result = await submitForm(form, kind);
     if (result.ok) {
       showFormMessage(form, 'спасибо! мы свяжемся с вами в течение рабочего дня.', true);
       form.reset();
@@ -384,11 +385,40 @@ function initServiceAccordion() {
   });
 }
 
+let metrikaCounterId = 0;
+const metrikaLeadGoals = new Map([
+  ['kp', 'wholesale_quote_accepted'],
+  ['laboratory', 'laboratory_request_accepted'],
+]);
+const trackedLeadIds = new Set();
+
+function getCookieConsent() {
+  try {
+    return localStorage.getItem('cookieConsent') ||
+      (localStorage.getItem('cookieAccepted') === 'true' ? 'accepted' : null);
+  } catch {
+    return null;
+  }
+}
+
+function trackAcceptedLead(kind, leadId) {
+  const goal = metrikaLeadGoals.get(kind);
+  if (!goal || !metrikaCounterId || getCookieConsent() !== 'accepted' ||
+      typeof leadId !== 'string' || !/^[a-f0-9]{32}$/.test(leadId) || trackedLeadIds.has(leadId)) return;
+
+  try {
+    window.ym(metrikaCounterId, 'reachGoal', goal, { lead_id: leadId });
+    trackedLeadIds.add(leadId);
+  } catch {
+    // Analytics must not affect the already accepted form submission.
+  }
+}
+
 /** Yandex.Metrica loader — reads counter ID from <meta name="yandex-counter">
  *  (empty/zero → no-op). Idempotent: re-calls are ignored. */
 function loadYandexMetrika() {
   if (isStagingHost()) return;
-  if (window.ym) return;
+  if (metrikaCounterId) return;
   const meta = document.querySelector('meta[name="yandex-counter"]');
   const id = parseInt(meta?.content || '0', 10);
   if (!id) return; // placeholder — counter not configured yet
@@ -406,8 +436,8 @@ function loadYandexMetrika() {
     trackLinks: true,
     accurateTrackBounce: true,
     webvisor: false,
-    defer: true,
   });
+  metrikaCounterId = id;
 }
 
 /** Cookie consent banner (opt-in). Метрика стартует ТОЛЬКО после явного клика
@@ -418,8 +448,7 @@ function loadYandexMetrika() {
  *  (так написано в политике §7 — не убирать этот канал без правки текста). */
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
-  const stored = localStorage.getItem('cookieConsent') ||
-    (localStorage.getItem('cookieAccepted') === 'true' ? 'accepted' : null);
+  const stored = getCookieConsent();
 
   // Opt-in: аналитика только при ранее данном явном согласии.
   if (stored === 'accepted') loadYandexMetrika();
@@ -2565,6 +2594,8 @@ function initKpDrawer() {
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = form.querySelector('.kp-form__submit');
+      if (btn?.disabled) return;
       // Remove old message
       form.querySelectorAll('.kp-form__msg').forEach(el => el.remove());
 
@@ -2577,7 +2608,6 @@ function initKpDrawer() {
         return;
       }
 
-      const btn = form.querySelector('.kp-form__submit');
       if (btn) { btn.disabled = true; btn.textContent = 'отправка...'; }
 
       // Pull product context that openDrawer wrote into the visible chips
