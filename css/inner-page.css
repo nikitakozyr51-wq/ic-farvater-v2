@@ -2375,6 +2375,7 @@ body[data-pd-kind="landing"] .pd-card__name { line-height:18px; }
 body[data-pd-kind="landing"] .pd-card__desc { line-height:16px; }
 [data-series-page] .pd-card[hidden],
 [data-series-show-all][hidden] { display:none; }
+.pd-nomenclature__value[data-series-links] a { display:inline-block; max-inline-size:100%; }
 @media (min-width:1024px) {
  body[data-pd-kind="landing"] .section--pd-content { padding-block:60px; }
  body[data-pd-kind="landing"] .pd-image { flex:0 0 calc((100% - 24px)/2); }
