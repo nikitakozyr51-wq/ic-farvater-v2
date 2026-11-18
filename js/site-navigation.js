@@ -105,6 +105,7 @@
    headerInner.classList.add('header__inner--entering');
   }
   const darkSurfaces = document.querySelectorAll('[data-header-theme="dark"], main .hero');
+  const heroButton = document.querySelector('main .hero .hero__cta');
   const desktop = window.matchMedia('(min-width:1024px)'), nav = header.querySelector('.header__nav');
   const search = header.querySelector('.header__search'), searchForm = header.querySelector('.header__search-form'), searchInput = searchForm?.querySelector('input');
   const burger = header.querySelector('.header__burger'), menu = header.querySelector('#mobileMenu');
@@ -159,7 +160,21 @@
   const updateSearchControls = () => search.setAttribute('aria-controls',desktop.matches ? 'headerSearchForm' : 'mobileMenu');
   updateSearchControls();
   desktop.addEventListener('change', () => { const contained = header.contains(document.activeElement); closeNavigation(false); updateSearchControls(); if (contained) header.querySelector('.header__logo').focus({preventScroll:true}); });
-  let scheduled = false, lightInk;
+  let scheduled = false, lightInk, darkInk;
+  function createToneOverlay() {
+   const overlay = headerInner.cloneNode(true);
+   overlay.classList.remove('header__inner--entering');
+   overlay.classList.add('header__tone-overlay');
+   overlay.setAttribute('aria-hidden', 'true');
+   overlay.inert = true;
+   overlay.querySelector('.header__search-form').remove();
+   for (const element of overlay.querySelectorAll('[id], [aria-controls]')) {
+    element.removeAttribute('id');
+    element.removeAttribute('aria-controls');
+   }
+   headerInner.after(overlay);
+   return overlay;
+  }
   function updateTone() {
    scheduled = false;
    if (document.body.classList.contains('is-overlay-open')) return;
@@ -182,23 +197,25 @@
    const centerDark = bands.some(([start, end]) => start <= height / 2 && end >= height / 2);
    const tone = (searchOpen ? centerDark : allDark) ? 'dark' : 'light';
    if (header.dataset.tone !== tone) header.dataset.tone = tone;
+   const button = heroButton?.getBoundingClientRect();
+   if (!searchOpen && button?.width && button.top < height && button.bottom > 0) {
+    if (!darkInk) {
+     darkInk = createToneOverlay();
+     darkInk.classList.add('header__tone-overlay--over-light');
+    }
+    // Keep the cream treatment over the photo and trace the light pill inside it.
+    const frame = headerInner.getBoundingClientRect();
+    const radius = getComputedStyle(heroButton).borderTopLeftRadius;
+    darkInk.style.clipPath = `inset(${button.top}px ${frame.right - button.right}px ${height - button.bottom}px ${button.left - frame.left}px round ${radius})`;
+    darkInk.hidden = false;
+   } else if (darkInk && !darkInk.hidden) {
+    darkInk.hidden = true;
+   }
    if (allDark || !bands.length || searchOpen) {
     if (lightInk && !lightInk.hidden) lightInk.hidden = true;
     return;
    }
-   if (!lightInk) {
-    lightInk = headerInner.cloneNode(true);
-    lightInk.classList.remove('header__inner--entering');
-    lightInk.classList.add('header__tone-overlay');
-    lightInk.setAttribute('aria-hidden', 'true');
-    lightInk.inert = true;
-    lightInk.querySelector('.header__search-form').remove();
-    for (const element of lightInk.querySelectorAll('[id], [aria-controls]')) {
-     element.removeAttribute('id');
-     element.removeAttribute('aria-controls');
-    }
-    headerInner.after(lightInk);
-   }
+   if (!lightInk) lightInk = createToneOverlay();
    // Each band's outline returns to the left edge, leaving gaps unpainted.
    lightInk.style.clipPath = 'polygon(' + bands.map(([start, end]) =>
     `0 ${start}px,100% ${start}px,100% ${end}px,0 ${end}px,0 ${start}px`).join(',') + ')';
@@ -206,6 +223,8 @@
   }
   const queueTone = () => { if (!scheduled) { scheduled = true; requestAnimationFrame(updateTone); } };
   document.addEventListener('ic:overlay-state', event => { if (!event.detail.open) queueTone(); });
+  heroButton?.addEventListener('animationend', queueTone);
+  heroButton?.addEventListener('animationcancel', queueTone);
   window.addEventListener('scroll',queueTone,{passive:true}); window.addEventListener('resize',queueTone,{passive:true});
   window.addEventListener('load',queueTone); window.addEventListener('pageshow',queueTone); updateTone();
  });
