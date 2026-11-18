@@ -26,7 +26,14 @@ var CATALOG_URLS = (function () {
     return out.replace(/-+/g, '-').replace(/^-+|-+$/g, '');
   }
   var CAT_PREFIX = { razemy: 'razem', converters: 'preobrazovatel', capacitors: 'kondensator' };
-  var SERIES_PAGES = { razemy: ['et-2rmg'], converters: ['irtysh'] };
+  var SERIES_PAGES = {
+    razemy: [
+      'et-snc23', 'et-2rmg', 'et-2rmt', 'et-2rtt', 'et-mr1', 'et-onc-bs',
+      'et-rrs', 'et-rsg', 'et-shr', 'et-snc144', 'et-ek-ep', 'et-snc28'
+    ],
+    converters: ['irtysh', 'volga', 'enisei', 'kama'],
+    capacitors: ['arc70a', 'arc70c', 'arc70e']
+  };
 
   function seriesFile(catSlug, series) {
     var enabled = SERIES_PAGES[catSlug];

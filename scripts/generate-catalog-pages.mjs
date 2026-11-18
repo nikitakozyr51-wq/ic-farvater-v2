@@ -74,6 +74,26 @@ function extractObjectLiteral(src, name) {
 }
 const lit = (name) => new Function('return (' + extractObjectLiteral(MAIN_SRC, name) + ')')();
 const SERIES_SPECS = lit('SERIES_SPECS');
+// Exclude legacy facts that the current series descriptions don't substantiate.
+// Series TUs always come from the matching Strapi field.
+const SERIES_SPEC_EXCLUSIONS = {
+  'et-snc23': ['контакты', 'совместимость'],
+  'et-2rmg': ['ресурс'],
+  'et-2rmt': ['ресурс'],
+  'et-mr1': ['исполнения'],
+  'et-onc-bs': ['совместимость'],
+  'et-snc144': ['ресурс', 'покрытия'],
+  'et-ek-ep': ['типы', 'совместимость'],
+  enisei: ['корпуса'],
+  arc70a: ['тке'],
+  arc70c: ['допуск', 'тке'],
+  arc70e: ['корпус', 'ёмкость', 'допуск', 'тке'],
+};
+const SERIES_SPEC_CORRECTIONS = {
+  volga: { температура: 'Р −50…+100 °C / С −40…+100 °C' },
+  kama: { температура: 'Р −60…+100 °C / С −40…+100 °C' },
+  arc70a: { аналог: 'ATC700A' },
+};
 const CATEGORY_LANDINGS = lit('CATEGORY_LANDINGS');
 const RELATED_CAT_INFO = lit('RELATED_CAT_INFO');
 const GENERIC_TYPE_IMAGES = lit('GENERIC_TYPE_IMAGES');
@@ -421,8 +441,8 @@ function renderPage(m) {
   if (isLandingLayout && (m.nomenclature?.length || m.seriesLinks?.length)) {
     const nRows = (m.nomenclature || []).map(([l, v]) => `          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">${m.cmsOwned ? esc(l) : l}</span><span class="pd-nomenclature__value">${m.cmsOwned ? esc(v) : v}</span></div>`);
     if (m.seriesLinks?.length) {
-      const links = m.seriesLinks.map(({ file, name }) => `<a href="${escAttr(file)}">${esc(name)} →</a>`).join('<br>');
-      nRows.push(`          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">серии к заказу</span><span class="pd-nomenclature__value">${links}</span></div>`);
+      const links = m.seriesLinks.map(({ file, name }) => `<a href="${escAttr(file)}">${esc(name)}${m.seriesLinks.length === 1 ? ' →' : ''}</a>`).join(' · ');
+      nRows.push(`          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">серии к заказу</span><span class="pd-nomenclature__value" data-series-links>${links}</span></div>`);
     }
     h = replaceOnce(h, /<section class="section section--pd-nomenclature" id="pdNomenclatureSection" hidden>/, `<section class="section section--pd-nomenclature" id="pdNomenclatureSection">`, 'nomenclature unhide');
     h = replaceOnce(h, /<h2 class="pd-nomenclature__title">[\s\S]*?<\/h2>/, `<h2 class="pd-nomenclature__title">${esc(m.nomenclatureTitle)}</h2>`, 'nomenclature title');
@@ -507,28 +527,34 @@ function buildSeriesModel(catSlug, catLabel, series) {
   const description = series.description || '';
   const firstSentence = description.split(/(?<=[.!?])\s+/)[0];
   const image = series.image || '';
-  // The legacy ET-2RMG resource row also stipulates hours absent from the current CMS description.
+  const exclusions = SERIES_SPEC_EXCLUSIONS[series.slug] || [];
+  const corrections = SERIES_SPEC_CORRECTIONS[series.slug] || {};
   const nomenclature = (SERIES_SPECS[series.slug] || [])
-    .filter(([label]) => series.slug !== 'et-2rmg' || label !== 'ресурс');
-  const types = [...new Set(series.items.map(item => item.type).filter(Boolean))];
+    .filter(([label]) => label !== 'ту' && !exclusions.includes(label))
+    .map(([label, value]) => [label, corrections[label] || value]);
+  const displayType = type => (type || '').trim().replace(/^Роозетка(?=\s|$)/u, 'Розетка').replace(/блочна$/u, 'блочная');
+  const types = [...new Set(series.items.map(item => displayType(item.type)).filter(Boolean))];
   if (types.length) nomenclature.push(['типы исполнений', types.join(' / ')]);
   if (series.tu) nomenclature.push(['ТУ', series.tu]);
+  const hasSeriesPhotos = image || Object.keys(series.imageByType || {}).length > 0;
   const related = series.items.map((item, index) => {
     const pn = CATALOG_URLS.variantPn(item) || item.name;
-    const details = [item.type, item.vout && `${item.vout} В`, item.power && `${item.power} Вт`]
-      .filter(Boolean).join(' · ');
+    const details = catSlug === 'capacitors'
+      ? [pn, item.voltage?.replace(/\s+Код\s+(\d+)/g, ' ($1)')]
+      : [displayType(item.type), item.vout && `${item.vout} В`, item.power && `${item.power} Вт`];
     return {
-      name: pn,
-      desc: esc(details),
-      image: resolveSeriesItemImage(series, item),
+      name: catSlug === 'capacitors' ? item.displayName || item.name : pn,
+      desc: esc(details.filter(Boolean).join(' · ')),
+      image: hasSeriesPhotos ? resolveSeriesItemImage(series, item) : '',
       href: fileForVariant(catSlug, series, index),
     };
   });
   const file = fileForSeries(catSlug, series);
+  const titleCategory = catSlug === 'capacitors' ? 'СВЧ-конденсаторы' : catLabel.charAt(0).toUpperCase() + catLabel.slice(1);
   return {
     kind: 'series', file, catSlug, catLabel, cmsOwned: true,
     h1: name, rawName: name, counter: '(01)', trail: name,
-    title: `${catLabel.charAt(0).toUpperCase() + catLabel.slice(1)} ${name} оптом | IC Фарватер`,
+    title: `${titleCategory} ${name} оптом | IC Фарватер`,
     metaDesc: composeMeta(`${name} — ${catLabel}. ${firstSentence}`, 'Выберите исполнение и запросите КП на партию.'),
     subtitleHtml: esc(nbsp(firstSentence)), descHtml: renderCmsDescription(description),
     image, imgLabel: name,
@@ -557,6 +583,10 @@ function buildVariantModel(catSlug, catLabel, vKind, series, item, idx) {
     href: fileForSeries(catSlug, s) || `products.html#${catSlug}/${s.slug}`
   }));
   const dev = series.group === 'dev';
+  const orderCode = fileForSeries(catSlug, series) && CATALOG_URLS.variantPn(item);
+  const kpProduct = orderCode
+    ? (vKind === 'capacitor' ? `${series.name} ${orderCode}` : orderCode)
+    : cyrillize((vSub || item.partnumber || vName).toUpperCase());
   const facts = Object.entries(specs).filter(([k]) => !['партномер', 'ту', 'тип', 'статус'].includes(k)).slice(0, 2)
     .map(([k, v]) => `${k} ${v}`).join(', ');
   return {
@@ -571,9 +601,7 @@ function buildVariantModel(catSlug, catLabel, vKind, series, item, idx) {
     image, imgLabel: cyrillize(vName),
     absImage: image && !/^https?:/.test(image) && imgExists(image) ? `${SITE}/` + encodeURI(image.replace(/^\.\.\//, '')) : (/^https?:/.test(image) ? image : ''),
     // приоритет как live (main.js:2194, 2455): displaySub → item.partnumber → имя
-    specs, kpProduct: fileForSeries(catSlug, series) && CATALOG_URLS.variantPn(item)
-      ? CATALOG_URLS.variantPn(item)
-      : cyrillize((vSub || item.partnumber || vName).toUpperCase()),
+    specs, kpProduct,
     related, noindex: dev, pn: cyrillize(pn)
   };
 }
