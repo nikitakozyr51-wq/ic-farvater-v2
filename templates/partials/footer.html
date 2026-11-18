@@ -1,0 +1,49 @@
+<footer class="footer" data-header-theme="dark">
+    <div class="container">
+      <div class="footer__top" data-animate="fade-up-stagger">
+        <div class="footer__logo-block">
+          <span class="footer__logo" role="img" aria-label="IC Фарватер"></span>
+          <p class="footer__tagline"><!-- cms:site-setting.footerTagline -->Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
+        </div>
+        {{FROZEN_NEWSLETTER}}
+        <div class="footer__navs">
+          <div class="footer__nav-col footer__nav-col--products">
+            <p class="footer__nav-label">Каталог</p>
+            <ul class="footer__nav footer__nav--products">
+              <!-- CATS:FOOTERNAV:START -->
+              <li><a href="{{CATALOG_URL}}#microchips">микросхемы</a></li>
+              <li><a href="{{CATALOG_URL}}#razemy">разъёмы</a></li>
+              <li><a href="{{CATALOG_URL}}#converters">преобразователи напряжения</a></li>
+              <li><a href="{{CATALOG_URL}}#capacitors">СВЧ-конденсаторы</a></li>
+              <li><a href="{{CATALOG_URL}}#transistors">СВЧ-транзисторы</a></li>
+              <li><a href="{{CATALOG_URL}}#pcb">печатные платы</a></li>
+              <li><a href="{{CATALOG_URL}}#rantsy">реактивные ранцы</a></li>
+              <li><a href="{{CATALOG_URL}}#snow">снегоуборочная техника</a></li>
+<!-- CATS:FOOTERNAV:END -->
+            </ul>
+          </div>
+          <div class="footer__nav-col footer__nav-col--site">
+            <p class="footer__nav-label">Компания</p>
+            <ul class="footer__nav footer__nav--site">
+              <li><a href="{{HOME_URL}}">главная</a></li>
+              <li><a href="{{ABOUT_URL}}">о&nbsp;компании</a></li>
+              <li><a href="{{SERVICES_URL}}">услуги</a></li>
+              <li><a href="{{CONTACTS_URL}}">контакты</a></li>
+              <li><a href="{{FAQ_URL}}">вопросы-ответы</a></li>
+              {{FOOTER_LAB_LINK}}
+              {{FOOTER_NEWS_LINK}}
+            </ul>
+          </div>
+        </div>
+        <div class="footer__contact">
+          <p class="footer__label">Контакты</p>
+          <address class="footer__address"><!-- cms:site-setting.address -->ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406<!-- /cms --></address>
+          <div class="footer__phones">
+            {{FOOTER_PHONES}}
+          </div>
+          {{FOOTER_EMAIL}}
+        </div>
+      </div>
+      {{FROZEN_BOTTOM}}
+    </div>
+  </footer>

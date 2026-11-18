@@ -1,0 +1,38 @@
+<header class="header" data-tone="{{HEADER_TONE}}">
+    <svg class="header__ink-filter" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="ic-logo-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.2126 -.7152 -.0722 1 0"/>
+          <feComponentTransfer result="darkPixels">
+            <feFuncA type="discrete" tableValues="0 1"/>
+          </feComponentTransfer>
+          <feFlood flood-color="var(--c-bg)" result="lightInk"/>
+          <feComposite in="lightInk" in2="darkPixels" operator="in" result="inkOnDark"/>
+          <feFlood flood-color="var(--c-text)" result="darkInk"/>
+          <feMerge><feMergeNode in="darkInk"/><feMergeNode in="inkOnDark"/></feMerge>
+        </filter>
+      </defs>
+    </svg>
+    <div class="container header__inner">
+      <a href="{{HOME_URL}}" class="header__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+      <nav class="header__nav" aria-label="Главная навигация">
+        <a href="{{CATALOG_URL}}" class="header__nav-link"{{ACTIVE_CATALOG}}>каталог</a>
+        <a href="{{SERVICES_URL}}" class="header__nav-link">услуги</a>
+        <a href="{{ABOUT_URL}}" class="header__nav-link"{{ACTIVE_ABOUT}}>о&nbsp;компании</a>
+        <a href="{{CONTACTS_URL}}" class="header__nav-link"{{ACTIVE_CONTACTS}}>контакты</a>
+        {{HEADER_NEWS_LINK}}
+        {{HEADER_LAB_TRIGGER}}
+      </nav>
+      <div class="header__right">
+        <div class="header__search-wrap">
+          <button class="header__search" type="button" aria-label="Поиск по каталогу" aria-expanded="false" aria-controls="headerSearchForm"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <form class="header__search-form" id="headerSearchForm" role="search" action="{{CATALOG_URL}}" hidden><input type="search" name="q" class="header__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="header__search-submit" aria-label="Найти">→</button><button type="button" class="header__search-close" aria-label="Закрыть поиск"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="overflow:visible"><path d="m0 0 12 12M12 0 0 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button></form>
+        </div>
+        <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+        <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobileMenu"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="header__lab-panel" id="laboratoryNavigation" aria-labelledby="laboratoryTrigger" data-lenis-prevent hidden>{{LABORATORY_NAV}}</div>
+    <button class="header__backdrop" type="button" aria-label="Закрыть навигацию лаборатории" hidden></button>
+    {{MOBILE_MENU}}
+  </header>

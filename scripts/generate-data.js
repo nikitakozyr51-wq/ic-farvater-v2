@@ -28,20 +28,11 @@ const JS_DIR = process.env.FRONTEND_JS_DIR || path.resolve(__dirname, '../js');
 const WRITE = process.argv.includes('--write');
 let TOKEN = process.env.STRAPI_TOKEN || '';
 try { if (!TOKEN) TOKEN = fs.readFileSync(path.join(__dirname, '..', '.token'), 'utf8').trim(); } catch {}
+const api = require('./cms-client').client({ baseUrl: STRAPI_URL, token: TOKEN });
 
 async function getAll(plural, query = '') {
-  const out = [];
-  for (let page = 1; ; page++) {
-    const url = `${STRAPI_URL}/api/${plural}?${query}&pagination[page]=${page}&pagination[pageSize]=100`;
-    const res = await fetch(url, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
-    if (!res.ok) throw new Error(`GET ${plural} p${page} → ${res.status}: ${(await res.text()).slice(0, 300)}`);
-    const json = await res.json();
-    const data = json.data || [];
-    out.push(...data);
-    const pc = json.meta && json.meta.pagination ? json.meta.pagination.pageCount : 1;
-    if (page >= pc || data.length === 0) break;
-  }
-  return out;
+  const allowEmpty = plural === 'applications' || (process.env.IC_ACCEPT_EMPTY_COLLECTIONS || '').split(',').includes(plural);
+  return api.collection(plural, query, { allowEmpty });
 }
 
 function loadCurrentVar(file, varName) {
@@ -73,12 +64,7 @@ async function downloadPhoto(photo) {
   const dir = path.join(FRONT_ROOT, 'assets', 'images', 'cms', 'catalog');
   const dest = path.join(dir, fname);
   const rel = `../assets/images/cms/catalog/${fname}`;
-  if (fs.existsSync(dest)) return rel;
-  const res = await fetch(url, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
-  if (!res.ok) { console.warn(`  ! photo ${fname} → ${res.status}`); return ''; }
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
-  console.log(`  ↓ photo → ${rel}`);
+  if (!fs.existsSync(dest) && WRITE) await api.media(url, dest);
   return rel;
 }
 // Пред-проход: скачать photo у всех доков, положить путь в doc.__photoPath.
@@ -265,9 +251,8 @@ function updateCatalogHtml(cats) {
   }
 }
 // Кнопки фильтра «Применение» из справочника (маркер APPS:FILTER в products.html).
-// Активируется только когда справочник наполнен.
+// Empty is intentional: remove old options after the editor clears the dictionary.
 function updateAppsHtml(apps) {
-  if (!apps.length) { console.log('· справочник применений пуст — фильтр не трогаю'); return; }
   const F = '              ';
   const btns = apps.map((a) => `${F}<button class="filter-item" type="button" data-app="${esc(a.slug)}">${esc(a.name.toLowerCase())}</button>`).join('\n');
   const pPath = path.join(FRONT_ROOT, 'pages', 'products.html');
@@ -355,9 +340,7 @@ function writeProductsFile(file, arr) {
     getAll('products', 'populate=*&sort=order:asc'),
   ]);
   const cats = await getAll('categories', 'populate=*&sort=order:asc');
-  let apps = [];
-  try { apps = await getAll('applications', 'sort=order:asc'); }
-  catch { console.log('· тип applications ещё не задеплоен — пропуск'); }
+  const apps = await getAll('applications', 'sort=order:asc');
   console.log(`Из Strapi: connector=${conn.length} converter=${conv.length} capacitor=${cap.length} products=${prods.length} categories=${cats.length}`);
 
   // Медиатека: скачать photo (если загружено) — путь приоритетнее строкового image.

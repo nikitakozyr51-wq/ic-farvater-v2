@@ -6,31 +6,50 @@
 (function () {
   'use strict';
 
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   // ═══════════════════════════════════════
   // LENIS SMOOTH SCROLL (desktop only)
   // ═══════════════════════════════════════
 
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-
-  if (!isMobile && typeof Lenis !== 'undefined') {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      smoothTouch: false,
+  if (typeof Lenis !== 'undefined') {
+    const mobile = window.matchMedia('(max-width: 768px)');
+    let lenis;
+    const tick = time => lenis?.raf(time * 1000);
+    function updateSmoothScroll() {
+      if (mobile.matches || reducedMotion.matches) {
+        if (lenis) {
+          gsap.ticker.remove(tick);
+          lenis.destroy();
+          lenis = undefined;
+        }
+        return;
+      }
+      if (lenis) return;
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false,
+      });
+      if (document.body.classList.contains('is-overlay-open')) lenis.stop();
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    }
+    mobile.addEventListener('change', updateSmoothScroll);
+    reducedMotion.addEventListener('change', updateSmoothScroll);
+    document.addEventListener('ic:overlay-state', event => {
+      if (event.detail.open) lenis?.stop(); else lenis?.start();
     });
-
-    // Connect Lenis to GSAP ticker
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
+    updateSmoothScroll();
   }
 
+  if (reducedMotion.matches) return;
+  document.documentElement.classList.add('ic-motion-ready');
 
   // ═══════════════════════════════════════
   // SCROLL VELOCITY TRACKER
@@ -88,13 +107,27 @@
   // ═══════════════════════════════════════
 
   gsap.utils.toArray('[data-animate="fade-up-stagger"]').forEach((container) => {
-    const children = gsap.utils.toArray(container.children);
-    gsap.set(children, { y: 30, opacity: 0 });
     ScrollTrigger.create({
       trigger: container,
       start: 'top 90%',
       once: true,
       onEnter: () => {
+        if (reducedMotion.matches) {
+          container.removeAttribute('data-animate');
+          return;
+        }
+        // Read the current children in visual order, including responsive CSS order.
+        const children = Array.from(container.children, element => ({
+          element,
+          order: Number(window.getComputedStyle(element).order) || 0,
+        })).filter(({ element }) => element.getClientRects().length)
+          .sort((a, b) => a.order - b.order)
+          .map(({ element }) => element);
+        if (!children.length) {
+          container.removeAttribute('data-animate');
+          return;
+        }
+        gsap.set(children, { y: 30, opacity: 0 });
         gsap.to(children, {
           y: 0, opacity: 1,
           duration: adaptiveDuration(1.2),

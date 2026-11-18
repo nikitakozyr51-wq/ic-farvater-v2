@@ -43,9 +43,10 @@
 </style>
   <!-- BUILD:CRITICAL-CSS-END -->
 
-  <link rel="stylesheet" href="../css/components.min.css?v=4d31d081">
-  <link rel="stylesheet" href="../css/inner-page.min.css?v=dc7da6f2">
-  <link rel="stylesheet" href="../css/animations.min.css?v=1ccbe0e9">
+  <link rel="stylesheet" href="../css/components.min.css?v=5b594d45">
+  <link rel="stylesheet" href="../css/inner-page.min.css?v=68b85b53">
+  <link rel="stylesheet" href="../css/animations.min.css?v=7c445570">
+<link rel="stylesheet" href="../css/navigation.min.css?v=424e7eb5">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -91,7 +92,7 @@
   </script>
   <noscript><style>.page-loader{display:none!important}[data-animate],[data-animate="fade-up"],[data-animate="fade-up-stagger"]>*,[data-animate="scale-reveal"]>img,[data-animate="scale-reveal"]>video,[data-animate="scale-reveal"]>div{opacity:1!important;transform:none!important;scale:none!important}[data-animate="line-draw"]{transform:none!important}</style></noscript>
 </head>
-<body data-pd-kind="variant">
+<body class="product-detail-page" data-pd-kind="variant" data-pd-category="capacitors" data-site-page="inner">
 
   <!-- Page loader — main.js initPageLoader hides on window.load -->
   <div class="page-loader" id="pageLoader" aria-hidden="true">
@@ -100,30 +101,61 @@
   </div>
 
   <!-- Header — same as main page -->
-  <header class="header">
+  <header class="header" data-tone="light">
+    <svg class="header__ink-filter" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="ic-logo-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.2126 -.7152 -.0722 1 0"/>
+          <feComponentTransfer result="darkPixels">
+            <feFuncA type="discrete" tableValues="0 1"/>
+          </feComponentTransfer>
+          <feFlood flood-color="var(--c-bg)" result="lightInk"/>
+          <feComposite in="lightInk" in2="darkPixels" operator="in" result="inkOnDark"/>
+          <feFlood flood-color="var(--c-text)" result="darkInk"/>
+          <feMerge><feMergeNode in="darkInk"/><feMergeNode in="inkOnDark"/></feMerge>
+        </filter>
+      </defs>
+    </svg>
     <div class="container header__inner">
-      <a href="../index.html" class="header__logo">ic farvater</a>
+      <a href="../index.html" class="header__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
       <nav class="header__nav" aria-label="Главная навигация">
         <a href="products.html" class="header__nav-link" aria-current="page">каталог</a>
         <a href="../index.html#uslugi" class="header__nav-link">услуги</a>
         <a href="about.html" class="header__nav-link">о&nbsp;компании</a>
         <a href="contacts.html" class="header__nav-link">контакты</a>
+        <a href="news.html" class="header__nav-link">новости</a>
+        <button class="header__nav-link header__lab-trigger" id="laboratoryTrigger" type="button" aria-expanded="false" aria-controls="laboratoryNavigation">лаборатория <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m2 4 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
       </nav>
       <div class="header__right">
-        <button class="header__search" type="button" aria-label="Поиск по каталогу">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <div class="header__search-wrap">
+          <button class="header__search" type="button" aria-label="Поиск по каталогу" aria-expanded="false" aria-controls="headerSearchForm"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <form class="header__search-form" id="headerSearchForm" role="search" action="products.html" hidden><input type="search" name="q" class="header__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="header__search-submit" aria-label="Найти">→</button><button type="button" class="header__search-close" aria-label="Закрыть поиск"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="overflow:visible"><path d="m0 0 12 12M12 0 0 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button></form>
+        </div>
         <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+        <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobileMenu"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       </div>
-      <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
     </div>
+    <div class="header__lab-panel" id="laboratoryNavigation" aria-labelledby="laboratoryTrigger" data-lenis-prevent hidden><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="laboratory-overview.html">О лаборатории</a><a href="laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="laboratory-research.html">Исследования</a><a href="laboratory-incoming.html">Входной контроль</a><a href="laboratory-functional.html">Функциональный и параметрический контроль</a><a href="laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="laboratory-ekb-cert.html">Сертификационные</a><a href="laboratory-ekb-qual.html">Квалификационные</a><a href="laboratory-ekb-periodic.html">Периодические</a><a href="laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="laboratory-rea-type.html">Типовые</a><a href="laboratory-rea-qual.html">Квалификационные</a><a href="laboratory-rea-periodic.html">Периодические</a><a href="laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></div>
+    <button class="header__backdrop" type="button" aria-label="Закрыть навигацию лаборатории" hidden></button>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Меню сайта" data-lenis-prevent hidden>
+      <div class="mobile-menu__header">
+        <a href="../index.html" class="mobile-menu__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M5 5 17 17M17 5 5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="Главная навигация">
+        <form class="mobile-menu__search-form" role="search" action="products.html"><input type="search" name="q" class="mobile-menu__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="mobile-menu__search-submit" aria-label="Найти"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5 16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></form>
+        <a class="mobile-menu__item" href="../index.html"><span>главная</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="products.html"><span>продукция</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="about.html"><span>о&nbsp;компании</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="../index.html#uslugi"><span>услуги</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="contacts.html"><span>контакты</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="news.html"><span>новости</span><span aria-hidden="true">→</span></a>
+        <details class="mobile-menu__laboratory"><summary class="mobile-menu__item">лаборатория <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="laboratory-overview.html">О лаборатории</a><a href="laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="laboratory-research.html">Исследования</a><a href="laboratory-incoming.html">Входной контроль</a><a href="laboratory-functional.html">Функциональный и параметрический контроль</a><a href="laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="laboratory-ekb-cert.html">Сертификационные</a><a href="laboratory-ekb-qual.html">Квалификационные</a><a href="laboratory-ekb-periodic.html">Периодические</a><a href="laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="laboratory-rea-type.html">Типовые</a><a href="laboratory-rea-qual.html">Квалификационные</a><a href="laboratory-rea-periodic.html">Периодические</a><a href="laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></details>
+      </nav>
+      <div class="mobile-menu__cta-wrap"><a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить кп <span aria-hidden="true">→</span></a></div>
+      <div class="mobile-menu__contact"><div class="mobile-menu__field"><span class="mobile-menu__field-label">Телефон</span><div class="mobile-menu__field-value"><a href="tel:+79967788842">+7 996 778-88-42</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Email</span><div class="mobile-menu__field-value"><a href="mailto:info@ic-farvater.ru">info@ic-farvater.ru</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Адрес</span><div class="mobile-menu__field-value">ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406</div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">режим работы</span><div class="mobile-menu__field-value">пн.–пт. 10:00–18:00</div></div></div>
+    </div>
+
   </header>
 
   <main>
@@ -152,15 +184,15 @@
 
         <!-- Info column (right desktop) / unfolds in 3 sections on mobile -->
         <div class="pd-info" data-animate="fade-up-stagger">
-          <!-- Description block. Counter (02) shown for landings only (Pencil v4 mobile W7BuW7). -->
+          <!-- Pencil RVOHl/XRYEc: desktop (01), mobile (02); landings retain (02). -->
           <div class="pd-block pd-block--description">
-            <h2 class="pd-block__title">Описание<sup class="pd-block__counter pd-block__counter--landing" hidden>(02)</sup></h2>
+            <h2 class="pd-block__title">Описание<sup class="pd-block__counter pd-block__counter--landing"><span class="pd-only-desktop">(01)</span><span class="pd-only-mobile">(02)</span></sup></h2>
             <div class="pd-block__body"><p>СВЧ-конденсаторы ARC70C в корпусе 2225 — прямой функциональный аналог ATC700C из тех же материалов.</p><p>Ёмкость 0,5–3000 пФ, рабочее напряжение 2500 или 3600 В, диапазон рабочих температур −55…+200 °C.</p><p>Увеличенный размер корпуса обеспечивает высокую пробивную прочность и повышенную токовую нагрузку.</p><p>Подходят для импульсных усилителей мощности, передающих трактов и модулей радиолокации.</p></div>
           </div>
 
           <!-- Specs block (no counter — part of pd-content section per Pencil qYQC0/W3oj8) -->
           <div class="pd-block pd-block--specs">
-            <h2 class="pd-block__title">Характеристики</h2>
+            <h2 class="pd-block__title">Характеристики<sup class="pd-block__counter"><span class="pd-only-desktop">(02)</span><span class="pd-only-mobile">(03)</span></sup></h2>
             <dl class="pd-specs">
               <div class="pd-specs__row">
                 <dt class="pd-specs__label">партномер</dt>
@@ -207,12 +239,12 @@
           <!-- CTA actions: primary "запросить расчёт" + secondary "вернуться в каталог" -->
           <div class="pd-actions">
             <a href="#" class="pd-actions__primary" data-action="open-kp-drawer" data-kp-product="111" data-kp-category="свч-конденсаторы">
-              <span>запросить расчёт</span>
+              <span class="pd-only-mobile">запросить расчёт</span><span class="pd-only-desktop">запросить КП</span>
               <span class="pd-actions__arrow" aria-hidden="true">→</span>
             </a>
             <a href="products.html" class="pd-actions__secondary">
               <span class="pd-actions__arrow pd-actions__arrow--left" aria-hidden="true">←</span>
-              <span>вернуться в&nbsp;каталог</span>
+              <span class="pd-only-mobile">вернуться в&nbsp;каталог</span><span class="pd-only-desktop">к каталогу</span>
             </a>
           </div>
         </div>
@@ -245,7 +277,7 @@
     <!-- Pencil I4cwln desktop / x0Ycp mobile -->
     <section class="section section--pd-related">
       <div class="container pd-related">
-        <h2 class="pd-related__title" data-animate="fade-up">Другие исполнения<sup class="pd-related__counter">(03)</sup></h2>
+        <h2 class="pd-related__title" data-animate="fade-up">Другие исполнения<sup class="pd-related__counter"><span class="pd-only-desktop">(03)</span><span class="pd-only-mobile">(04)</span></sup></h2>
         <!-- Related: 4 related connector series → вид серии в каталоге
              (легаси #s-c-* рендера не имеет и вёл в «товар не найден») -->
         <div class="pd-related__grid" id="pdRelatedGrid">
@@ -282,21 +314,21 @@
   </main>
 
   <!-- Footer — unified main page footer -->
-  <footer class="footer">
+  <footer class="footer" data-header-theme="dark">
     <div class="container">
       <div class="footer__top" data-animate="fade-up-stagger">
         <div class="footer__logo-block">
-          <span class="footer__logo">ic farvater</span>
-          <p class="footer__tagline">Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
+          <span class="footer__logo" role="img" aria-label="IC Фарватер"></span>
+          <p class="footer__tagline"><!-- cms:site-setting.footerTagline -->Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
         </div>
         <div class="footer__newsletter">
-          <h3 class="footer__newsletter-title">Хотите запросить расчёт?</h3>
-          <p class="footer__newsletter-desc">Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>
+          <h3 class="footer__newsletter-title"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>
+          <p class="footer__newsletter-desc"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из каталога и пришлём прайс со сроками поставки.<!-- /cms --></p>
           <form class="footer__email-form" action="#">
             <input type="email" placeholder="email@example.com" aria-label="Email для расчёта" required>
             <button type="submit" aria-label="Отправить">→</button>
           </form>
-          <p class="footer__disclaimer">Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.</p>
+          <p class="footer__disclaimer"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.<!-- /cms --></p>
         </div>
         <div class="footer__navs">
           <div class="footer__nav-col footer__nav-col--products">
@@ -322,12 +354,14 @@
               <li><a href="../index.html#uslugi">услуги</a></li>
               <li><a href="contacts.html">контакты</a></li>
               <li><a href="about.html#faq">вопросы-ответы</a></li>
+              <li><a href="laboratory-overview.html">лаборатория</a></li>
+              <li><a href="news.html">новости</a></li>
             </ul>
           </div>
         </div>
         <div class="footer__contact">
           <p class="footer__label">Контакты</p>
-          <address class="footer__address">ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406</address>
+          <address class="footer__address"><!-- cms:site-setting.address -->ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406<!-- /cms --></address>
           <div class="footer__phones">
             <a href="tel:+78122093465" class="footer__phone">+7 (812) 209-34-65</a>
             <a href="tel:+79967788842" class="footer__phone">+7 (996) 778-88-42</a>
@@ -372,8 +406,9 @@
   <script src="../js/converters-data.min.js?v=31e190b8" defer></script>
   <script src="../js/capacitors-data.min.js?v=68622f85" defer></script>
   <script src="../js/catalog-urls.min.js?v=0f45b3a0" defer></script>
-  <script src="../js/main.min.js?v=77e3abcf" defer></script>
-  <script src="../js/animations.min.js?v=26333db2" defer></script>
+  <script src="../js/main.min.js?v=00517ed8" defer></script>
+  <script src="../js/animations.min.js?v=910d0426" defer></script>
   <script src="../js/nbsp.min.js?v=a2583633" defer></script>
+<script src="../js/site-navigation.min.js?v=16f23b81" defer></script>
 </body>
 </html>

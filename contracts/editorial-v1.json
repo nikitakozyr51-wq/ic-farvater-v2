@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "types": {
+    "article": {
+      "uid": "api::article.article",
+      "api": "articles",
+      "routePrefix": "article-",
+      "populate": {
+        "cover": {
+          "populate": {
+            "image": true,
+            "mobileImage": true
+          }
+        },
+        "content": {
+          "on": {
+            "editorial.text": {
+              "fields": [
+                "anchorKey",
+                "body",
+                "lead"
+              ]
+            },
+            "editorial.heading": {
+              "fields": [
+                "anchorKey",
+                "text",
+                "level",
+                "showInContents"
+              ]
+            },
+            "editorial.image": {
+              "populate": {
+                "image": true,
+                "mobileImage": true
+              }
+            },
+            "editorial.list": {
+              "populate": {
+                "items": true
+              }
+            },
+            "editorial.table": {
+              "populate": {
+                "columns": true,
+                "rows": {
+                  "populate": {
+                    "cells": true
+                  }
+                }
+              }
+            },
+            "editorial.disclosure": {
+              "populate": {
+                "image": {
+                  "populate": {
+                    "image": true,
+                    "mobileImage": true
+                  }
+                },
+                "table": {
+                  "populate": {
+                    "columns": true,
+                    "rows": {
+                      "populate": {
+                        "cells": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "seo": {
+          "populate": {
+            "ogImage": true
+          }
+        },
+        "sources": true,
+        "relatedArticles": {
+          "fields": [
+            "externalKey"
+          ]
+        }
+      }
+    },
+    "laboratory-page": {
+      "uid": "api::laboratory-page.laboratory-page",
+      "api": "laboratory-pages",
+      "routePrefix": "laboratory-",
+      "populate": {
+        "cover": {
+          "populate": {
+            "image": true,
+            "mobileImage": true
+          }
+        },
+        "content": {
+          "on": {
+            "editorial.text": {
+              "fields": [
+                "anchorKey",
+                "body",
+                "lead"
+              ]
+            },
+            "editorial.heading": {
+              "fields": [
+                "anchorKey",
+                "text",
+                "level",
+                "showInContents"
+              ]
+            },
+            "editorial.image": {
+              "populate": {
+                "image": true,
+                "mobileImage": true
+              }
+            },
+            "editorial.list": {
+              "populate": {
+                "items": true
+              }
+            },
+            "editorial.table": {
+              "populate": {
+                "columns": true,
+                "rows": {
+                  "populate": {
+                    "cells": true
+                  }
+                }
+              }
+            },
+            "editorial.disclosure": {
+              "populate": {
+                "image": {
+                  "populate": {
+                    "image": true,
+                    "mobileImage": true
+                  }
+                },
+                "table": {
+                  "populate": {
+                    "columns": true,
+                    "rows": {
+                      "populate": {
+                        "cells": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "seo": {
+          "populate": {
+            "ogImage": true
+          }
+        },
+        "equipment": {
+          "populate": {
+            "picture": {
+              "populate": {
+                "image": true,
+                "mobileImage": true
+              }
+            }
+          }
+        },
+        "documents": {
+          "populate": {
+            "file": true
+          }
+        },
+        "relatedServices": {
+          "fields": [
+            "externalKey"
+          ]
+        }
+      }
+    }
+  }
+}

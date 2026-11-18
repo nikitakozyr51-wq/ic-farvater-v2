@@ -145,9 +145,10 @@
   </script>
 
   <!-- LCP image preload — оригинал (максимальное качество для hero) -->
-  <link rel="preload" as="image"
-        href="assets/images/9CN77.webp"
-        fetchpriority="high">
+  <!-- HOME:HERO:PRELOAD:START -->
+  <link rel="preload" as="image" href="assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp" imagesrcset="assets/images/cms/home/thumbnail_ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp 245w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_small.webp 480w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_medium.webp 960w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_large.webp 1440w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp 1774w" imagesizes="100vw" media="(min-width:1024px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp" imagesrcset="assets/images/cms/home/thumbnail_ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp 88w, assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4_small.webp 480w, assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp 940w" imagesizes="100vw" media="(max-width:1023.98px)" fetchpriority="high">
+  <!-- HOME:HERO:PRELOAD:END -->
 
   <!-- Font preload — InterVariable single file для всех весов -->
   <link rel="preload" href="assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
@@ -161,13 +162,15 @@
 </style>
   <!-- BUILD:CRITICAL-CSS-END -->
 
-  <link rel="stylesheet" href="css/components.min.css?v=4d31d081">
+  <link rel="stylesheet" href="css/components.min.css?v=5b594d45">
   <!-- inner-page.css needed только для Services accordion (section 06 — below fold). Грузим async чтобы не блокировать первый экран. -->
-  <link rel="preload" href="css/inner-page.min.css?v=dc7da6f2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/inner-page.min.css?v=dc7da6f2"></noscript>
-  <link rel="stylesheet" href="css/animations.min.css?v=1ccbe0e9">
+  <link rel="preload" href="css/inner-page.min.css?v=68b85b53" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/inner-page.min.css?v=68b85b53"></noscript>
+  <link rel="stylesheet" href="css/animations.min.css?v=7c445570">
+  <link rel="stylesheet" href="css/home.min.css?v=59b20446">
+<link rel="stylesheet" href="css/navigation.min.css?v=424e7eb5">
 </head>
-<body>
+<body data-site-page="home">
 
   <!-- Page loader — main.js initPageLoader hides on window.load -->
   <div class="page-loader" id="pageLoader" aria-hidden="true">
@@ -176,56 +179,82 @@
   </div>
 
   <!-- Header (verified: ISnHK desktop, xAjS9 mobile) -->
-  <header class="header">
+  <header class="header" data-tone="dark">
+    <svg class="header__ink-filter" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="ic-logo-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.2126 -.7152 -.0722 1 0"/>
+          <feComponentTransfer result="darkPixels">
+            <feFuncA type="discrete" tableValues="0 1"/>
+          </feComponentTransfer>
+          <feFlood flood-color="var(--c-bg)" result="lightInk"/>
+          <feComposite in="lightInk" in2="darkPixels" operator="in" result="inkOnDark"/>
+          <feFlood flood-color="var(--c-text)" result="darkInk"/>
+          <feMerge><feMergeNode in="darkInk"/><feMergeNode in="inkOnDark"/></feMerge>
+        </filter>
+      </defs>
+    </svg>
     <div class="container header__inner">
-      <a href="index.html" class="header__logo">ic farvater</a>
-
+      <a href="index.html" class="header__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
       <nav class="header__nav" aria-label="Главная навигация">
         <a href="pages/products.html" class="header__nav-link">каталог</a>
         <a href="#uslugi" class="header__nav-link">услуги</a>
-        <a href="pages/about.html" class="header__nav-link">о компании</a>
+        <a href="pages/about.html" class="header__nav-link">о&nbsp;компании</a>
         <a href="pages/contacts.html" class="header__nav-link">контакты</a>
+        <a href="pages/news.html" class="header__nav-link">новости</a>
+        <button class="header__nav-link header__lab-trigger" id="laboratoryTrigger" type="button" aria-expanded="false" aria-controls="laboratoryNavigation">лаборатория <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m2 4 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
       </nav>
-
       <div class="header__right">
-        <button class="header__search" type="button" aria-label="Поиск по каталогу">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <div class="header__search-wrap">
+          <button class="header__search" type="button" aria-label="Поиск по каталогу" aria-expanded="false" aria-controls="headerSearchForm"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <form class="header__search-form" id="headerSearchForm" role="search" action="pages/products.html" hidden><input type="search" name="q" class="header__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="header__search-submit" aria-label="Найти">→</button><button type="button" class="header__search-close" aria-label="Закрыть поиск"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="overflow:visible"><path d="m0 0 12 12M12 0 0 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button></form>
+        </div>
         <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+        <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobileMenu"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       </div>
-
-      <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
     </div>
+    <div class="header__lab-panel" id="laboratoryNavigation" aria-labelledby="laboratoryTrigger" data-lenis-prevent hidden><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="pages/laboratory-overview.html">О лаборатории</a><a href="pages/laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="pages/laboratory-research.html">Исследования</a><a href="pages/laboratory-incoming.html">Входной контроль</a><a href="pages/laboratory-functional.html">Функциональный и параметрический контроль</a><a href="pages/laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="pages/laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="pages/laboratory-ekb-cert.html">Сертификационные</a><a href="pages/laboratory-ekb-qual.html">Квалификационные</a><a href="pages/laboratory-ekb-periodic.html">Периодические</a><a href="pages/laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="pages/laboratory-rea-type.html">Типовые</a><a href="pages/laboratory-rea-qual.html">Квалификационные</a><a href="pages/laboratory-rea-periodic.html">Периодические</a><a href="pages/laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="pages/laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="pages/laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></div>
+    <button class="header__backdrop" type="button" aria-label="Закрыть навигацию лаборатории" hidden></button>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Меню сайта" data-lenis-prevent hidden>
+      <div class="mobile-menu__header">
+        <a href="index.html" class="mobile-menu__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M5 5 17 17M17 5 5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="Главная навигация">
+        <form class="mobile-menu__search-form" role="search" action="pages/products.html"><input type="search" name="q" class="mobile-menu__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="mobile-menu__search-submit" aria-label="Найти"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5 16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></form>
+        <a class="mobile-menu__item" href="index.html"><span>главная</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="pages/products.html"><span>продукция</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="pages/about.html"><span>о&nbsp;компании</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="#uslugi"><span>услуги</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="pages/contacts.html"><span>контакты</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="pages/news.html"><span>новости</span><span aria-hidden="true">→</span></a>
+        <details class="mobile-menu__laboratory"><summary class="mobile-menu__item">лаборатория <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="pages/laboratory-overview.html">О лаборатории</a><a href="pages/laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="pages/laboratory-research.html">Исследования</a><a href="pages/laboratory-incoming.html">Входной контроль</a><a href="pages/laboratory-functional.html">Функциональный и параметрический контроль</a><a href="pages/laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="pages/laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="pages/laboratory-ekb-cert.html">Сертификационные</a><a href="pages/laboratory-ekb-qual.html">Квалификационные</a><a href="pages/laboratory-ekb-periodic.html">Периодические</a><a href="pages/laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="pages/laboratory-rea-type.html">Типовые</a><a href="pages/laboratory-rea-qual.html">Квалификационные</a><a href="pages/laboratory-rea-periodic.html">Периодические</a><a href="pages/laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="pages/laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="pages/laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></details>
+      </nav>
+      <div class="mobile-menu__cta-wrap"><a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить кп <span aria-hidden="true">→</span></a></div>
+      <div class="mobile-menu__contact"><div class="mobile-menu__field"><span class="mobile-menu__field-label">Телефон</span><div class="mobile-menu__field-value"><a href="tel:+79967788842">+7 996 778-88-42</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Email</span><div class="mobile-menu__field-value"><a href="mailto:info@ic-farvater.ru">info@ic-farvater.ru</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Адрес</span><div class="mobile-menu__field-value">ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406</div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">режим работы</span><div class="mobile-menu__field-value">пн.–пт. 10:00–18:00</div></div></div>
+    </div>
+
   </header>
 
   <main>
     <!-- Hero Seed-style (verified hTqZQ desktop / pt5JK mobile) -->
-    <section class="hero">
-      <picture class="hero__bg" aria-hidden="true">
-        <img data-cms-src="homepage.heroBackground" width="2752" height="1536" src="assets/images/9CN77.webp" alt="" fetchpriority="high" decoding="async">
-      </picture>
+    <!-- HOME:HERO:START -->
+    <section class="hero hero--pencil" data-header-theme="dark">
+      <picture class="hero__bg" data-desktop-alt="Разъём СНЦ23 на синем фоне" data-mobile-alt="Разъём СНЦ23 на синем фоне"><source media="(max-width:1023.98px)" srcset="assets/images/cms/home/thumbnail_ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp 88w, assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4_small.webp 480w, assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp 940w" sizes="100vw"><img width="1774" height="887" src="assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp" srcset="assets/images/cms/home/thumbnail_ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp 245w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_small.webp 480w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_medium.webp 960w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_large.webp 1440w, assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp 1774w" sizes="100vw" alt="Разъём СНЦ23 на синем фоне" fetchpriority="high" decoding="async"></picture>
       <div class="container hero__inner">
         <div class="hero__text hero__text--entry">
-          <h1 class="hero__title">
-            <span class="hero__title--desktop"><!-- cms:homepage.heroTitle -->Поставки электронных<br>компонентов<br>по всей России<!-- /cms --></span>
-            <span class="hero__title--mobile"><!-- cms:homepage.heroTitleMobile -->Поставки ЭКБ<br>по всей<br>России<!-- /cms --></span>
-          </h1>
-          <p class="hero__sub"><!-- cms:homepage.heroSubtitle -->Микросхемы · разъёмы · СВЧ-компоненты · Преобразователи напряжения · Реактивные ранцы · Снегоуборочная техника<!-- /cms --></p>
-          <a href="pages/products.html" class="hero__cta"><!-- cms:homepage.heroCTA -->подобрать компоненты <!-- /cms --></a>
+          <h1 class="hero__title"><span class="hero__title--desktop"><!-- cms:homepage.heroTitle -->Поставки<br>электронных<br>компонентов<!-- /cms --></span><span class="hero__title--mobile"><!-- cms:homepage.heroTitleMobile -->Поставки<br>электронных<br>компонентов<!-- /cms --></span></h1>
+          <p class="hero__sub"><!-- cms:homepage.heroSubtitle -->Микросхемы, разъёмы и СВЧ-компоненты.<br>Поставки по всей России.<!-- /cms --></p>
+          <a href="pages/products.html" class="hero__cta"><span><!-- cms:homepage.heroCTA -->Подобрать компоненты<!-- /cms --></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </section>
+  <!-- HOME:HERO:END -->
 
     <!-- Разъёмы (01) — verified bBLRC desktop / m5SGn4 mobile -->
     <!-- HOME:BLOCKS:START -->
-    <section class="section section--products">
+<!-- HOME:BLOCKS:CMS-MANAGED -->
+    <section class="section section--products home-products" data-home-category="razemy">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">Разъёмы<span class="section-head__counter">(01)</span></h2>
@@ -317,12 +346,15 @@
       </div>
     </section>
 
-    <section class="section section--about">
+    <section class="section section--about home-text-photo">
       <div class="container">
         <div class="uy-grid">
-          <picture class="uy-grid__image" data-animate="scale-reveal">
-            <img width="1152" height="928" src="assets/images/cms/home/o_kompanii_a977266d9d.webp" alt="Дистрибьютор ЭКБ с партнёрской лабораторией" loading="lazy">
-          </picture>
+          <figure class="uy-grid__media">
+            <picture class="uy-grid__image" data-animate="scale-reveal" data-desktop-alt="Дистрибьютор ЭКБ с партнёрской лабораторией" data-mobile-alt="Дистрибьютор ЭКБ с партнёрской лабораторией" style="--photo-x:50%;--photo-y:50%;--mobile-photo-x:50%;--mobile-photo-y:50%">
+              
+              <img width="1152" height="928" src="assets/images/cms/home/o_kompanii_a977266d9d.webp" alt="Дистрибьютор ЭКБ с партнёрской лабораторией" loading="lazy">
+            </picture>
+          </figure>
           <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">О компании · (02)</p>
@@ -339,7 +371,7 @@
       </div>
     </section>
 
-    <section class="section section--products">
+    <section class="section section--products home-products" data-home-category="transistors">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">СВЧ-компоненты<span class="section-head__counter">(03)</span></h2>
@@ -431,12 +463,15 @@
       </div>
     </section>
 
-    <section class="section section--about">
+    <section class="section section--about home-text-photo">
       <div class="container">
         <div class="uy-grid uy-grid--image-right">
-          <picture class="uy-grid__image" data-animate="scale-reveal">
-            <img width="1152" height="928" src="assets/images/cms/home/kabelnye_sborki_0f9195ae27.webp" alt="Кабельные сборки" loading="lazy">
-          </picture>
+          <figure class="uy-grid__media">
+            <picture class="uy-grid__image" data-animate="scale-reveal" data-desktop-alt="Редакционная иллюстрация IC Farvater" data-mobile-alt="Редакционная иллюстрация IC Farvater" style="--photo-x:50%;--photo-y:50%;--mobile-photo-x:50%;--mobile-photo-y:50%">
+              <source media="(max-width:1023.98px)" srcset="assets/images/cms/home/kabelnye_sborki_0f9195ae27.webp">
+              <img width="1308" height="1203" src="assets/images/cms/home/ic_pencil_2d50f49875060e7832bcb0d915c5e514b48636d1bd47655baa6d929c8ac4b2ca_9af577c81f.webp" alt="Редакционная иллюстрация IC Farvater" loading="lazy">
+            </picture>
+          </figure>
           <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">Услуги · (04)</p>
@@ -452,7 +487,7 @@
       </div>
     </section>
 
-    <section class="section section--promise">
+    <section class="section section--promise home-promo">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">Специальные предложения<span class="section-head__counter">(05)</span></h2>
@@ -460,7 +495,7 @@
         <div class="promise-grid" data-animate="fade-up-stagger">
           <article class="promise-card">
             <div class="promise-card__img">
-              <img width="1200" height="800" src="assets/images/cms/home/ranecz_maneken_69c3d35a6f.png" alt="Реактивные ранцы" loading="lazy">
+              <img width="1199" height="1202" src="assets/images/cms/home/ranecz_maneken_69c3d35a6f.png" alt="Реактивные ранцы" loading="lazy">
             </div>
             <div class="promise-card__info">
               <h3 class="promise-card__name">Реактивные ранцы</h3>
@@ -478,7 +513,7 @@
           </article>
           <article class="promise-card">
             <div class="promise-card__img">
-              <img width="1200" height="800" src="assets/images/cms/home/snegouborshchik_f046768411.webp" alt="Снегоуборочная техника" loading="lazy">
+              <img width="1200" height="1200" src="assets/images/cms/home/snegouborshchik_f046768411.webp" alt="Снегоуборочная техника" loading="lazy">
             </div>
             <div class="promise-card__info">
               <h3 class="promise-card__name">Снегоуборочная техника</h3>
@@ -490,100 +525,54 @@
     </section>
     <!-- HOME:BLOCKS:END -->
     <!-- Услуги (06) — verified lzD1I desktop (service-split horizontal) / P3ABWo mobile (vertical accordion stack) -->
-    <section class="section section--services" id="uslugi">
-      <div class="container">
-        <div class="services-grid">
-          <div class="services-grid__head" data-animate="fade-up-stagger">
-            <header class="section-head">
-              <h2 class="section-head__title"><!-- cms:homepage.servicesTitle -->Услуги<!-- /cms --><span class="section-head__counter">(06)</span></h2>
-            </header>
-            <p class="services-grid__desc"><!-- cms:homepage.servicesDesc -->Работаем с&nbsp;предприятиями ОПК, авиации, космоса и&nbsp;телекоммуникаций. Поставки со&nbsp;склада в&nbsp;Санкт-Петербурге, изготовление кабельных сборок и&nbsp;испытания ЭКБ по&nbsp;ГОСТ.<!-- /cms --></p>
-            <a href="pages/contacts.html" class="btn-pill btn-pill--solid services-grid__cta"><!-- cms:homepage.servicesCTA -->связаться<!-- /cms --></a>
-          </div>
-          <ul class="services-list accordion-list" data-accordion-group="services" data-animate="fade-up-stagger">
-            <li class="accordion-item">
-              <button type="button" class="accordion-item__head" aria-expanded="false">
-                <span class="accordion-item__title"><!-- cms:homepage.servicesItems.0.title -->Поставка ЭКБ<!-- /cms --></span>
-                <span class="accordion-item__icon" aria-hidden="true">+</span>
-              </button>
-              <div class="accordion-item__body">
-                <p><!-- cms:homepage.servicesItems.0.intro -->Прямые поставки электронной компонентной базы от&nbsp;российских производителей со&nbsp;склада в&nbsp;Санкт-Петербурге. Без&nbsp;посредников.<!-- /cms --></p>
-                <ul class="accordion-item__bullets">
-                  <li><!-- cms:homepage.servicesItems.0.bullet1 -->Сертификаты соответствия и&nbsp;протоколы испытаний<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.0.bullet2 -->Отгрузка со&nbsp;склада 1–3&nbsp;рабочих дня<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.0.bullet3 -->Работаем с&nbsp;предприятиями ОПК, Минобороны, Роскосмоса<!-- /cms --></li>
-                </ul>
-              </div>
-            </li>
-            <li class="accordion-item">
-              <button type="button" class="accordion-item__head" aria-expanded="false">
-                <span class="accordion-item__title"><!-- cms:homepage.servicesItems.1.title -->Кабельные сборки<!-- /cms --></span>
-                <span class="accordion-item__icon" aria-hidden="true">+</span>
-              </button>
-              <div class="accordion-item__body">
-                <p><!-- cms:homepage.servicesItems.1.intro -->Изготовление кабельных сборок и&nbsp;жгутов по&nbsp;конструкторской документации заказчика.<!-- /cms --></p>
-                <ul class="accordion-item__bullets">
-                  <li><!-- cms:homepage.servicesItems.1.bullet1 -->Контроль качества каждой сборки в&nbsp;лаборатории «ЭКБ&nbsp;Тест»<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.1.bullet2 -->Испытания по&nbsp;ГОСТ и&nbsp;ТУ<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.1.bullet3 -->От&nbsp;мелких партий до&nbsp;серийного производства<!-- /cms --></li>
-                </ul>
-              </div>
-            </li>
-            <li class="accordion-item">
-              <button type="button" class="accordion-item__head" aria-expanded="false">
-                <span class="accordion-item__title"><!-- cms:homepage.servicesItems.2.title -->Лабораторные испытания<!-- /cms --></span>
-                <span class="accordion-item__icon" aria-hidden="true">+</span>
-              </button>
-              <div class="accordion-item__body">
-                <p><!-- cms:homepage.servicesItems.2.intro -->Электрические, климатические и&nbsp;механические испытания в&nbsp;партнёрской лаборатории «ЭКБ&nbsp;Тест».<!-- /cms --></p>
-                <ul class="accordion-item__bullets">
-                  <li><!-- cms:homepage.servicesItems.2.bullet1 -->Входной контроль и&nbsp;сертификация по&nbsp;ГОСТ&nbsp;РВ<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.2.bullet2 -->Испытания при −60…+200&nbsp;°С<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.2.bullet3 -->Вибрация 5–5000&nbsp;Гц при&nbsp;50g<!-- /cms --></li>
-                </ul>
-              </div>
-            </li>
-            <li class="accordion-item">
-              <button type="button" class="accordion-item__head" aria-expanded="false">
-                <span class="accordion-item__title"><!-- cms:homepage.servicesItems.3.title -->Импортозамещение<!-- /cms --></span>
-                <span class="accordion-item__icon" aria-hidden="true">+</span>
-              </button>
-              <div class="accordion-item__body">
-                <p><!-- cms:homepage.servicesItems.3.intro -->Подбор российских аналогов снятых с&nbsp;производства и&nbsp;попавших под&nbsp;санкции импортных компонентов.<!-- /cms --></p>
-                <ul class="accordion-item__bullets">
-                  <li><!-- cms:homepage.servicesItems.3.bullet1 -->Более 5000 верифицированных аналогов в&nbsp;базе<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.3.bullet2 -->Техническая экспертиза и&nbsp;согласование замены<!-- /cms --></li>
-                  <li><!-- cms:homepage.servicesItems.3.bullet3 -->Поддержка при&nbsp;внесении в&nbsp;КД<!-- /cms --></li>
-                </ul>
-              </div>
-            </li>
-          </ul>
+    <!-- HOME:SERVICES:START -->
+    <section class="section section--services home-services" id="uslugi">
+      <div class="container"><div class="services-grid">
+        <div class="services-grid__head" data-animate="fade-up-stagger">
+          <header class="section-head"><h2 class="section-head__title">Услуги<span class="section-head__counter">(06)</span></h2></header>
+          <p class="services-grid__desc">Работаем с предприятиями ОПК, авиации, космоса и телекоммуникаций. Поставки со склада в Санкт-Петербурге, изготовление кабельных сборок и испытания ЭКБ по ГОСТ.</p>
+          <a href="pages/contacts.html" class="btn-pill btn-pill--solid services-grid__cta">связаться</a>
         </div>
-      </div>
+        <ul class="services-list accordion-list" data-accordion-group="services" data-animate="fade-up-stagger">
+            <li class="accordion-item">
+              <button type="button" class="accordion-item__head" aria-expanded="false" aria-controls="home-service-body-6"><span class="accordion-item__title">Поставка ЭКБ</span><span class="accordion-item__icon" aria-hidden="true">+</span></button>
+              <div class="accordion-item__body" id="home-service-body-6" aria-hidden="true" inert><p>Прямые поставки электронной компонентной базы от российских производителей со склада в Санкт-Петербурге. Без посредников.</p><ul class="accordion-item__bullets"><li>Сертификаты соответствия и протоколы испытаний</li><li>Отгрузка со склада 1–3 рабочих дня</li><li>Работаем с предприятиями ОПК, Минобороны, Роскосмоса</li></ul></div>
+            </li>
+            <li class="accordion-item">
+              <button type="button" class="accordion-item__head" aria-expanded="false" aria-controls="home-service-body-7"><span class="accordion-item__title">Кабельные сборки</span><span class="accordion-item__icon" aria-hidden="true">+</span></button>
+              <div class="accordion-item__body" id="home-service-body-7" aria-hidden="true" inert><p>Изготовление кабельных сборок и жгутов по конструкторской документации заказчика.</p><ul class="accordion-item__bullets"><li>Контроль качества каждой сборки в лаборатории «ЭКБ Тест»</li><li>Испытания по ГОСТ и ТУ</li><li>От мелких партий до серийного производства</li></ul></div>
+            </li>
+            <li class="accordion-item">
+              <button type="button" class="accordion-item__head" aria-expanded="false" aria-controls="home-service-body-8"><span class="accordion-item__title">Лабораторные испытания</span><span class="accordion-item__icon" aria-hidden="true">+</span></button>
+              <div class="accordion-item__body" id="home-service-body-8" aria-hidden="true" inert><p>Электрические, климатические и механические испытания в партнёрской лаборатории «ЭКБ Тест».</p><ul class="accordion-item__bullets"><li>Входной контроль и сертификация по ГОСТ РВ</li><li>Испытания при −60…+200 °С</li><li>Вибрация 5–5000 Гц при 50g</li></ul></div>
+            </li>
+            <li class="accordion-item">
+              <button type="button" class="accordion-item__head" aria-expanded="false" aria-controls="home-service-body-9"><span class="accordion-item__title">Импортозамещение</span><span class="accordion-item__icon" aria-hidden="true">+</span></button>
+              <div class="accordion-item__body" id="home-service-body-9" aria-hidden="true" inert><p>Подбор российских аналогов снятых с производства и попавших под санкции импортных компонентов.</p><ul class="accordion-item__bullets"><li>Более 5000 верифицированных аналогов в базе</li><li>Техническая экспертиза и согласование замены</li><li>Поддержка при внесении в КД</li></ul></div>
+            </li>
+        </ul>
+      </div></div>
     </section>
+  <!-- HOME:SERVICES:END -->
   </main>
 
   <!-- Footer Custo-style — verified UGNxO desktop (4-col top + bottom row) / YsYD7 mobile (vertical stack) -->
-  <footer class="footer">
+  <footer class="footer" data-header-theme="dark">
     <div class="container">
       <div class="footer__top" data-animate="fade-up-stagger">
-        <!-- Block 1: logo + tagline -->
         <div class="footer__logo-block">
-          <span class="footer__logo">ic farvater</span>
+          <span class="footer__logo" role="img" aria-label="IC Фарватер"></span>
           <p class="footer__tagline"><!-- cms:site-setting.footerTagline -->Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
         </div>
-        <!-- Block 2: newsletter (Pencil mobile order #2) -->
         <div class="footer__newsletter">
           <h3 class="footer__newsletter-title"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>
-          <p class="footer__newsletter-desc"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
+          <p class="footer__newsletter-desc"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из каталога и пришлём прайс со сроками поставки.<!-- /cms --></p>
           <form class="footer__email-form" action="#">
             <input type="email" placeholder="email@example.com" aria-label="Email для расчёта" required>
             <button type="submit" aria-label="Отправить">→</button>
           </form>
-          <p class="footer__disclaimer"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.<!-- /cms --></p>
+          <p class="footer__disclaimer"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.<!-- /cms --></p>
         </div>
-        <!-- Block 3: 2-col navs (products LEFT, site RIGHT per Pencil pU5mo / M2CqjP order).
-             Each column has eyebrow label per Pencil YsYD7 ("каталог" / "компания"). -->
         <div class="footer__navs">
           <div class="footer__nav-col footer__nav-col--products">
             <p class="footer__nav-label">Каталог</p>
@@ -608,10 +597,11 @@
               <li><a href="#uslugi">услуги</a></li>
               <li><a href="pages/contacts.html">контакты</a></li>
               <li><a href="pages/about.html#faq">вопросы-ответы</a></li>
+              <li><a href="pages/laboratory-overview.html">лаборатория</a></li>
+              <li><a href="pages/news.html">новости</a></li>
             </ul>
           </div>
         </div>
-        <!-- Block 4: contact (with eyebrow label, AFTER navs per Pencil) -->
         <div class="footer__contact">
           <p class="footer__label">Контакты</p>
           <address class="footer__address"><!-- cms:site-setting.address -->ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406<!-- /cms --></address>
@@ -639,7 +629,7 @@
   <div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="Использование cookie">
     <div class="container cookie-banner__inner">
       <div class="cookie-banner__text">
-        <p class="cookie-banner__title"><!-- cms:site-setting.cookieText -->Мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости.<!-- /cms --></p>
+        <p class="cookie-banner__title"><!-- cms:site-setting.cookieText -->Мы используем cookie для корректной работы сайта и анализа посещаемости.<!-- /cms --></p>
         <a href="pages/privacy-policy.html" class="cookie-banner__link">подробнее в&nbsp;политике конфиденциальности →</a>
       </div>
       <div class="cookie-banner__actions">
@@ -653,8 +643,9 @@
   <script src="js/vendor/lenis.min.js" defer></script>
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.min.js?v=77e3abcf" defer></script>
-  <script src="js/animations.min.js?v=26333db2" defer></script>
+  <script src="js/main.min.js?v=00517ed8" defer></script>
+  <script src="js/animations.min.js?v=910d0426" defer></script>
   <script src="js/nbsp.min.js?v=a2583633" defer></script>
+<script src="js/site-navigation.min.js?v=16f23b81" defer></script>
 </body>
 </html>

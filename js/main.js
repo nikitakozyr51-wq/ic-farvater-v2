@@ -58,19 +58,30 @@ async function submitForm(form, kind, extra) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initPageLoader();
-  initMobileMenu();
-  initHeaderSearch();
+  // Shared header, mobile menu and search are owned by site-navigation.js.
   initActiveNavLink();
   initCertAccordion();
   initServiceAccordion();
   initContactForm();
   initCookieBanner();
   initProductCarousels();
+  initResponsiveMedia();
   initKpDrawer();
   initFooterEmailForm();
   initCatalog();
   initProductDetail();
 });
+
+/** Keep the accessible image description aligned with the selected source. */
+function initResponsiveMedia() {
+  const mobile = window.matchMedia('(max-width:1023.98px)');
+  const update = () => document.querySelectorAll('picture[data-mobile-alt]').forEach(picture => {
+    const image = picture.querySelector('img'); if (!image) return;
+    image.alt = picture.getAttribute(mobile.matches ? 'data-mobile-alt' : 'data-desktop-alt') ?? '';
+    if (image.alt) picture.removeAttribute('aria-hidden'); else picture.setAttribute('aria-hidden','true');
+  });
+  update(); mobile.addEventListener('change',update);
+}
 
 /** Footer email form — пользователь вводит email → открываем KP drawer с
  *  предзаполненным email, фокус на поле «имя» (чтобы человек продолжил с того
@@ -115,185 +126,7 @@ function initPageLoader() {
   }
 }
 
-/** Header search — inline expandable input on desktop.
- *  Click icon → form slides out from icon's position, expanding leftward into the
- *  nav area. Icon collapses simultaneously. Submit → /products.html?q=<query>.
- *  Esc / close-button revert. Mobile uses the burger-menu inline search (initMobileMenu). */
-function initHeaderSearch() {
-  const header = document.querySelector('.header');
-  const searchBtn = header && header.querySelector('.header__search');
-  if (!header || !searchBtn) return;
-
-  // Wrap icon + form in a fixed-width container so the form can be absolutely positioned
-  // without disturbing the flex layout. The wrap is 18px wide (matches icon) — when form
-  // expands, it grows LEFTWARD from the wrap's right edge (anchored via right:0), so the
-  // adjacent "запросить КП" button stays put.
-  let wrap = header.querySelector('.header__search-wrap');
-  let form = header.querySelector('.header__search-form');
-  if (!wrap) {
-    wrap = document.createElement('div');
-    wrap.className = 'header__search-wrap';
-    searchBtn.parentNode.insertBefore(wrap, searchBtn);
-    wrap.appendChild(searchBtn);
-
-    form = document.createElement('form');
-    form.className = 'header__search-form';
-    form.setAttribute('role', 'search');
-    form.innerHTML = `
-      <input type="search" class="header__search-input" placeholder="поиск по продукции..." aria-label="Поиск по продукции" autocomplete="off">
-      <button type="submit" class="header__search-submit" aria-label="Найти">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <button type="button" class="header__search-close" aria-label="Закрыть поиск">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-    `;
-    wrap.appendChild(form);
-  }
-
-  const input = form.querySelector('.header__search-input');
-  const closeBtn = form.querySelector('.header__search-close');
-
-  // Resolve relative path back to root (pages/about.html → "../"; index.html → "")
-  const isInPages = /\/pages\//.test(window.location.pathname);
-  const root = isInPages ? '../' : '';
-
-  function open() {
-    header.classList.add('header--searching');
-    // Defer focus until transition starts so visibility:visible has applied.
-    requestAnimationFrame(() => input.focus());
-  }
-  function close() {
-    header.classList.remove('header--searching');
-    input.value = '';
-    input.blur();
-  }
-
-  searchBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    open();
-  });
-  closeBtn.addEventListener('click', close);
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const q = input.value.trim();
-    if (!q) { input.focus(); return; }
-    const target = `${root}pages/products.html?q=${encodeURIComponent(q)}#all`;
-    window.location.href = target;
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && header.classList.contains('header--searching')) close();
-  });
-}
-
-/** Mobile burger menu — Pencil C8EHBB "Menu v4 — Mobile (open)".
-    Builds a fullscreen overlay element appended to <body> so it sits above the
-    sticky page header (avoids the scroll-edge artifact where sticky header peeks
-    through). Structure (per Pencil C8EHBB):
-      - menu header: ic farvater logo + X close
-      - search-item (top)
-      - 5 nav-items: главная / продукция / о компании / услуги / контакты (28/500/-1, alignItems end, → on right)
-      - CTA: запросить кп → (full-width pill, dark fill, 52h)
-      - contact block: 4 fields (телефон/email/адрес/режим работы) */
-function initMobileMenu() {
-  const burger = document.querySelector('.header__burger');
-  if (!burger) return;
-
-  // Resolve relative path back to root (pages/about.html → "../"; index.html → "")
-  const isInPages = /\/pages\//.test(window.location.pathname);
-  const root = isInPages ? '../' : '';
-
-  // Build the overlay (once per page). Reuses on subsequent burger clicks.
-  let menu = document.getElementById('mobileMenu');
-  if (!menu) {
-    menu = document.createElement('div');
-    menu.id = 'mobileMenu';
-    menu.className = 'mobile-menu';
-    menu.hidden = true;
-    menu.innerHTML = `
-      <header class="mobile-menu__header">
-        <a href="${root}index.html" class="mobile-menu__logo">ic farvater</a>
-        <button type="button" class="mobile-menu__close" aria-label="Закрыть меню">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-            <path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </header>
-      <nav class="mobile-menu__nav" aria-label="Главная навигация">
-        <form class="mobile-menu__search-form" role="search" data-action="mobile-search">
-          <input type="search" class="mobile-menu__search-input" placeholder="поиск по продукции..." aria-label="Поиск по продукции" autocomplete="off">
-          <button type="submit" class="mobile-menu__search-submit" aria-label="Найти">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </form>
-        <a class="mobile-menu__item" href="${root}index.html"><span>главная</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
-        <a class="mobile-menu__item" href="${root}pages/products.html"><span>продукция</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
-        <a class="mobile-menu__item" href="${root}pages/about.html"><span>о&nbsp;компании</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
-        <a class="mobile-menu__item" href="${root}index.html#uslugi"><span>услуги</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
-        <a class="mobile-menu__item" href="${root}pages/contacts.html"><span>контакты</span><span class="mobile-menu__arrow" aria-hidden="true">→</span></a>
-      </nav>
-      <div class="mobile-menu__cta-wrap">
-        <a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить КП <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="mobile-menu__contact">
-        <div class="mobile-menu__field">
-          <span class="mobile-menu__field-label">телефон</span>
-          <a class="mobile-menu__field-value" href="tel:+79967788842">+7&nbsp;996&nbsp;778-88-42</a>
-        </div>
-        <div class="mobile-menu__field">
-          <span class="mobile-menu__field-label">email</span>
-          <a class="mobile-menu__field-value" href="mailto:info@ic-farvater.ru">info@ic-farvater.ru</a>
-        </div>
-        <div class="mobile-menu__field">
-          <span class="mobile-menu__field-label">адрес</span>
-          <span class="mobile-menu__field-value">ул.&nbsp;Беринга, д.&nbsp;1-А, оф.&nbsp;46-Н<br>г.&nbsp;Санкт-Петербург, 199406</span>
-        </div>
-        <div class="mobile-menu__field">
-          <span class="mobile-menu__field-label">режим работы</span>
-          <span class="mobile-menu__field-value">пн.–пт. 10:00–18:00</span>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(menu);
-  }
-
-  function setOpen(open) {
-    menu.hidden = !open;
-    menu.classList.toggle('mobile-menu--open', open);
-    burger.classList.toggle('header__burger--open', open);
-    burger.setAttribute('aria-expanded', open);
-    document.body.classList.toggle('menu-open', open);
-  }
-
-  burger.addEventListener('click', () => setOpen(menu.hidden));
-  menu.querySelector('.mobile-menu__close').addEventListener('click', () => setOpen(false));
-
-  // Close menu on any nav/CTA/contact link click. Excludes the search-form which has its own handler.
-  menu.querySelectorAll('.mobile-menu__item, .mobile-menu__cta, .mobile-menu__field-value, .mobile-menu__logo').forEach(link => {
-    link.addEventListener('click', () => setOpen(false));
-  });
-
-  // Search form — submit navigates to catalog with ?q=<query>; empty query opens catalog with search input focused.
-  const searchForm = menu.querySelector('.mobile-menu__search-form');
-  const searchInput = menu.querySelector('.mobile-menu__search-input');
-  searchForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const q = searchInput.value.trim();
-    setOpen(false);
-    const target = `${root}pages/products.html${q ? `?q=${encodeURIComponent(q)}` : ''}#all`;
-    window.location.href = target;
-  });
-}
+// Header/menu/search implementation: site-navigation.js.
 
 /** Highlight nav link matching current page or hash (v2 .header__nav-link + v1 .header__link) */
 function initActiveNavLink() {
@@ -470,6 +303,8 @@ function initCertAccordion() {
     const head = item.querySelector('.accordion-item__head');
     const body = item.querySelector('.accordion-item__body');
     if (!head || !body) return;
+    const setExpanded = open => { head.setAttribute('aria-expanded', String(open)); body.setAttribute('aria-hidden', String(!open)); body.inert = !open; };
+    setExpanded(item.classList.contains('accordion-item--open'));
 
     head.addEventListener('click', () => {
       const isOpen = item.classList.contains('accordion-item--open');
@@ -482,7 +317,7 @@ function initCertAccordion() {
             sib.classList.remove('accordion-item--open');
             const sibBody = sib.querySelector('.accordion-item__body');
             const sibHead = sib.querySelector('.accordion-item__head');
-            if (sibBody) sibBody.style.maxHeight = '0px';
+            if (sibBody) { sibBody.style.maxHeight = '0px'; sibBody.setAttribute('aria-hidden','true'); sibBody.inert = true; }
             if (sibHead) sibHead.setAttribute('aria-expanded', 'false');
           }
         });
@@ -492,11 +327,11 @@ function initCertAccordion() {
       if (isOpen) {
         item.classList.remove('accordion-item--open');
         body.style.maxHeight = '0px';
-        head.setAttribute('aria-expanded', 'false');
+        setExpanded(false);
       } else {
         item.classList.add('accordion-item--open');
         body.style.maxHeight = body.scrollHeight + 'px';
-        head.setAttribute('aria-expanded', 'true');
+        setExpanded(true);
       }
     });
   });
@@ -551,6 +386,7 @@ function initServiceAccordion() {
 /** Yandex.Metrica loader — reads counter ID from <meta name="yandex-counter">
  *  (empty/zero → no-op). Idempotent: re-calls are ignored. */
 function loadYandexMetrika() {
+  if (isStagingHost()) return;
   if (window.ym) return;
   const meta = document.querySelector('meta[name="yandex-counter"]');
   const id = parseInt(meta?.content || '0', 10);
@@ -611,7 +447,7 @@ function initCookieBanner() {
  *      enters the visible window (initial + after each scroll). Saves ~50% of
  *      LCP/transfer when half the cards are off-screen by default. */
 function initProductCarousels() {
-  if (window.matchMedia('(max-width: 1023.98px)').matches) return;
+  const desktop = window.matchMedia('(min-width: 1024px)');
 
   document.querySelectorAll('.product-carousel').forEach(carousel => {
     const track = carousel.querySelector('.product-carousel__track');
@@ -623,9 +459,9 @@ function initProductCarousels() {
 
     const cards = Array.from(grid.children).filter(el => el.nodeType === 1);
     const N = cards.length;
-    if (N < 2) {
-      btnPrev.setAttribute('aria-disabled', 'true');
-      btnNext.setAttribute('aria-disabled', 'true');
+    if (!N) {
+      btnPrev.disabled = true;
+      btnNext.disabled = true;
       return;
     }
 
@@ -644,9 +480,14 @@ function initProductCarousels() {
 
     function syncButtons() {
       const max = maxIndex();
-      // Always visible; just toggle disabled-look at boundaries.
-      btnPrev.setAttribute('aria-disabled', String(index <= 0));
-      btnNext.setAttribute('aria-disabled', String(index >= max));
+      btnPrev.disabled = !desktop.matches || index <= 0;
+      btnNext.disabled = !desktop.matches || index >= max;
+      btnPrev.setAttribute('aria-disabled', String(btnPrev.disabled));
+      btnNext.setAttribute('aria-disabled', String(btnNext.disabled));
+      const start = desktop.matches ? index : 0, count = desktop.matches ? visibleCount() : 4;
+      const focusedCard = cards.find(card => card.contains(document.activeElement));
+      cards.forEach((card, i) => { card.inert = i < start || i >= start + count; });
+      if (focusedCard?.inert) cards[start]?.focus({ preventScroll: true });
     }
 
     // Lazy-load image swap: swap data-src → src for cards inside the visible window
@@ -667,8 +508,12 @@ function initProductCarousels() {
     }
 
     function go(i, animate) {
-      index = Math.max(0, Math.min(i, maxIndex()));
-      if (!animate) {
+      index = desktop.matches ? Math.max(0, Math.min(i, maxIndex())) : 0;
+      if (!desktop.matches) {
+        grid.style.transition = 'none';
+        grid.style.transform = '';
+        requestAnimationFrame(() => { grid.style.transition = ''; });
+      } else if (!animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         grid.style.transition = 'none';
         grid.style.transform = `translateX(-${index * getStep()}px)`;
         grid.getBoundingClientRect();
@@ -950,31 +795,8 @@ function initCatalog() {
   const clearBtn = document.querySelector('.filter-clear__btn');
   const clearBadge = document.querySelector('.filter-clear__badge');
 
-  const HOMOGLYPH = {
-    'a':'а','c':'с','e':'е','o':'о','p':'р','x':'х','y':'у','b':'в','h':'н','k':'к','m':'м','t':'т'
-  };
-  // Normalize: lowercase, Latin homoglyphs → Cyrillic, ё→е fold.
-  function normalize(s) {
-    // NBSP → space: data strings carry literal U+00A0 (no-hanging-prepositions rule),
-    // multi-word queries must still match across them.
-    s = String(s == null ? '' : s).toLowerCase().replace(/ё/g, 'е').replace(/ /g, ' ');
-    s = s.split('').map(ch => HOMOGLYPH[ch] || ch).join('');
-    return s;
-  }
-  // Fuzzy substring match — handles Russian morphology by progressively
-  // stripping last 1–3 chars of query (covers "микросхема"→"микросхем",
-  // "разъёма"→"разъём"→"разъем"). Both sides go through normalize() first.
-  function fuzzyMatch(haystack, query) {
-    if (!query) return true;
-    const h = normalize(haystack);
-    const q = normalize(query);
-    if (h.includes(q)) return true;
-    if (q.length >= 5) {
-      if (h.includes(q.slice(0, -1))) return true; // -1 ending
-      if (h.includes(q.slice(0, -2))) return true; // -2 ending (e.g. "ой" "ая")
-    }
-    return false;
-  }
+  const normalize = window.ICCatalogFilters.normalize;
+  const fuzzyMatch = window.ICCatalogFilters.matchesQuery;
   // cyrillize() defined at module level (top of file)
   function pluralize(n, one, two, many) {
     const mod10 = n % 10, mod100 = n % 100;
@@ -1068,7 +890,8 @@ function initCatalog() {
       type: 'series', kind: kindKey, cat: catSlug, id: s.slug, name: s.name,
       desc: shortDesc(s.slug, s.description),
       image: s.image, group: s.group || 'main', href: `#${catSlug}/${s.slug}`,
-      seriesTypes: collectTypes(s), apps: s.apps || []
+      seriesTypes: collectTypes(s), apps: s.apps || [], variantTypes:(s.items||[]).map(item=>normalizeType(item.type)),
+      variantCount: (s.items || []).filter(item => state.seriesType === 'all' || normalizeType(item.type) === state.seriesType).length
     }));
     const pushProducts = (kindKey, catSlug, catName) => {
       if (typeof PRODUCTS === 'undefined') return;
@@ -1120,37 +943,37 @@ function initCatalog() {
       CONNECTOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'connector-variant', cat: 'razemy',
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
-        desc: variantDesc(it),
+        desc: variantDesc(it), descCased: true, position: idx + 1,
         image: resolveSeriesItemImage(s, it),
-        href: urlForVariant('razemy', s, idx)
+        href: urlForVariant('razemy', s, idx), apps: s.apps || [], seriesTypes: new Set([normalizeType(it.type)]), seriesSlug:s.slug
       })));
     }
     if (typeof CONVERTER_SERIES !== 'undefined') {
       CONVERTER_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'converter-variant', cat: 'converters',
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
-        desc: variantDesc(it),
+        desc: variantDesc(it), descCased: true, position: idx + 1,
         image: resolveSeriesItemImage(s, it),
-        href: urlForVariant('converters', s, idx)
+        href: urlForVariant('converters', s, idx), apps: s.apps || [], seriesTypes: new Set([normalizeType(it.type)]), seriesSlug:s.slug
       })));
     }
     if (typeof CAPACITOR_SERIES !== 'undefined') {
       CAPACITOR_SERIES.forEach(s => (s.items || []).forEach((it, idx) => out.push({
         type: 'variant', kind: 'capacitor-variant', cat: 'capacitors',
         id: `${s.slug}:${idx}`, name: splitVariantName(it)[0],
-        desc: variantDesc(it),
+        desc: variantDesc(it), descCased: true, position: idx + 1,
         image: resolveSeriesItemImage(s, it),
-        href: urlForVariant('capacitors', s, idx)
+        href: urlForVariant('capacitors', s, idx), apps: s.apps || [], seriesTypes: new Set([normalizeType(it.type)]), seriesSlug:s.slug
       })));
     }
     // Landing-only categories (pcb / rantsy / snow) — searchable as single entries
     // linking to the category landing (no SKU data to index).
     Object.keys(LANDING_ONLY_CATS).forEach(cat => out.push({
       type: 'landing', kind: 'landing', cat,
-      id: `cat-${cat}`, name: CAT_NAMES[cat],
+      id: `cat-${cat}`, name: (cmsCat(cat) || {}).name || CAT_NAMES[cat],
       desc: CAT_LIST_DESC[cat] || '',
       image: LANDING_ONLY_CATS[cat].image,
-      href: urlForCategory(cat)
+      href: urlForCategory(cat), apps: (cmsCat(cat) || {}).apps || []
     }));
     return out;
   }
@@ -1161,6 +984,8 @@ function initCatalog() {
     if (search) {
       const q = search.trim();
       items = items.filter(it => fuzzyMatch(it.name + ' ' + (it.desc || ''), q));
+      // A precise SKU inside a selected category must not require a global-search detour.
+      if (!items.length) items = getAllItems().filter(it => it.cat === cat && it.type === 'variant' && fuzzyMatch(it.name+' '+(it.desc||''),q));
     }
     // Type filter at category level — narrow series to those containing at least one variant
     // of the selected type. Only applies to series (razemy / converters / capacitors).
@@ -1177,7 +1002,7 @@ function initCatalog() {
     // у них фото есть всегда; правило работает по факту пустого image.
     items = items.filter(it => it.image).concat(items.filter(it => !it.image));
     const count = items.length;
-    const catLabel = CAT_NAMES[cat] || cat;
+    const catLabel = (cmsCat(cat) || {}).name || CAT_NAMES[cat] || cat;
     // listHeader (cat-breadcrumb + count) hidden — subheaders are primary headings now.
     listHeader.innerHTML = '';
     // Remove any leftover banner from previous renders.
@@ -1198,17 +1023,23 @@ function initCatalog() {
     const groupKeys = Object.keys(groupCounts);
     const singleGroup = groupKeys.length <= 1;
     const itemsAreSeries = items.length && items[0].type === 'series';
+    const mobileSeries = window.matchMedia('(max-width:1023.98px)').matches && itemsAreSeries;
+    const pageSize = mobileSeries ? 8 : PAGE_SIZE;
+    appliedResults = { label: (cmsCat(cat) || {}).name || catLabel, count };
+    listGrid.classList.toggle('catalog__list-grid--series', !!itemsAreSeries);
     function makeSubheader(label, count) {
       const hdr = document.createElement('div');
       hdr.className = 'catalog__list-subheader';
-      hdr.innerHTML = `<span class="catalog__list-subheader__title">${label}</span><span class="catalog__list-subheader__count">${count} ${itemWord(count, itemsAreSeries)}</span>`;
+      const title=document.createElement('span');title.className='catalog__list-subheader__title';title.textContent=label;
+      const counter=document.createElement('span');counter.className='catalog__list-subheader__count';counter.textContent=`(${count})`;hdr.append(title,counter);
       return hdr;
     }
     function renderSlice(slice, isFirst) {
       let lastGroup = null;
       let entryInserted = false;
-      const entry = ENTRY_CARDS[cat];
+      const entry = search ? null : ENTRY_CARDS[cat];
       slice.forEach((it, idx) => {
+        if (mobileSeries) { listGrid.appendChild(buildCard(it)); return; }
         if (singleGroup && isFirst && idx === 0) {
           // Single-group cat: use cat name as the only header
           listGrid.appendChild(makeSubheader(catLabel, count));
@@ -1254,14 +1085,16 @@ function initCatalog() {
     // Sort items by group (main → additional → dev)
     const groupOrder = { main: 0, additional: 1, dev: 2 };
     items.sort((a, b) => (groupOrder[a.group] ?? 9) - (groupOrder[b.group] ?? 9));
-    renderSlice(items.slice(0, PAGE_SIZE), true);
-    if (items.length > PAGE_SIZE) {
+    renderSlice(items.slice(0, pageSize), true);
+    listMore.textContent = mobileSeries ? `показать все ${count} ${pluralize(count,'серию','серии','серий')}` : 'показать ещё';
+    if (items.length > pageSize) {
       listMore.hidden = false;
       let page = 1;
       listMore.onclick = () => {
+        if (mobileSeries) { renderSlice(items.slice(pageSize), false); listMore.hidden=true; return; }
         page++;
-        renderSlice(items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE), false);
-        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
+        renderSlice(items.slice(page * pageSize - pageSize, page * pageSize), false);
+        if (page * pageSize >= items.length) listMore.hidden = true;
       };
     } else {
       listMore.hidden = true;
@@ -1269,11 +1102,14 @@ function initCatalog() {
     return count;
   }
 
-  const state = { search: '', cat: 'all', series: null, seriesType: 'all', app: 'all', view: 'grid' };
+  const filters=window.ICCatalogFilters;
+  const state = filters.readUrl(window.location.href);
+  let appliedResults = {label:'',count:0};
+  let mobileFilters;
   // Фильтр «Применение» активен только когда справочник наполнен в админке
   // (applications-data.js непуст) И данные РАЗМЕЧЕНЫ (хоть у одного товара/серии
   // проставлены галочки) — иначе выбор применения давал бы пустую выдачу.
-  // До готовности кнопки ведут себя как раньше (визуальный выбор без фильтрации).
+  // До готовности не имитируем выбор: недоступные применения отключены.
   const hasAppTags = () =>
     (typeof CONNECTOR_SERIES !== 'undefined' && CONNECTOR_SERIES.some(s => s.apps && s.apps.length))
     || (typeof CONVERTER_SERIES !== 'undefined' && CONVERTER_SERIES.some(s => s.apps && s.apps.length))
@@ -1281,112 +1117,19 @@ function initCatalog() {
     || (typeof PRODUCTS !== 'undefined' && PRODUCTS.some(p => p.apps && p.apps.length));
   const APPS_READY = typeof APPLICATIONS !== 'undefined' && Array.isArray(APPLICATIONS)
     && APPLICATIONS.length > 0 && hasAppTags();
+  function validateSelection(selected) {
+    const next=filters.copy(selected);
+    next.cats=next.cats.filter(cat=>Object.hasOwn(CAT_NAMES,cat));
+    next.apps=APPS_READY?next.apps.filter(slug=>APPLICATIONS.some(app=>app.slug===slug)):[];
+    next.types=next.types.filter(type=>availableSelectionTypes(next).includes(type));
+    return filters.copy(next);
+  }
+  Object.assign(state,validateSelection(state));
+  searchInputs.forEach(input => { input.value = state.search; });
   let searchTimer = null;
   // Both desktop sidebar filter-items[data-view] AND mobile toolbar view-link[data-view] —
   // single selector handles both, JS toggles state.view on click.
   const viewBtns = document.querySelectorAll('.filter-item[data-view], .catalog__view-link[data-view]');
-
-  // Render arbitrary items list with search-results header
-  function renderSearchResults(query) {
-    const q = query.trim();
-    const all = getAllItems();
-    const matched = all.filter(it => fuzzyMatch(it.name + ' ' + (it.desc || ''), q));
-    const count = matched.length;
-    listHeader.innerHTML = `
-      <span class="catalog__list-cat">результаты поиска</span>
-      <span class="catalog__list-count">${count} ${pluralize(count, 'результат', 'результата', 'результатов')}</span>
-    `;
-    listGrid.innerHTML = '';
-    if (count === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'catalog__list-empty';
-      // SECURITY: user-controlled `query` через textContent (никогда innerHTML).
-      const NBSP = ' ';
-      empty.append(`ничего не${NBSP}найдено по${NBSP}запросу «${query}». попробуйте другой запрос или${NBSP}`);
-      const a = document.createElement('a');
-      a.href = '#all';
-      a.textContent = `вернитесь к${NBSP}категориям`;
-      empty.appendChild(a);
-      empty.append('.');
-      listGrid.appendChild(empty);
-      if (listMore) listMore.hidden = true;
-      return 0;
-    }
-    const shown = matched.slice(0, PAGE_SIZE);
-    shown.forEach(it => listGrid.appendChild(buildCard(it)));
-    if (matched.length > PAGE_SIZE) {
-      listMore.hidden = false;
-      let page = 1;
-      listMore.onclick = () => {
-        page++;
-        matched.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => listGrid.appendChild(buildCard(it)));
-        if (page * PAGE_SIZE >= matched.length) listMore.hidden = true;
-      };
-    } else {
-      listMore.hidden = true;
-    }
-    return count;
-  }
-
-  // Кросс-категорийный вид фильтра «Применение» (раздел «Все» + выбранное
-  // применение). Собирает размеченные позиции из всех разделов + карточки
-  // лендинг-разделов «везде» (напр. платы), у которых нет своих позиций.
-  function renderAppView(appSlug) {
-    const realCats = CMS_CATS
-      ? CMS_CATS.filter((c) => c.source !== 'none').map((c) => c.slug)
-      : ['razemy', 'converters', 'capacitors', 'microchips', 'transistors'];
-    const items = realCats
-      .flatMap((c) => getItems(c))
-      .filter((it) => it.apps && it.apps.includes(appSlug));
-    const landingCats = (CMS_CATS || [])
-      .filter((c) => c.source === 'none' && c.apps && c.apps.includes(appSlug));
-    const appName = ((typeof APPLICATIONS !== 'undefined' && APPLICATIONS.find((a) => a.slug === appSlug)) || {}).name || '';
-    const total = items.length + landingCats.length;
-    listHeader.innerHTML = '';
-    listGrid.innerHTML = '';
-    const hdr = document.createElement('div');
-    hdr.className = 'catalog__list-subheader';
-    const nameEl = document.createElement('span');
-    nameEl.className = 'catalog__list-subheader__title';
-    nameEl.textContent = cyrillize(appName).toLowerCase();
-    const cntEl = document.createElement('span');
-    cntEl.className = 'catalog__list-subheader__count';
-    cntEl.textContent = `${total} ${pluralize(total, 'товар', 'товара', 'товаров')}`;
-    hdr.append(nameEl, cntEl);
-    listGrid.appendChild(hdr);
-    if (total === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'catalog__list-empty';
-      empty.textContent = 'в этом применении пока нет позиций.';
-      listGrid.appendChild(empty);
-      if (listMore) listMore.hidden = true;
-      return 0;
-    }
-    // Лендинг-разделы «везде» первыми (разъёмы/платы), затем серии и товары.
-    landingCats.forEach((c) => {
-      const card = document.createElement('a');
-      card.className = 'cat-card cat-card--small';
-      card.href = urlForCategory(c.slug);
-      card.innerHTML = `
-        <div class="cat-card__img">${c.image ? `<img src="${c.image}" alt="${c.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}</div>
-        <div class="cat-card__info"><h3 class="cat-card__name">${cyrillize(c.name)}</h3><p class="cat-card__desc">перейти к&nbsp;разделу</p></div>`;
-      listGrid.appendChild(card);
-    });
-    const renderSlice = (from, to) => items.slice(from, to).forEach((it) => listGrid.appendChild(buildCard(it)));
-    renderSlice(0, PAGE_SIZE);
-    if (items.length > PAGE_SIZE) {
-      listMore.hidden = false;
-      let page = 1;
-      listMore.onclick = () => {
-        page++;
-        renderSlice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE);
-        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
-      };
-    } else {
-      listMore.hidden = true;
-    }
-    return total;
-  }
 
   function buildCard(it) {
     const a = document.createElement('a');
@@ -1396,17 +1139,24 @@ function initCatalog() {
     // Series cards keep lowercase desc (legacy brand voice for SERIES_SHORT_DESC); microchip/
     // transistor cards with descCased:true preserve sentence-case from chipCardDesc().
     const descText = it.desc
-      ? (it.descCased ? cyrillize(it.desc) : cyrillize(it.desc).toLowerCase())
+      ? (it.descCased ? String(it.desc) : cyrillize(it.desc).toLowerCase())
       : '';
-    a.innerHTML = `
-      <div class="cat-card__img">
-        ${it.image ? `<img src="${it.image}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
-      </div>
-      <div class="cat-card__info">
-        <h3 class="cat-card__name">${codeCyr(it.name, it.kind === 'microchip')}</h3>
-        ${descText ? `<p class="cat-card__desc">${descText}</p>` : ''}
-      </div>
-    `;
+    const image=document.createElement('div');image.className='cat-card__img';
+    if(it.image){const img=document.createElement('img');img.src=it.image;img.alt=it.name;img.loading='lazy';img.addEventListener('error',()=>{img.style.opacity='0';});image.append(img);}
+    const info=document.createElement('div');info.className='cat-card__info';
+    const identity=document.createElement('div');identity.className='cat-card__identity';
+    const name=document.createElement('h3');name.className='cat-card__name';name.textContent=codeCyr(it.name,it.kind==='microchip'||it.cat==='microchips');identity.append(name);
+    if(it.type==='product'||it.type==='variant'){
+      const position=document.createElement('span');position.className='cat-card__position';position.setAttribute('aria-hidden','true');
+      position.textContent=`(${String(it.position || (listGrid.querySelectorAll('.cat-card:not(.cat-card--entry)').length+1)).padStart(2,'0')})`;identity.append(position);
+    }
+    if(it.type==='series'){
+      a.classList.add('cat-card--series');const count=document.createElement('span');count.className='cat-card__variant-count';count.textContent=`(${it.variantCount||0})`;identity.append(count);
+    }
+    info.append(identity);
+    if(descText){const description=document.createElement('p');description.className='cat-card__desc';description.textContent=descText;info.append(description);}
+    if(it.group==='dev'){const status=document.createElement('span');status.className='cat-card__status';status.textContent='В разработке';info.append(status);}
+    a.append(image,info);
     return a;
   }
 
@@ -1436,7 +1186,7 @@ function initCatalog() {
 
   // Render variants of a single series in 4-col grid (replaces Series Detail page)
   function renderSeriesVariants(cat, slug) {
-    let series = null, prefix = '', catLabel = CAT_NAMES[cat] || cat;
+    let series = null, catLabel = (cmsCat(cat) || {}).name || CAT_NAMES[cat] || cat;
     // Источник серии: из категории админки (source) либо legacy-маппинг по слагу.
     const srcName = CMS_CATS
       ? (cmsCat(cat) || {}).source
@@ -1444,65 +1194,16 @@ function initCatalog() {
     const srcArr = cmsSeriesBySource(srcName);
     if (srcArr) {
       series = srcArr.find(s => s.slug === slug);
-      prefix = { connectors: 's-c', converters: 's-v', capacitors: 's-k' }[srcName];
     }
-    if (!series) return 0;
-    const seriesName = cyrillize(series.name);
-    const allItems = series.items || [];
-    // Series-view sidebar gets a Type filter (вилка/розетка/…). Filter active selection
-    // narrows the rendered cards (match against normalized type buckets).
-    const activeType = (state.seriesType && state.seriesType !== 'all') ? state.seriesType : null;
-    const items = activeType ? allItems.filter(it => normalizeType(it.type) === activeType) : allItems;
-    const count = items.length;
-    // Header: series name (left) + variant count (right) — same .catalog__list-subheader pattern
-    // as the category view ("разъёмы — 24 серии"). No back-arrow; sidebar navigation moves the
-    // user back to the category list via the active category filter.
-    listHeader.innerHTML = '';
-    listGrid.innerHTML = '';
-    const titleHdr = document.createElement('div');
-    titleHdr.className = 'catalog__list-subheader';
-    titleHdr.innerHTML = `<span class="catalog__list-subheader__title">${seriesName}</span><span class="catalog__list-subheader__count">${count} ${pluralize(count, 'вариант', 'варианта', 'вариантов')}</span>`;
-    listGrid.appendChild(titleHdr);
-    function makeVariantCard(it) {
-      const card = document.createElement('a');
-      card.className = 'cat-card cat-card--small';
-      // idx is the position in the UNFILTERED items[] — preserves correct variant page link
-      // regardless of type filter ("вилка" / "розетка") narrowing the rendered list.
-      const origIdx = allItems.indexOf(it);
-      card.href = urlForVariant(cat, series, origIdx);
-      // Image lookup via shared helper (series.imageByType → normalized match →
-      // GENERIC_TYPE_IMAGES fallback → series.image).
-      const img = resolveSeriesItemImage(series, it);
-      // Compact name + part-number sub (fixes overflowing converter/capacitor names).
-      const [vName, vSub] = splitVariantName(it);
-      const vDesc = [it.type ? cyrillize(it.type).toLowerCase() : '', vSub ? cyrillize(vSub) : '']
-        .filter(Boolean).join(' · ');
-      card.innerHTML = `
-        <div class="cat-card__img">
-          ${img ? `<img src="${img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity='0'">` : ''}
-        </div>
-        <div class="cat-card__info">
-          <h3 class="cat-card__name">${cyrillize(vName)}</h3>
-          ${vDesc ? `<p class="cat-card__desc">${vDesc}</p>` : ''}
-        </div>
-      `;
-      return card;
+    if (!series) {
+      appliedResults={label:(cmsCat(cat)||{}).name||catLabel,count:0};
+      listHeader.replaceChildren();listGrid.replaceChildren();listMore.hidden=true;
+      const empty=document.createElement('p');empty.className='catalog__list-empty';empty.textContent='Серия не найдена. ';
+      const back=document.createElement('a');back.href='#'+cat;back.textContent='Вернуться к разделу';empty.append(back);listGrid.append(empty);
+      return 0;
     }
-    items.slice(0, PAGE_SIZE).forEach(it => listGrid.appendChild(makeVariantCard(it)));
-    if (items.length > PAGE_SIZE) {
-      listMore.hidden = false;
-      let page = 1;
-      listMore.onclick = () => {
-        page++;
-        items.slice(page * PAGE_SIZE - PAGE_SIZE, page * PAGE_SIZE).forEach(it => {
-          listGrid.appendChild(makeVariantCard(it));
-        });
-        if (page * PAGE_SIZE >= items.length) listMore.hidden = true;
-      };
-    } else {
-      listMore.hidden = true;
-    }
-    return count;
+    // One data/filter/card path for zero, one or multiple selected types/applications.
+    return renderSelection();
   }
 
   // Render category rows (one per catalog category) for list view at cat=all (Pencil rN0pk default state).
@@ -1532,14 +1233,15 @@ function initCatalog() {
       : ['microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow']).forEach(cat => {
       const row = document.createElement('a');
       row.className = 'cat-card cat-card--small';
-      row.href = `#${cat}`;
-      row.innerHTML = `
-        <div class="cat-card__img"></div>
-        <div class="cat-card__info">
-          <h3 class="cat-card__name">${CAT_NAMES[cat]}</h3>
-          <p class="cat-card__desc">${CAT_LIST_DESC[cat]}</p>
-        </div>
-      `;
+      const category = cmsCat(cat);
+      row.href = category?.source === 'none' ? urlForCategory(cat) : `#${cat}`;
+      const info = document.createElement('div'); info.className = 'cat-card__info';
+      const name = document.createElement('h3'); name.className = 'cat-card__name'; name.textContent = category?.name || CAT_NAMES[cat];
+      const description = document.createElement('p'); description.className = 'cat-card__desc';
+      for (const [mode,text] of [['mobile',category?.cardDesc || CAT_LIST_DESC[cat]],['desktop',category?.listDesc || category?.cardDesc || CAT_LIST_DESC[cat]]]) {
+        const copy = document.createElement('span'); copy.className = 'cat-card__desc--'+mode; copy.textContent = text; description.append(copy);
+      }
+      info.append(name,description); row.append(info);
       listGrid.appendChild(row);
     });
   }
@@ -1550,25 +1252,19 @@ function initCatalog() {
   //   - Category view (cat only): types are the union across all series in the category.
   //     Narrows the rendered series cards (keep those with at least one variant of that type).
   // Hidden for categories without a series structure (microchips / transistors / pcb).
-  function renderTypeFilter(cat, slug) {
-    const group = document.getElementById('typeFilterGroup');
-    const itemsEl = document.getElementById('typeFilterItems');
-    if (!group || !itemsEl) return;
+  function availableTypes(cat, slug) {
     const seriesSource = CMS_CATS
       ? cmsSeriesBySource((cmsCat(cat) || {}).source)
       : (cat === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined' ? CONNECTOR_SERIES
         : cat === 'converters' && typeof CONVERTER_SERIES !== 'undefined' ? CONVERTER_SERIES
         : cat === 'capacitors' && typeof CAPACITOR_SERIES !== 'undefined' ? CAPACITOR_SERIES
         : null);
-    if (!seriesSource) {
-      group.hidden = true;
-      return;
-    }
+    if (!seriesSource) return [];
     let types;
     if (slug) {
       // Series mode — types from this series only (normalized).
       const series = seriesSource.find(s => s.slug === slug);
-      if (!series || !Array.isArray(series.items)) { group.hidden = true; return; }
+      if (!series || !Array.isArray(series.items)) return [];
       types = [...new Set(series.items.map(i => normalizeType(i.type)).filter(Boolean))];
     } else {
       // Category mode — union of normalized types across all series in this category.
@@ -1576,7 +1272,51 @@ function initCatalog() {
       seriesSource.forEach(s => (s.items || []).forEach(it => { const n = normalizeType(it.type); if (n) allTypes.add(n); }));
       types = [...allTypes];
     }
-    if (types.length < 2) {
+    const order = ['вилка','розетка','кожух','заглушка'];
+    return types.sort((a,b)=>(order.includes(a)?order.indexOf(a):order.length)-(order.includes(b)?order.indexOf(b):order.length));
+  }
+  function availableSelectionTypes(selected) {
+    const cats=filters.values(selected,'cats');
+    return [...new Set((cats.length?cats:Object.keys(CAT_NAMES)).flatMap(cat=>availableTypes(cat,cats.length===1?selected.series:null)))];
+  }
+  function selectionItems(selected) {
+    return filters.selectItems({state:selected,categorySlugs:Object.keys(CAT_NAMES),getCategoryItems:getItems,getIndexedItems:getAllItems,landingOnlyCats:LANDING_ONLY_CATS});
+  }
+  function previewSelection(selected) {
+    const chosen=filters.copy(selected);
+    return {count:!filters.count(chosen)&&!chosen.search.trim()&&!chosen.series?cards.length:selectionItems(chosen).length};
+  }
+  function renderSelection() {
+    const items=selectionItems(state),count=items.length,seriesOnly=!!count&&items.every(item=>item.type==='series');
+    const label=state.series?cyrillize((cmsSeriesBySource((cmsCat(state.cat)||{}).source)||[]).find(series=>series.slug===state.series)?.name||'Серия')
+      :state.cats.length===1?(cmsCat(state.cat)||{}).name||CAT_NAMES[state.cat]:state.cats.length>1?'Выбранные категории'
+      :state.search.trim()?'Результаты поиска':state.apps.length===1?(APPLICATIONS.find(app=>app.slug===state.app)?.name||'Применение'):state.apps.length>1?'Выбранные применения':'Результаты';
+    appliedResults={label,count};listHeader.replaceChildren();listGrid.replaceChildren();listMore.hidden=true;
+    listGrid.classList.toggle('catalog__list-grid--series',seriesOnly);
+    const heading=document.createElement('div');heading.className='catalog__list-subheader';
+    const title=document.createElement('span');title.className='catalog__list-subheader__title';title.textContent=label;
+    const counter=document.createElement('span');counter.className='catalog__list-subheader__count';counter.textContent=`(${count})`;heading.append(title,counter);listGrid.append(heading);
+    if(!count){
+      const empty=document.createElement('p');empty.className='catalog__list-empty';
+      empty.append(state.search.trim()?`По запросу «${state.search.trim()}» ничего не найдено. Измените запрос или `:'По выбранным условиям ничего не найдено. Измените выбор или ');
+      const reset=document.createElement('a');reset.href=filters.urlForState(window.location.href,filters.reset(state));reset.dataset.catalogReset='';reset.textContent=state.search.trim()?'вернитесь к категориям':'сбросьте фильтры';empty.append(reset,'.');listGrid.append(empty);return 0;
+    }
+    const mobileSeries=seriesOnly&&window.matchMedia('(max-width:1023.98px)').matches,pageSize=mobileSeries?8:PAGE_SIZE;
+    const append=(from,to)=>items.slice(from,to).forEach(item=>listGrid.append(buildCard(item)));
+    const leadingLandings=!state.cats.length&&!state.search.trim()&&state.apps.length?items.filter(item=>item.type==='landing').length:0;
+    const initialSize=pageSize+leadingLandings;
+    append(0,initialSize);
+    if(count>initialSize){listMore.hidden=false;listMore.textContent=mobileSeries?`показать все ${count} ${pluralize(count,'серию','серии','серий')}`:'показать ещё';let shown=initialSize;
+      listMore.onclick=()=>{const end=mobileSeries?count:shown+pageSize;append(shown,end);shown=end;listMore.hidden=shown>=count;};
+    }
+    return count;
+  }
+  function renderTypeFilter() {
+    const group = document.getElementById('typeFilterGroup');
+    const itemsEl = document.getElementById('typeFilterItems');
+    if (!group || !itemsEl) return;
+    const types = availableSelectionTypes(state);
+    if (types.length < 2 && !state.types.length) {
       // Only one type (or none) — filter not useful.
       group.hidden = true;
       return;
@@ -1585,14 +1325,14 @@ function initCatalog() {
     itemsEl.innerHTML = '';
     const all = document.createElement('button');
     all.type = 'button';
-    all.className = 'filter-item' + (state.seriesType === 'all' ? ' filter-item--active' : '');
+    all.className = 'filter-item' + (!state.types.length ? ' filter-item--active' : '');
     all.dataset.type = 'all';
     all.textContent = 'все';
     itemsEl.appendChild(all);
     types.forEach(t => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      const isActive = state.seriesType === t;
+      const isActive = state.types.includes(t);
       btn.className = 'filter-item' + (isActive ? ' filter-item--active' : '');
       btn.dataset.type = t;
       btn.textContent = t;
@@ -1601,17 +1341,23 @@ function initCatalog() {
     // Wire clicks (delegated via fresh handler each render — innerHTML wipes previous listeners)
     itemsEl.querySelectorAll('.filter-item').forEach(b => {
       b.addEventListener('click', () => {
-        state.seriesType = b.dataset.type || 'all';
+        Object.assign(state,filters.choose(state,'seriesType',b.dataset.type||'all',availableSelectionTypes));
         apply();
       });
     });
   }
 
   function apply() {
+    Object.assign(state,validateSelection(state));
+    listMore.textContent = 'показать ещё';
     const q = normalize(state.search.trim());
     const inListMode = state.cat !== 'all';
     const inSearchMode = !inListMode && !!state.search.trim();
     const inSeriesMode = inListMode && !!state.series;
+    const combined=state.cats.length>1||state.types.length>1||state.apps.length>1||!!state.types.length&&state.cat==='all'||!!state.search.trim()&&!!LANDING_ONLY_CATS[state.cat];
+    document.body.classList.toggle('is-catalog-results',inListMode||inSearchMode||!!state.apps.length||!!state.types.length||combined);
+    listGrid.classList.remove('catalog__list-grid--series');
+    document.body.classList.toggle('is-catalog-category-list',!filters.count(state)&&!inSearchMode&&state.view==='list');
 
     if (inSeriesMode) {
       // Series variant grid (no separate Series Detail page)
@@ -1619,12 +1365,13 @@ function initCatalog() {
       listWrap.hidden = false;
       renderSeriesVariants(state.cat, state.series);
       if (emptyMsg) emptyMsg.hidden = true;
-      renderTypeFilter(state.cat, state.series);
+    } else if (combined) {
+      grid.hidden=true;listWrap.hidden=false;renderSelection();if(emptyMsg)emptyMsg.hidden=true;
     } else if (inSearchMode) {
       // Global search mode: hide cat-cards, render matches across ALL data
       grid.hidden = true;
       listWrap.hidden = false;
-      renderSearchResults(state.search);
+      renderSelection();
       // Remove any banner from previous renders
       const existingBanner = listGrid.parentElement.querySelector('.catalog__list-banner');
       if (existingBanner) existingBanner.remove();
@@ -1639,7 +1386,8 @@ function initCatalog() {
       listWrap.hidden = false;
       const count = renderList(state.cat, state.search);
       const landingOnly = LANDING_ONLY_CATS[state.cat];
-      if (count === 0 && landingOnly && !state.search) {
+      if (count === 0 && landingOnly && !state.search
+        && (!APPS_READY || state.app === 'all' || ((cmsCat(state.cat) || {}).apps || []).includes(state.app))) {
         const card = document.createElement('a');
         card.className = 'cat-card cat-card--small';
         card.href = urlForCategory(state.cat);
@@ -1654,17 +1402,17 @@ function initCatalog() {
         `;
         listGrid.innerHTML = '';
         listGrid.appendChild(card);
+        appliedResults.count=1;
         if (listMore) listMore.hidden = true;
       }
       if (emptyMsg) emptyMsg.hidden = true;
       // Type filter at category level — visible for series-based cats (razemy/converters/capacitors).
-      renderTypeFilter(state.cat, null);
     } else if (APPS_READY && state.app !== 'all') {
       // Кросс-категорийный вид «Применение»: раздел «Все» + выбранное применение →
       // показываем все размеченные позиции (серии/товары) из всех разделов сразу.
       grid.hidden = true;
       listWrap.hidden = false;
-      renderAppView(state.app);
+      renderSelection();
       if (emptyMsg) emptyMsg.hidden = true;
     } else if (state.view === 'list') {
       // Default (cat=all, no search) + list view → category rows per Pencil rN0pk.
@@ -1680,24 +1428,13 @@ function initCatalog() {
       if (emptyMsg) emptyMsg.hidden = true;
     }
 
-    // Hide Type filter when leaving series-based categories (microchips/transistors/pcb/all).
-    if (!inSeriesMode && !inListMode) {
-      const tg = document.getElementById('typeFilterGroup');
-      if (tg) tg.hidden = true;
-      state.seriesType = 'all';
-    } else if (inListMode && !(CMS_CATS
-      ? !!cmsSeriesBySource((cmsCat(state.cat) || {}).source)
-      : ['razemy', 'converters', 'capacitors'].includes(state.cat))) {
-      const tg = document.getElementById('typeFilterGroup');
-      if (tg) tg.hidden = true;
-      state.seriesType = 'all';
-    }
+    renderTypeFilter();
 
     // Update active state on sidebar + pills — marker (•)/( ) rendered via CSS ::before
     sidebarBtns.forEach(b => {
-      b.classList.toggle('filter-item--active', b.dataset.cat === state.cat);
+      b.classList.toggle('filter-item--active',b.dataset.cat==='all'?!state.cats.length:state.cats.includes(b.dataset.cat));
     });
-    pillBtns.forEach(b => b.classList.toggle('catalog__pill--active', b.dataset.cat === state.cat));
+    pillBtns.forEach(b => b.classList.toggle('catalog__pill--active',b.dataset.cat==='all'?!state.cats.length:state.cats.includes(b.dataset.cat)));
 
     // View toggle (сетка/список) — applies class to list grid. Active state on
     // both desktop sidebar (.filter-item--active) and mobile toolbar (.catalog__view-link--active).
@@ -1708,139 +1445,114 @@ function initCatalog() {
       b.classList.toggle('catalog__view-link--active', isActive);
     });
 
-    const activeCount = (state.search ? 1 : 0) + (state.cat !== 'all' ? 1 : 0)
-      + (state.seriesType && state.seriesType !== 'all' ? 1 : 0)
-      + (APPS_READY && state.app !== 'all' ? 1 : 0);
+    const activeCount = filters.count(state)+(state.search.trim()?1:0);
     if (clearBadge) clearBadge.textContent = String(activeCount);
     // Подсветка активного применения (в фильтрующем режиме).
-    if (APPS_READY) appBtns.forEach(b => b.classList.toggle('filter-item--active', (b.dataset.app || 'all') === state.app));
+    appBtns.forEach(b => b.classList.toggle('filter-item--active',b.dataset.app==='all'?!state.apps.length:state.apps.includes(b.dataset.app)));
+    for (const btn of [...sidebarBtns, ...pillBtns, ...viewBtns, ...appBtns, ...document.querySelectorAll('#typeFilterItems button')]) {
+      btn.setAttribute('aria-pressed', String(btn.classList.contains('filter-item--active') || btn.classList.contains('catalog__pill--active') || btn.classList.contains('catalog__view-link--active')));
+    }
+    mobileFilters?.refresh();
 
     // Висящие предлоги в перерендеренном списке (CMS-тексты приходят без NBSP).
     if (window.applyNbsp && listWrap) window.applyNbsp(listWrap);
 
-    let hash = '';
-    if (state.cat !== 'all') hash = `#${state.cat}`;
-    if (state.series) hash += `/${state.series}`;
-    if (window.location.hash !== hash) {
-      history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
-    }
+    const target = window.ICCatalogFilters.urlForState(window.location.href,state);
+    if (window.location.pathname+window.location.search+window.location.hash !== target) history.replaceState(null,'',target);
   }
 
-  function setSearch(v) { state.search = v; apply(); }
-  function setCat(c) { state.cat = c; apply(); }
+  function setCat(c) { Object.assign(state,filters.choose(state,'cat',c,availableSelectionTypes));apply(); }
 
   searchInputs.forEach(input => {
     input.addEventListener('input', (e) => {
       clearTimeout(searchTimer);
       const val = e.target.value;
-      searchTimer = setTimeout(() => {
-        searchInputs.forEach(i => { if (i !== input) i.value = val; });
-        setSearch(val);
-      }, 250);
+      state.search = val;
+      searchInputs.forEach(i => { if (i !== input) i.value = val; });
+      history.replaceState(null,'',filters.urlForState(window.location.href,state));
+      searchTimer = setTimeout(apply, 250);
     });
   });
   document.querySelectorAll('.catalog__search').forEach(f => {
-    f.addEventListener('submit', (e) => e.preventDefault());
+    f.addEventListener('submit', (e) => { e.preventDefault(); clearTimeout(searchTimer); apply(); });
   });
 
   // Clicking sidebar/pill clears any series sub-state too
-  sidebarBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; state.seriesType = 'all'; setCat(btn.dataset.cat); }));
-  pillBtns.forEach(btn => btn.addEventListener('click', () => { state.series = null; state.seriesType = 'all'; setCat(btn.dataset.cat); }));
+  sidebarBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
+  pillBtns.forEach(btn => btn.addEventListener('click', () => setCat(btn.dataset.cat)));
   viewBtns.forEach(btn => btn.addEventListener('click', () => { state.view = btn.dataset.view; apply(); }));
 
-  // Фильтр «Применение». С наполненным справочником — реально сужает выдачу
-  // (галочки применений на товарах/сериях в админке); без него — визуальный
-  // выбор, как в v1 (данные не размечены, фильтровать нечем).
+  // Never advertise a visual-only application selection as a working filter.
   const appBtns = document.querySelectorAll('.catalog__sidebar .filter-item[data-app]');
+  appBtns.forEach(btn => { btn.disabled = !APPS_READY && btn.dataset.app !== 'all'; });
   appBtns.forEach(btn => btn.addEventListener('click', () => {
-    if (!APPS_READY) {
-      appBtns.forEach(b => b.classList.toggle('filter-item--active', b === btn));
-      return;
-    }
-    state.app = btn.dataset.app || 'all';
+    if (!APPS_READY) return;
+    Object.assign(state,filters.choose(state,'app',btn.dataset.app||'all',availableSelectionTypes));
     apply();
   }));
 
   // Global-search fallback link inside empty-state (delegated to listGrid).
   // Clicking "поискать во всех категориях" clears filter + keeps query.
   listGrid.addEventListener('click', (e) => {
+    const reset=e.target.closest('[data-catalog-reset]');
+    if(reset){e.preventDefault();clearTimeout(searchTimer);Object.assign(state,filters.reset(state));searchInputs.forEach(input=>{input.value='';});apply();[...searchInputs].find(input=>input.getClientRects().length)?.focus({preventScroll:true});return;}
     const link = e.target.closest('[data-global-search]');
     if (!link) return;
     e.preventDefault();
     const q = link.getAttribute('data-global-search') || '';
-    state.cat = 'all';
+    state.cats = [];
     state.series = null;
-    state.seriesType = 'all';
+    state.types = [];
     state.search = q;
     searchInputs.forEach(i => i.value = q);
-    history.replaceState(null, '', '#all');
     apply();
   });
 
   // Collapsible filter groups — click on header toggles items below (Pencil J1dha chevron).
-  // Sidebar groups (desktop) default OPEN; toolbar groups (mobile) default CLOSED.
-  document.querySelectorAll('.filter-group__header').forEach(hdr => {
+  // Application starts collapsed in tTdx8; category and view remain open.
+  document.querySelectorAll('.filter-group__header').forEach((hdr,index) => {
     const group = hdr.closest('.filter-group');
     if (!group) return;
     const items = group.querySelector('.filter-group__items');
     if (!items) return;
-    // Initial state from data-collapsed attribute (set by CSS media query elsewhere if needed)
+    const collapsed = !!group.querySelector('[data-app]');
     hdr.style.cursor = 'pointer';
     hdr.setAttribute('role', 'button');
-    hdr.setAttribute('aria-expanded', 'true');
-    hdr.addEventListener('click', () => {
+    hdr.tabIndex = 0;
+    items.id ||= 'catalogFilterItems'+index;
+    hdr.setAttribute('aria-controls',items.id);
+    hdr.setAttribute('aria-expanded', String(!collapsed));
+    group.classList.toggle('filter-group--collapsed', collapsed);
+    const toggle = () => {
       const open = hdr.getAttribute('aria-expanded') === 'true';
       hdr.setAttribute('aria-expanded', open ? 'false' : 'true');
       group.classList.toggle('filter-group--collapsed', open);
-    });
+    };
+    hdr.addEventListener('click', toggle);
+    hdr.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
   });
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
-      state.search = '';
-      state.cat = 'all';
-      state.series = null;
-      state.seriesType = 'all';
-      state.app = 'all';
+      clearTimeout(searchTimer);
+      Object.assign(state,filters.reset(state));
       searchInputs.forEach(i => i.value = '');
       apply();
     });
   }
 
-  const validCats = CMS_CATS
-    ? ['all', ...CMS_CATS.map((c) => c.slug)]
-    : ['all', 'microchips', 'razemy', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
-  function applyHash() {
-    const h = window.location.hash.replace('#', '');
-    // Support sub-hash: #razemy/et-2rmg (category + series slug)
-    const [hCat, hSeries] = h.split('/');
-    if (hCat && hCat !== 'search' && validCats.includes(hCat)) {
-      // Reset type filter when category OR series changes — selected type may not exist
-      // in the new context (e.g. "заглушка" set at #razemy but next series has only вилка/розетка).
-      const newSeries = hSeries || null;
-      if (state.cat !== hCat || state.series !== newSeries) state.seriesType = 'all';
-      state.cat = hCat;
-      state.series = newSeries;
-      apply();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (!h || h === 'search') {
-      state.cat = 'all';
-      state.series = null;
-      state.seriesType = 'all';
-      apply();
-    }
+  function applyHash(event) {
+    Object.assign(state,validateSelection(filters.readUrl(event?.newURL||window.location.href)));
+    searchInputs.forEach(input=>{input.value=state.search;});apply();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
-  applyHash();
+  mobileFilters = window.ICCatalogFilters?.mount({ state,
+    categories: CMS_CATS || Object.entries(CAT_NAMES).map(([slug,name])=>({slug,name})),
+    applications: typeof APPLICATIONS === 'undefined' ? [] : APPLICATIONS,
+    appsReady: APPS_READY, getTypes: availableSelectionTypes, getPreview:previewSelection, getResult:()=>appliedResults, apply, beforeCommit: () => clearTimeout(searchTimer) });
+  apply();
   window.addEventListener('hashchange', applyHash);
 
-  // Read ?q=<query> URL param (set by mobile menu search submit) and apply on load.
-  const urlParams = new URLSearchParams(window.location.search);
-  const qParam = urlParams.get('q');
-  if (qParam) {
-    state.search = qParam;
-    searchInputs.forEach(i => i.value = qParam);
-    apply();
-  }
 }
 
 
@@ -2084,7 +1796,9 @@ const RELATED_CAT_ORDER = CMS_CATS
   ? CMS_CATS.map((c) => c.slug)
   : ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
 const RELATED_CATS = Object.fromEntries(
-  RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
+  RELATED_CAT_ORDER.map(cat => [cat, ['microchips','razemy'].includes(cat)
+    ? [cat === 'microchips' ? 'razemy' : 'microchips', 'transistors', 'pcb'].filter(c => RELATED_CAT_ORDER.includes(c))
+    : RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 3)])
 );
 const RELATED_CAT_INFO = {
   microchips:  { label: 'микросхемы',       desc: 'цифровые и&nbsp;аналоговые ис', image: '../assets/images/products/items/ET1636RR1 1.webp' },
@@ -2098,10 +1812,8 @@ const RELATED_CAT_INFO = {
 };
 
 // ===== CMS-переопределение лендингов и related-карточек =====
-// Категория из админки с заполненным лендинг-контентом (подзаголовок / описание /
-// характеристики / номенклатура) переопределяет встроенный конфиг; незаполненные
-// поля наследуются из встроенного (плавная миграция). Категории, которых нет
-// в хардкоде (созданные заказчиком), получают лендинг целиком из админки.
+// CMS owns exported fields, including intentionally empty text/lists/media.
+// Only absent properties in older snapshots may inherit the legacy fallback.
 if (CMS_CATS) {
   for (const c of CMS_CATS) {
     const fb = CATEGORY_LANDINGS[c.slug] || {};
@@ -2110,20 +1822,21 @@ if (CMS_CATS) {
     CATEGORY_LANDINGS[c.slug] = {
       name: c.name || fb.name,
       eyebrowCategory: [c.slug, (c.name || fb.name || '').toLowerCase()],
-      subtitle: c.subtitle || fb.subtitle || '',
-      image: c.image || fb.image || '',
-      bulletsTitle: c.bulletsTitle || fb.bulletsTitle,
-      nomenclatureTitle: c.nomenclatureTitle || fb.nomenclatureTitle,
+      cmsOwned: true,
+      subtitle: Object.hasOwn(c, 'subtitle') ? (c.subtitle || '') : (fb.subtitle || ''),
+      image: Object.hasOwn(c, 'image') ? (c.image || '') : (fb.image || ''),
+      bulletsTitle: Object.hasOwn(c, 'bulletsTitle') ? c.bulletsTitle : fb.bulletsTitle,
+      nomenclatureTitle: Object.hasOwn(c, 'nomenclatureTitle') ? c.nomenclatureTitle : fb.nomenclatureTitle,
       // Строка (не массив!) — признак «текст из админки»: рендер отличает его от
       // хардкод-массивов ниже (те содержат доверенный HTML с &nbsp;) по типу значения.
-      description: c.description ? String(c.description) : (fb.description || []),
-      bullets: (c.bullets && c.bullets.length) ? c.bullets : (fb.bullets || []),
-      nomenclature: (c.nomenclature && c.nomenclature.length) ? c.nomenclature : (fb.nomenclature || [])
+      description: Object.hasOwn(c, 'description') ? String(c.description || '') : (fb.description || []),
+      bullets: Object.hasOwn(c, 'bullets') ? (c.bullets || []) : (fb.bullets || []),
+      nomenclature: Object.hasOwn(c, 'nomenclature') ? (c.nomenclature || []) : (fb.nomenclature || [])
     };
     RELATED_CAT_INFO[c.slug] = {
       label: (c.name || fb.name || '').toLowerCase(),
-      desc: c.cardDesc || (RELATED_CAT_INFO[c.slug] || {}).desc || '',
-      image: c.image || (RELATED_CAT_INFO[c.slug] || {}).image || ''
+      desc: Object.hasOwn(c, 'cardDesc') ? (c.cardDesc || '') : ((RELATED_CAT_INFO[c.slug] || {}).desc || ''),
+      image: Object.hasOwn(c, 'image') ? (c.image || '') : ((RELATED_CAT_INFO[c.slug] || {}).image || '')
     };
   }
 }
@@ -2389,7 +2102,8 @@ function initProductDetail() {
         counter.textContent = `(${String(data.variantIdx + 1).padStart(2, '0')})`;
         counter.hidden = false;
       } else if (kind === 'landing') {
-        counter.hidden = true;
+        counter.textContent = '(01)';
+        counter.hidden = false;
       } else {
         counter.textContent = '(01)';
         counter.hidden = false;
@@ -2409,7 +2123,10 @@ function initProductDetail() {
   // Subtitle (short description)
   const subtitleEl = document.querySelector('.product-top__subtitle');
   if (subtitleEl) {
-    if (kind === 'landing' && data.subtitle) {
+    subtitleEl.hidden = kind === 'landing' && data.cmsOwned && !data.subtitle;
+    if (kind === 'landing' && data.cmsOwned) {
+      subtitleEl.textContent = data.subtitle || '';
+    } else if (kind === 'landing' && data.subtitle) {
       subtitleEl.innerHTML = data.subtitle;
     } else if (data.description) {
       const desc = Array.isArray(data.description) ? data.description[0] : data.description;
@@ -2436,10 +2153,14 @@ function initProductDetail() {
   // Series detail (qYQC0) uses "о серии" caption style instead of H2 "описание",
   // hides specs + related, image is 4:3 (580×480 in Pencil).
   document.body.dataset.pdKind = kind || '';
+  document.body.dataset.pdCategory = catSlug || '';
 
-  // Description counter (02) — show only for landings (Pencil v4 W7BuW7/aagoV)
+  // Current Pencil RVOHl/XRYEc; keep legacy hash rendering equal to static generation.
   const descCounter = document.querySelector('.pd-block__counter--landing');
-  if (descCounter) descCounter.hidden = (kind !== 'landing');
+  if (descCounter) {
+    descCounter.hidden = false;
+    descCounter.innerHTML = kind === 'landing' ? '(02)' : '<span class="pd-only-desktop">(01)</span><span class="pd-only-mobile">(02)</span>';
+  }
 
   // Description H2 title swap — Series Detail uses "о серии" caption label, not H2 "описание".
   const descTitleEl = document.querySelector('.pd-block--description .pd-block__title');
@@ -2456,6 +2177,10 @@ function initProductDetail() {
   //  · строка + товар/серия = одноабзацный текст без переносов — режем по предложениям
   //    (767 товаров + 30 серий, поведение сохраняем как было).
   const descBody = document.querySelector('.pd-block--description .pd-block__body');
+  if (descBody) {
+    descBody.closest('.pd-block').hidden = kind === 'landing' && !String(data.description || '').trim();
+    if (!data.description) descBody.innerHTML = '';
+  }
   if (descBody && data.description) {
     if (Array.isArray(data.description)) {
       descBody.innerHTML = data.description.map(s => `<p>${String(s).trim()}</p>`).join('');
@@ -2504,7 +2229,7 @@ function initProductDetail() {
   const bulletsBlock = document.getElementById('pdBulletsBlock');
   const bulletsList = document.getElementById('pdBulletsList');
   if (bulletsBlock && bulletsList) {
-    if (kind === 'landing' && Array.isArray(data.bullets)) {
+    if (kind === 'landing' && Array.isArray(data.bullets) && data.bullets.length) {
       // Заголовок блока (03): по умолчанию «Что мы поставляем», лендинги rantsy/snow
       // переопределяют на «Характеристики» (правка заказчика).
       const bulletsTitleEl = bulletsBlock.querySelector('.pd-block__title--bullets');
@@ -2517,7 +2242,7 @@ function initProductDetail() {
       data.bullets.forEach(([label, value]) => {
         const row = document.createElement('div');
         row.className = 'pd-bullets__row';
-        row.innerHTML = `<span class="pd-bullets__label">${label}</span><span class="pd-bullets__value">${value}</span>`;
+        row.innerHTML = `<span class="pd-bullets__label">${data.cmsOwned ? escHtml(label) : label}</span><span class="pd-bullets__value">${data.cmsOwned ? escHtml(value) : value}</span>`;
         bulletsList.appendChild(row);
       });
       bulletsBlock.hidden = false;
@@ -2530,7 +2255,7 @@ function initProductDetail() {
   const nomSection = document.getElementById('pdNomenclatureSection');
   const nomTable = document.getElementById('pdNomenclatureTable');
   if (nomSection && nomTable) {
-    if (kind === 'landing' && Array.isArray(data.nomenclature)) {
+    if (kind === 'landing' && Array.isArray(data.nomenclature) && data.nomenclature.length) {
       // Заголовок секции (04): по умолчанию «Номенклатура», заказчик переопределяет
       // из админки (nomenclatureTitle). <sup>-счётчик — СИБЛИНГ <h2>, а не потомок
       // (в отличие от bullets), поэтому textContent безопасен, appendChild не нужен.
@@ -2540,7 +2265,7 @@ function initProductDetail() {
       data.nomenclature.forEach(([label, value]) => {
         const row = document.createElement('div');
         row.className = 'pd-nomenclature__row';
-        row.innerHTML = `<span class="pd-nomenclature__label">${label}</span><span class="pd-nomenclature__value">${value}</span>`;
+        row.innerHTML = `<span class="pd-nomenclature__label">${data.cmsOwned ? escHtml(label) : label}</span><span class="pd-nomenclature__value">${data.cmsOwned ? escHtml(value) : value}</span>`;
         nomTable.appendChild(row);
       });
       nomSection.hidden = false;
@@ -2555,6 +2280,8 @@ function initProductDetail() {
   // Wire data-kp-product / data-kp-category onto the primary CTA so the КП drawer pre-fills correctly.
   const primaryCta = document.querySelector('.pd-actions__primary[data-action="open-kp-drawer"]');
   if (primaryCta) {
+    const mobileLabel = primaryCta.querySelector('.pd-only-mobile');
+    if (mobileLabel) mobileLabel.textContent = kind === 'landing' ? 'Запросить расчёт' : 'запросить расчёт';
     primaryCta.dataset.kpProduct = cyrillize(((data.partnumber || data.name) || '').toUpperCase());
     primaryCta.dataset.kpCategory = catLabel || '';
   }
@@ -2575,7 +2302,7 @@ function initProductDetail() {
       if (relatedTitleEl) {
         const counter = relatedTitleEl.querySelector('.pd-related__counter');
         if (counter) counter.textContent = '(05)';
-        relatedTitleEl.textContent = 'другие категории';
+        relatedTitleEl.textContent = 'Другие категории';
         if (counter) relatedTitleEl.appendChild(counter);
       }
     } else if (catSlug === 'razemy' && typeof CONNECTOR_SERIES !== 'undefined') {
@@ -2734,7 +2461,8 @@ function initKpDrawer() {
   let lastFocused = null;
 
   function openDrawer(trigger) {
-    lastFocused = document.activeElement;
+    document.dispatchEvent(new Event('ic:close-navigation'));
+    lastFocused = trigger?.closest('.mobile-menu') ? document.querySelector('.header__burger') : document.activeElement;
     // Try to extract product context from trigger
     const ctx = trigger?.closest('[data-kp-product]');
     if (ctx) {
@@ -2764,16 +2492,18 @@ function initKpDrawer() {
     drawer.classList.add('kp-drawer--open');
     drawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('is-drawer-open');
+    window.ICDialogs?.open({ element: drawer, trigger: lastFocused, onClose: closeDrawer, focus: document.getElementById('kpName') });
     requestAnimationFrame(() => {
-      document.getElementById('kpName')?.focus();
+      document.getElementById('kpName')?.focus({ preventScroll: true });
     });
   }
 
   function closeDrawer() {
+    if (window.ICDialogs?.isActive(drawer)) { window.ICDialogs.close(); return; }
     drawer.classList.remove('kp-drawer--open');
     drawer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('is-drawer-open');
-    if (lastFocused) lastFocused.focus();
+    if (lastFocused) lastFocused.focus({ preventScroll: true });
   }
 
   // Open/close handlers via event delegation

@@ -16,6 +16,8 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { client } = require('./cms-client');
+const { safeHref } = require('./editorial-text');
 
 const ROOT = process.env.FRONTEND_DIR || path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
@@ -50,7 +52,7 @@ function loadVar(file, varName) {
 function rootPath(p) { return String(p || '').replace(/^\.\.\//, ''); }
 
 // Медиа блока (photo из админки) → assets/images/cms/home/<hash><ext>.
-async function downloadBlockPhoto(strapiUrl, token, photo) {
+async function downloadBlockPhoto(strapiUrl, token, photo, write) {
   if (!photo || !photo.url) return '';
   const url = photo.url.startsWith('http') ? photo.url : strapiUrl + photo.url;
   const fname = ((photo.hash || 'img') + (photo.ext || '')).replace(/^_+/, '');
@@ -58,26 +60,30 @@ async function downloadBlockPhoto(strapiUrl, token, photo) {
   const dest = path.join(dir, fname);
   const rel = `assets/images/cms/home/${fname}`;
   if (fs.existsSync(dest)) return rel;
-  const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-  if (!res.ok) { console.warn(`  ! block photo ${fname} → ${res.status}`); return ''; }
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
-  console.log(`  ↓ block photo → ${rel}`);
+  await client({ baseUrl: strapiUrl, token }).media(url, dest, { write });
   return rel;
 }
 
 // ---------- Рендеры секций (копии существующей вёрстки, счётчик подставляется) ----------
-function renderTextPhoto(b, counter, photoPath) {
+function renderTextPhoto(b, counter, photoPath, mobilePhotoPath) {
   const side = b.photoSide === 'right' ? ' uy-grid--image-right' : '';
   const eyebrow = b.eyebrow ? `${esc(deEnt(b.eyebrow))} · (${counter})` : `(${counter})`;
-  const cta = (b.ctaText && b.ctaUrl)
+  const cta = (b.ctaText && safeHref(b.ctaUrl))
     ? `\n            <a href="${esc(b.ctaUrl)}" class="btn-pill btn-pill--solid uy-grid__btn">${esc(ctaLabel(b.ctaText))} →</a>` : '';
-  return `    <section class="section section--about">
+  const focal = key => { const value = b[key] == null ? 50 : Number(b[key]); if (!Number.isFinite(value) || value < 0 || value > 100) throw Error('Invalid homepage image focal point: ' + key); return value; };
+  const alt = b.photoAlt ?? b.photo?.alternativeText ?? b.title ?? '';
+  const mobileAlt = b.photoAlt ?? b.mobilePhoto?.alternativeText ?? alt;
+  const width = Number(b.photo?.width) || 1152, height = Number(b.photo?.height) || 928;
+  const media = `<figure class="uy-grid__media">
+            <picture class="uy-grid__image" data-animate="scale-reveal" data-desktop-alt="${esc(alt)}" data-mobile-alt="${esc(mobileAlt)}" style="--photo-x:${focal('focalX')}%;--photo-y:${focal('focalY')}%;--mobile-photo-x:${focal('mobileFocalX')}%;--mobile-photo-y:${focal('mobileFocalY')}%">
+              ${mobilePhotoPath ? `<source media="(max-width:1023.98px)" srcset="${esc(mobilePhotoPath)}">` : ''}
+              ${photoPath ? `<img width="${width}" height="${height}" src="${esc(photoPath)}" alt="${esc(alt)}" loading="lazy">` : ''}
+            </picture>${b.photoCaption ? `\n            <figcaption class="uy-grid__caption">${esc(b.photoCaption)}</figcaption>` : ''}
+          </figure>`;
+  return `    <section class="section section--about home-text-photo">
       <div class="container">
         <div class="uy-grid${side}">
-          <picture class="uy-grid__image" data-animate="scale-reveal">
-            ${photoPath ? `<img width="1152" height="928" src="${esc(photoPath)}" alt="${esc(b.title)}" loading="lazy">` : ''}
-          </picture>
+          ${media}
           <div class="uy-grid__text" data-animate="fade-up-stagger">
             <div class="uy-grid__head">
               <p class="section-eyebrow">${eyebrow}</p>
@@ -94,14 +100,14 @@ function renderTextPhoto(b, counter, photoPath) {
 function renderPromoCards(b, counter, photoPaths) {
   const cards = (b.cards || []).map((c, i) => `          <article class="promise-card">
             <div class="promise-card__img">
-              ${photoPaths[i] ? `<img width="1200" height="800" src="${esc(photoPaths[i])}" alt="${esc(c.name)}" loading="lazy">` : ''}
+              ${photoPaths[i] ? `<img width="${Number(c.photo?.width)||1200}" height="${Number(c.photo?.height)||800}" src="${esc(photoPaths[i])}" alt="${esc(c.photo?.alternativeText ?? c.name)}" loading="lazy">` : ''}
             </div>
             <div class="promise-card__info">
               <h3 class="promise-card__name">${esc(deEnt(c.name))}</h3>
-              <p class="promise-card__desc">${esc(deEnt(c.text))}</p>${(c.ctaText && c.ctaUrl) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(ctaLabel(c.ctaText))} →</a>` : ''}
+              <p class="promise-card__desc">${esc(deEnt(c.text))}</p>${(c.ctaText && safeHref(c.ctaUrl)) ? `\n              <a class="promise-card__cta" href="${esc(c.ctaUrl)}">${esc(ctaLabel(c.ctaText))} →</a>` : ''}
             </div>
           </article>`).join('\n');
-  return `    <section class="section section--promise">
+  return `    <section class="section section--promise home-promo">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">${esc(deEnt(b.title))}<span class="section-head__counter">(${counter})</span></h2>
@@ -115,7 +121,7 @@ ${cards}
 function renderCategorySlider(b, counter, catalog) {
   const cat = b.category && catalog.categories
     ? catalog.categories.find((c) => c.slug === b.category.slug) : null;
-  if (!cat) return '';
+  if (!cat) throw Error('Homepage slider category is missing or unavailable: ' + (b.title || 'untitled'));
   const n = b.count || 8;
   let items = [];
   // Позиции БЕЗ фото на главную не берём — пустая серая карточка в карусели
@@ -126,7 +132,7 @@ function renderCategorySlider(b, counter, catalog) {
     items = catalog.products.filter((p) => p.category === cat.name && p.image).slice(0, n)
       .map((p) => ({ name: p.name, desc: p.cardCaption || p.subcategory || '', image: p.image }));
   }
-  if (!items.length) return '';
+  if (!items.length) throw Error('Homepage slider has no available cards: ' + cat.slug);
   const href = `pages/products.html#${esc(cat.slug)}`;
   const cards = items.map((it) => `              <a href="${href}" class="card">
                 <div class="card__img">
@@ -140,7 +146,7 @@ function renderCategorySlider(b, counter, catalog) {
   const arrow = (dir, label, d) => `          <button class="product-carousel__btn product-carousel__btn--${dir}" type="button" aria-label="${label}">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="${d}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>`;
-  return `    <section class="section section--products">
+  return `    <section class="section section--products home-products" data-home-category="${esc(cat.slug)}">
       <div class="container">
         <header class="section-head" data-animate="fade-up">
           <h2 class="section-head__title">${esc(deEnt(b.title || cat.name))}<span class="section-head__counter">(${counter})</span></h2>
@@ -164,12 +170,11 @@ async function renderHomeBlocks({ strapiUrl, token, write }) {
   const q = 'populate[blocks][on][blocks.text-photo][populate]=*'
     + '&populate[blocks][on][blocks.promo-cards][populate][cards][populate]=*'
     + '&populate[blocks][on][blocks.category-slider][populate]=*';
-  let blocks = [];
-  try {
-    const res = await fetch(`${strapiUrl}/api/homepage?${q}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-    if (res.ok) blocks = ((await res.json()).data || {}).blocks || [];
-  } catch (e) { console.warn('  ! homepage blocks: ' + e.message); }
-  if (!blocks.length) { console.log('· конструктор главной пуст (homepage.blocks) — статические секции не трогаю'); return; }
+  const response = await client({ baseUrl: strapiUrl, token }).json('homepage', q);
+  if (!response.data || !Array.isArray(response.data.blocks)) throw Error('CMS homepage: blocks missing');
+  const blocks = response.data.blocks;
+  const fp = path.join(ROOT, 'index.html'), orig = fs.readFileSync(fp, 'utf8');
+  if (!blocks.length && !orig.includes('<!-- HOME:BLOCKS:CMS-MANAGED -->')) { console.log('· Legacy homepage blocks awaiting explicit content migration'); return; }
 
   const catalog = {
     categories: loadVar('categories-data.js', 'CATEGORIES') || [],
@@ -184,25 +189,24 @@ async function renderHomeBlocks({ strapiUrl, token, write }) {
   for (const b of blocks) {
     const num = String(counter).padStart(2, '0');
     if (b.__component === 'blocks.text-photo') {
-      sections.push(renderTextPhoto(b, num, await downloadBlockPhoto(strapiUrl, token, b.photo)));
+      if (b.mobilePhoto && !b.photo) throw Error('Homepage mobilePhoto requires a primary photo');
+      sections.push(renderTextPhoto(b, num, await downloadBlockPhoto(strapiUrl, token, b.photo, write), await downloadBlockPhoto(strapiUrl, token, b.mobilePhoto, write)));
     } else if (b.__component === 'blocks.promo-cards') {
       const pp = [];
-      for (const c of (b.cards || [])) pp.push(await downloadBlockPhoto(strapiUrl, token, c.photo));
+      for (const c of (b.cards || [])) pp.push(await downloadBlockPhoto(strapiUrl, token, c.photo, write));
       sections.push(renderPromoCards(b, num, pp));
     } else if (b.__component === 'blocks.category-slider') {
       const html = renderCategorySlider(b, num, catalog);
       if (!html) { console.warn('  ! слайдер: категория не найдена/пуста — блок пропущен'); continue; }
       sections.push(html);
-    } else continue;
+    } else throw Error('Unsupported homepage component: ' + b.__component);
     counter++;
   }
 
-  const fp = path.join(ROOT, 'index.html');
-  const orig = fs.readFileSync(fp, 'utf8');
   const S = '<!-- HOME:BLOCKS:START -->', E = '<!-- HOME:BLOCKS:END -->';
   const si = orig.indexOf(S), ei = orig.indexOf(E);
-  if (si === -1 || ei === -1) { console.warn('  ! маркеры HOME:BLOCKS не найдены в index.html'); return; }
-  let next = orig.slice(0, si + S.length) + '\n' + sections.join('\n\n') + '\n    ' + orig.slice(ei);
+  if (si === -1 || ei <= si) throw Error('Homepage block boundaries missing or invalid');
+  let next = orig.slice(0, si + S.length) + '\n<!-- HOME:BLOCKS:CMS-MANAGED -->\n' + sections.join('\n\n') + '\n    ' + orig.slice(ei);
   // Счётчик секции «Услуги» после зоны — следующий номер за блоками.
   next = next.replace(/(id="uslugi"[\s\S]{0,600}?section-head__counter">)\((\d+)\)/, `$1(${String(counter).padStart(2, '0')})`);
   if (next !== orig) {
@@ -211,6 +215,7 @@ async function renderHomeBlocks({ strapiUrl, token, write }) {
   } else {
     console.log('  index.html: конструктор без изменений');
   }
+  return { nextCounter: counter };
 }
 
-module.exports = { renderHomeBlocks };
+module.exports = { renderHomeBlocks, renderTextPhoto, renderCategorySlider };

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "title": "Поставки\nэлектронных\nкомпонентов",
+  "mobileTitle": "Поставки\nэлектронных\nкомпонентов",
+  "description": "Микросхемы, разъёмы и СВЧ-компоненты.\nПоставки по всей России.",
+  "cta": "Подобрать компоненты",
+  "alt": "Разъём СНЦ23 на синем фоне",
+  "mobileAlt": "Разъём СНЦ23 на синем фоне",
+  "desktop": {
+    "url": "assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp",
+    "width": 1774,
+    "height": 887,
+    "formats": {
+      "large": {
+        "url": "assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_large.webp",
+        "width": 1440,
+        "height": 720,
+        "formats": {}
+      },
+      "small": {
+        "url": "assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_small.webp",
+        "width": 480,
+        "height": 240,
+        "formats": {}
+      },
+      "medium": {
+        "url": "assets/images/cms/home/ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f_medium.webp",
+        "width": 960,
+        "height": 480,
+        "formats": {}
+      },
+      "thumbnail": {
+        "url": "assets/images/cms/home/thumbnail_ic_pencil_b8ac25874b4aff30671bcaa8ef05a868f0711952be5eb08f3e3b1dd3aa413ec2_39062e118f.webp",
+        "width": 245,
+        "height": 122,
+        "formats": {}
+      }
+    }
+  },
+  "mobile": {
+    "url": "assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp",
+    "width": 940,
+    "height": 1672,
+    "formats": {
+      "small": {
+        "url": "assets/images/cms/home/ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4_small.webp",
+        "width": 480,
+        "height": 854,
+        "formats": {}
+      },
+      "thumbnail": {
+        "url": "assets/images/cms/home/thumbnail_ic_pencil_fb98a5f143d9aec38d32a3b4209e64f861cebc8b4fec55a60b3efc6322e4c93f_2be8254cf4.webp",
+        "width": 88,
+        "height": 156,
+        "formats": {}
+      }
+    }
+  }
+}

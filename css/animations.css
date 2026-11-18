@@ -5,8 +5,8 @@
  */
 
 /* ─── Fade-up ─── */
-[data-animate="fade-up"],
-[data-animate="fade-up-stagger"] > * {
+html.ic-motion-ready [data-animate="fade-up"],
+html.ic-motion-ready [data-animate="fade-up-stagger"] > * {
   opacity: 0;
   transform: translateY(30px) translateZ(0);
 }
@@ -25,15 +25,15 @@
 [data-animate="scale-reveal"] {
   overflow: hidden;
 }
-[data-animate="scale-reveal"] > img,
-[data-animate="scale-reveal"] > video,
-[data-animate="scale-reveal"] > div {
+html.ic-motion-ready [data-animate="scale-reveal"] > img,
+html.ic-motion-ready [data-animate="scale-reveal"] > video,
+html.ic-motion-ready [data-animate="scale-reveal"] > div {
   opacity: 0;
   transform: scale(1.05) translateZ(0);
 }
 
 /* ─── Line draw ─── */
-[data-animate="line-draw"] {
+html.ic-motion-ready [data-animate="line-draw"] {
   transform-origin: left center;
   transform: scaleX(0);
 }
