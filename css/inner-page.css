@@ -2160,8 +2160,9 @@
 .catalog-page .cat-card__status { font-size:11px; line-height:1.4; color:var(--c-text-muted); }
 .catalog-results-header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; min-height:44px; font-optical-sizing:none; }
 .catalog-results-header[hidden] { display:none; }
-.catalog-results-header__heading { display:flex; flex:1 1 170px; align-items:flex-start; gap:4px; color:var(--c-text); font:500 24px/1.15 var(--font-primary); letter-spacing:-.5px; }
-.catalog-results-header__count { padding-top:5px; color:var(--c-text-muted); font-size:13px; font-weight:500; line-height:1.4; letter-spacing:.45px; }
+.catalog-results-header__heading { flex:1 1 170px; color:var(--c-text); font:500 24px/1.15 var(--font-primary); letter-spacing:-.5px; }
+.catalog-results-header__heading-tail { white-space:nowrap; }
+.catalog-results-header__count { vertical-align:.3em; color:var(--c-text-muted); font-size:13px; font-weight:500; line-height:1.4; letter-spacing:.45px; }
 .catalog-results-header .catalog__view-toggle { flex:none; min-height:44px; }
 .catalog-results-header .catalog__view-label { display:none; }
 .catalog-results-header .catalog__view-opts { gap:12px; }

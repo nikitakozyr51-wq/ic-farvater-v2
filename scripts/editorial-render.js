@@ -74,7 +74,7 @@ function blocks(content = [], { laboratory = false } = {}) {
    section.push(`<${tag} class="editorial-list" id="${id}">${(block.items || []).map(item => `<li>${inlineHtml(item.text, { sources: true })}</li>`).join('')}</${tag}>`);
   } else if (kind === 'editorial.table') section.push(`<div id="${id}">${table(block)}</div>`);
   else if (kind === 'editorial.disclosure') {
-   const html=`<details class="editorial-disclosure" id="${id}"${block.defaultOpen ? ' open' : ''}><summary>${inlineHtml(block.title)}<span aria-hidden="true">+</span></summary><div class="editorial-disclosure__body">${richText(block.body, { sources: true })}${image(block.image)}${block.table ? table(block.table) : ''}</div></details>`;
+   const html=`<details class="editorial-disclosure" id="${id}"${block.defaultOpen ? ' open' : ''}><summary>${inlineHtml(block.title)}<span class="accordion-item__icon" aria-hidden="true">+</span></summary><div class="editorial-disclosure__body">${richText(block.body, { sources: true })}${image(block.image)}${block.table ? table(block.table) : ''}</div></details>`;
    if(laboratory){disclosureRun.push(html);hasDisclosures=true;}else section.push(html);
   }
   else throw Error('Unsupported editorial block: ' + kind);
@@ -119,7 +119,7 @@ function documentMain(record, kind, registry) {
  const links = body.toc.map(item => `<a href="#${item.id}">${esc(plainText(item.title))}</a>`).join('');
  const contents = !links ? '' : isArticle
   ? `<aside class="editorial-toc"><p>В этой статье</p><nav aria-label="Содержание статьи">${links}</nav></aside>`
-  : `<details class="editorial-toc" open><summary>На этой странице<span aria-hidden="true">⌄</span></summary><nav aria-label="Содержание">${links}</nav></details>`;
+  : `<details class="editorial-toc" open><summary>На этой странице<span class="editorial-toc__icon" aria-hidden="true">⌄</span></summary><nav aria-label="Содержание">${links}</nav></details>`;
  const title=isArticle?articleHeading(esc(plainText(record.title))):`<span class="editorial-intro__title">${inlineHtml(record.title)}</span>${counter(1)}`;
  const titleClass=!isArticle&&plainText(record.title).length>28?' class="editorial-intro__heading--long"':'';
  const relatedTitle=isArticle?'Другие статьи':`<span class="editorial-section__title">Другие услуги</span>${counter(chapterCount+2+(sources.length?1:0)+(equipment.length?1:0)+(documents.length?1:0))}`;
