@@ -681,9 +681,9 @@ function urlForVariant(catSlug, series, idx) {
   const f = (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.variantFile(catSlug, series, idx) : null;
   return f || `product-detail.html#v-${series.slug}:${idx}`;
 }
-function urlForSeries(catSlug, series, catalog = 'products.html') {
+function urlForSeries(catSlug, series) {
   const file = typeof CATALOG_URLS !== 'undefined' && CATALOG_URLS.seriesFile?.(catSlug, series);
-  return file || `${catalog}#${catSlug}/${series.slug}`;
+  return file || `products.html#${catSlug}/${series.slug}`;
 }
 function urlForCategory(catSlug) {
   return (typeof CATALOG_URLS !== 'undefined') ? CATALOG_URLS.categoryFile(catSlug) : `product-detail.html#cat-${catSlug}`;
@@ -894,7 +894,7 @@ function initCatalog() {
     const pushSeries = (kindKey, catSlug, src) => src.forEach(s => out.push({
       type: 'series', kind: kindKey, cat: catSlug, id: s.slug, name: s.name,
       desc: shortDesc(s.slug, s.description),
-      image: s.image, group: s.group || 'main', href: urlForSeries(catSlug, s, ''),
+      image: s.image, group: s.group || 'main', href: `#${catSlug}/${s.slug}`,
       seriesTypes: collectTypes(s), apps: s.apps || [], variantTypes:(s.items||[]).map(item=>normalizeType(item.type)),
       variantCount: (s.items || []).filter(item => state.seriesType === 'all' || normalizeType(item.type) === state.seriesType).length
     }));
