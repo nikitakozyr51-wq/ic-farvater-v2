@@ -26,12 +26,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { renderSharedLayout } from './shared-layout.js';
+import { replaceOwnedUrls } from './sitemap.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PAGES = path.join(ROOT, 'pages');
 const PILOT = process.argv.includes('--pilot');
 const CHECK = process.argv.includes('--check');
 const SITE = 'https://ic-farvater.ru';
+const CATALOG_MANIFEST = path.join(ROOT, 'scripts', 'catalog-pages.manifest.json');
+const PREVIOUS_CATALOG_FILES = fs.existsSync(CATALOG_MANIFEST) ? JSON.parse(fs.readFileSync(CATALOG_MANIFEST, 'utf8')) : [];
+if (!Array.isArray(PREVIOUS_CATALOG_FILES) || PREVIOUS_CATALOG_FILES.some(file => !/^[a-z0-9-]+\.html$/.test(file))) throw Error('Invalid catalog ownership manifest');
 
 // ============================================================ данные через vm
 const ctx = {};
@@ -200,18 +205,19 @@ if (CMS_CATS) {
     CATEGORY_LANDINGS[c.slug] = {
       name: c.name || fb.name,
       eyebrowCategory: [c.slug, (c.name || fb.name || '').toLowerCase()],
-      subtitle: c.subtitle || fb.subtitle || '',
-      image: c.image || fb.image || '',
-      bulletsTitle: c.bulletsTitle || fb.bulletsTitle,
-      nomenclatureTitle: c.nomenclatureTitle || fb.nomenclatureTitle,
-      description: c.description ? String(c.description) : (fb.description || []),
-      bullets: (c.bullets && c.bullets.length) ? c.bullets : (fb.bullets || []),
-      nomenclature: (c.nomenclature && c.nomenclature.length) ? c.nomenclature : (fb.nomenclature || [])
+      cmsOwned: true,
+      subtitle: Object.hasOwn(c, 'subtitle') ? (c.subtitle || '') : (fb.subtitle || ''),
+      image: Object.hasOwn(c, 'image') ? (c.image || '') : (fb.image || ''),
+      bulletsTitle: Object.hasOwn(c, 'bulletsTitle') ? c.bulletsTitle : fb.bulletsTitle,
+      nomenclatureTitle: Object.hasOwn(c, 'nomenclatureTitle') ? c.nomenclatureTitle : fb.nomenclatureTitle,
+      description: Object.hasOwn(c, 'description') ? String(c.description || '') : (fb.description || []),
+      bullets: Object.hasOwn(c, 'bullets') ? (c.bullets || []) : (fb.bullets || []),
+      nomenclature: Object.hasOwn(c, 'nomenclature') ? (c.nomenclature || []) : (fb.nomenclature || [])
     };
     RELATED_CAT_INFO[c.slug] = {
       label: (c.name || fb.name || '').toLowerCase(),
-      desc: c.cardDesc || (RELATED_CAT_INFO[c.slug] || {}).desc || '',
-      image: c.image || (RELATED_CAT_INFO[c.slug] || {}).image || ''
+      desc: Object.hasOwn(c, 'cardDesc') ? (c.cardDesc || '') : ((RELATED_CAT_INFO[c.slug] || {}).desc || ''),
+      image: Object.hasOwn(c, 'image') ? (c.image || '') : ((RELATED_CAT_INFO[c.slug] || {}).image || '')
     };
   }
 }
@@ -220,7 +226,9 @@ const RELATED_CAT_ORDER = CMS_CATS
   ? CMS_CATS.map((c) => c.slug)
   : ['razemy', 'microchips', 'converters', 'capacitors', 'transistors', 'pcb', 'rantsy', 'snow'];
 const RELATED_CATS = Object.fromEntries(
-  RELATED_CAT_ORDER.map(cat => [cat, RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 4)])
+  RELATED_CAT_ORDER.map(cat => [cat, ['microchips','razemy'].includes(cat)
+    ? [cat === 'microchips' ? 'razemy' : 'microchips', 'transistors', 'pcb'].filter(c => RELATED_CAT_ORDER.includes(c))
+    : RELATED_CAT_ORDER.filter(c => c !== cat).slice(0, 3)])
 );
 
 // ================================================= NBSP (алгоритм js/nbsp.js)
@@ -256,7 +264,7 @@ for (const arr of [CONNECTOR_SERIES, CONVERTER_SERIES, CAPACITOR_SERIES]) {
 
 // ================================================= шаблон и хирургия по нему
 // CRLF→LF: рабочая копия может быть с CRLF (git autocrlf), якоря-регексы считают на \n
-const TPL = fs.readFileSync(path.join(PAGES, 'product-detail.html'), 'utf8').replace(/\r\n/g, '\n');
+const TPL = renderSharedLayout(fs.readFileSync(path.join(PAGES, 'product-detail.html'), 'utf8').replace(/\r\n/g, '\n'), 'pages/product-detail.html');
 const esc = escHtml;
 const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;');
 function clamp(s, max) {
@@ -283,7 +291,7 @@ function replaceOnce(html, re, replacement, what) {
   if (!re.test(html)) throw new Error(`шаблон: не найден якорь для «${what}»`);
   // замена функцией: данные из Strapi могут содержать $-паттерны ($&, $`, $1…),
   // которые String.replace иначе интерпретирует — молчаливая порча страницы
-  return html.replace(re, () => replacement);
+  return html.replace(re, typeof replacement === 'function' ? replacement : () => replacement);
 }
 const imgExists = (rel) => {
   if (!rel || /^https?:/.test(rel)) return true; // хотлинки — как на живом сайте
@@ -346,7 +354,7 @@ function renderPage(m) {
   h = replaceOnce(h, /\n<\/head>|\n +<\/head>/, `\n  ${ldTags}\n  ${NOSCRIPT}\n</head>`, '</head>');
 
   // -------- body: data-pd-kind (main.js:2335 ставит его JS'ом; CSS-лейаут зависит)
-  h = replaceOnce(h, /<body>/, `<body data-pd-kind="${m.kind}">`, 'body');
+  h = replaceOnce(h, /<body\b([^>]*)>/, (all, attrs) => `<body${attrs.replace(/\sdata-pd-(?:kind|category)="[^"]*"/g,'')} data-pd-kind="${m.kind}" data-pd-category="${escAttr(m.catSlug)}">`, 'body');
 
   // -------- eyebrow breadcrumb (main.js:2299-2304)
   const trail = m.trail ? `&nbsp;/&nbsp;<span>${esc(String(m.trail).toLowerCase())}</span>` : '';
@@ -360,7 +368,7 @@ function renderPage(m) {
   h = replaceOnce(h, /<h1 class="product-top__title">[\s\S]*?<\/h1>/, `<h1 class="product-top__title">${esc(m.h1)}${counterHtml}</h1>`, 'H1');
 
   // -------- subtitle (main.js:2307-2317): landing = innerHTML (доверенный), иначе textContent
-  h = replaceOnce(h, /<p class="product-top__subtitle">[\s\S]*?<\/p>/, `<p class="product-top__subtitle">${m.subtitleHtml}</p>`, 'subtitle');
+  h = replaceOnce(h, /<p class="product-top__subtitle">[\s\S]*?<\/p>/, `<p class="product-top__subtitle"${m.subtitleHtml ? '' : ' hidden'}>${m.subtitleHtml}</p>`, 'subtitle');
 
   // -------- главное фото (main.js:2320-2330); eager вместо lazy — above the fold
   const label = esc(m.imgLabel);
@@ -375,9 +383,10 @@ function renderPage(m) {
   // -------- описание (main.js:2337-2365)
   const descCounter = m.kind === 'landing'
     ? `<sup class="pd-block__counter pd-block__counter--landing">(02)</sup>`
-    : `<sup class="pd-block__counter pd-block__counter--landing" hidden>(02)</sup>`;
+    : `<sup class="pd-block__counter pd-block__counter--landing"><span class="pd-only-desktop">(01)</span><span class="pd-only-mobile">(02)</span></sup>`;
   h = replaceOnce(h, /<h2 class="pd-block__title">Описание<sup[\s\S]*?<\/h2>/, `<h2 class="pd-block__title">Описание${descCounter}</h2>`, 'desc title');
   h = replaceOnce(h, /<div class="pd-block__body">[\s\S]*?<\/div>\n          <\/div>/, `<div class="pd-block__body">${m.descHtml}</div>\n          </div>`, 'desc body');
+  if (m.kind === 'landing' && !m.descHtml) h = replaceOnce(h, /<div class="pd-block pd-block--description">/, '<div class="pd-block pd-block--description" hidden>', 'empty description');
 
   // -------- характеристики (main.js:2371-2397)
   if (m.kind === 'landing') {
@@ -396,22 +405,25 @@ function renderPage(m) {
 
   // -------- bullets «что мы поставляем» (main.js:2403-2424) — только landing;
   // условие как live: Array.isArray без проверки length
-  if (m.kind === 'landing' && Array.isArray(m.bullets)) {
-    const bRows = m.bullets.map(([l, v]) => `            <div class="pd-bullets__row"><span class="pd-bullets__label">${l}</span><span class="pd-bullets__value">${v}</span></div>`).join('\n');
+  if (m.kind === 'landing' && Array.isArray(m.bullets) && m.bullets.length) {
+    const bRows = m.bullets.map(([l, v]) => `            <div class="pd-bullets__row"><span class="pd-bullets__label">${m.cmsOwned ? esc(l) : l}</span><span class="pd-bullets__value">${m.cmsOwned ? esc(v) : v}</span></div>`).join('\n');
     h = replaceOnce(h, /<div class="pd-block pd-block--bullets" id="pdBulletsBlock" hidden>[\s\S]*?<div class="pd-bullets__list" id="pdBulletsList"><\/div>/,
       `<div class="pd-block pd-block--bullets" id="pdBulletsBlock">\n            <h2 class="pd-block__title pd-block__title--bullets">${m.bulletsTitle}<sup class="pd-block__counter pd-block__counter--bullets">(03)</sup></h2>\n            <div class="pd-bullets__list" id="pdBulletsList">\n${bRows}\n            </div>`,
       'bullets');
   }
 
   // -------- номенклатура (main.js:2427-2447) — только landing (условие как live)
-  if (m.kind === 'landing' && Array.isArray(m.nomenclature)) {
-    const nRows = m.nomenclature.map(([l, v]) => `          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">${l}</span><span class="pd-nomenclature__value">${v}</span></div>`).join('\n');
+  if (m.kind === 'landing' && Array.isArray(m.nomenclature) && m.nomenclature.length) {
+    const nRows = m.nomenclature.map(([l, v]) => `          <div class="pd-nomenclature__row"><span class="pd-nomenclature__label">${m.cmsOwned ? esc(l) : l}</span><span class="pd-nomenclature__value">${m.cmsOwned ? esc(v) : v}</span></div>`).join('\n');
     h = replaceOnce(h, /<section class="section section--pd-nomenclature" id="pdNomenclatureSection" hidden>/, `<section class="section section--pd-nomenclature" id="pdNomenclatureSection">`, 'nomenclature unhide');
     h = replaceOnce(h, /<h2 class="pd-nomenclature__title">[\s\S]*?<\/h2>/, `<h2 class="pd-nomenclature__title">${esc(m.nomenclatureTitle)}</h2>`, 'nomenclature title');
     h = replaceOnce(h, /<div class="pd-nomenclature__table" id="pdNomenclatureTable"><\/div>/, `<div class="pd-nomenclature__table" id="pdNomenclatureTable">\n${nRows}\n        </div>`, 'nomenclature rows');
   }
 
   // -------- CTA: data-kp-* (main.js:2453-2457)
+  if (m.kind === 'landing') {
+    h = replaceOnce(h, /<span class="pd-only-mobile">запросить расчёт<\/span>/, '<span class="pd-only-mobile">Запросить расчёт</span>', 'category cta label');
+  }
   h = replaceOnce(h, /<a href="#" class="pd-actions__primary" data-action="open-kp-drawer">/,
     `<a href="#" class="pd-actions__primary" data-action="open-kp-drawer" data-kp-product="${escAttr(m.kpProduct)}" data-kp-category="${escAttr(m.catLabel)}">`,
     'kp cta');
@@ -425,8 +437,8 @@ function renderPage(m) {
         : `<span class="pd-card__image-label">${esc(cyrName)}</span>`;
       return `          <a href="${escAttr(it.href)}" class="pd-card">\n            <div class="pd-card__image" aria-label="${escAttr(it.name)}">\n              ${img}\n            </div>\n            <div class="pd-card__info">\n              <span class="pd-card__name">${esc(cyrName)}</span>\n              ${it.desc ? `<span class="pd-card__desc">${it.desc}</span>` : ''}\n            </div>\n          </a>`;
     }).join('\n');
-    const relTitle = m.kind === 'landing' ? 'другие категории' : 'Другие исполнения';
-    const relCounter = m.kind === 'landing' ? '(05)' : '(03)';
+    const relTitle = m.kind === 'landing' ? 'Другие категории' : 'Другие исполнения';
+    const relCounter = m.kind === 'landing' ? '(05)' : '<span class="pd-only-desktop">(03)</span><span class="pd-only-mobile">(04)</span>';
     h = replaceOnce(h, /<h2 class="pd-related__title" data-animate="fade-up">[\s\S]*?<\/h2>/, `<h2 class="pd-related__title" data-animate="fade-up">${relTitle}<sup class="pd-related__counter">${relCounter}</sup></h2>`, 'related title');
     h = replaceOnce(h, /<div class="pd-related__grid" id="pdRelatedGrid">[\s\S]*?\n        <\/div>\n      <\/div>\n    <\/section>/, `<div class="pd-related__grid" id="pdRelatedGrid">\n${cards}\n        </div>\n      </div>\n    </section>`, 'related grid');
   } else {
@@ -445,7 +457,7 @@ function buildLandingModel(catSlug) {
   // subtitle: цепочка как live (main.js:2307-2316): subtitle(innerHTML) →
   // 1-е предложение description(textContent) → tu; у лендингов tu нет.
   const firstDesc = Array.isArray(landing.description) ? landing.description[0] : landing.description;
-  const subtitleHtml = landing.subtitle
+  const subtitleHtml = landing.cmsOwned ? esc(landing.subtitle || '') : landing.subtitle
     || (firstDesc ? esc(String(firstDesc).replace(/<[^>]*>/g, '').split('.')[0] + '.') : '');
   // описание: массив → доверенный HTML; строка → markdown-lite (main.js:2357-2361)
   const descHtml = Array.isArray(landing.description)
@@ -458,9 +470,9 @@ function buildLandingModel(catSlug) {
   const plainSubtitle = String(subtitleHtml).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
   const img = landing.image || '';
   return {
-    kind: 'landing', file,
+    kind: 'landing', file, cmsOwned: landing.cmsOwned,
     catSlug: landing.eyebrowCategory[0], catLabel: landing.eyebrowCategory[1],
-    h1: name, rawName: name, counter: null, trail: '',
+    h1: name, rawName: name, counter: '(01)', trail: '',
     // гео + коммерческий интент в title категории: цель — «<раздел> купить/поставка
     // в Санкт-Петербурге» (страница категории = гео-посадочная). Клампим имя, чтобы
     // весь title ≤ ~68 симв. даже для длинных названий («Преобразователи напряжения»).
@@ -612,8 +624,7 @@ if (!PILOT) {
   const currentSet = new Set(current);
   let removed = 0;
   if (fs.existsSync(manifestPath)) {
-    let prev = [];
-    try { prev = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); } catch { /* битый манифест → только перезапишем */ }
+    const prev = PREVIOUS_CATALOG_FILES;
     for (const f of prev) {
       if (!currentSet.has(f) && /^[a-z0-9-]+\.html$/.test(f)) {
         const p = path.join(PAGES, f);
@@ -636,15 +647,15 @@ if (!PILOT && !CHECK) {
   const oldDates = {};
   for (const mm of sm.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)) oldDates[mm[1]] = mm[2];
   // вычищаем прежние каталожные url (идемпотентно); 5 статических страниц выживают
-  sm = sm.replace(/  <url>\s*<loc>[^<]*\/pages\/(?!products\.html|about\.html|contacts\.html|privacy-policy\.html)[^<]*<\/loc>[\s\S]*?<\/url>\n/g, '');
+  const owned = new Set([...PREVIOUS_CATALOG_FILES, ...files].map(file => `${SITE}/pages/${file}`));
   const today = new Date().toISOString().slice(0, 10);
   const indexable = models.filter(Boolean).filter(m => !m.noindex);
   const urls = indexable.map(m => {
     const loc = `${SITE}/pages/${m.file}`;
     const lastmod = m.changed ? today : (oldDates[loc] || today);
     return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
-  }).join('');
-  sm = sm.replace('</urlset>', urls + '</urlset>');
+  });
+  sm = replaceOwnedUrls(sm, owned, urls);
   fs.writeFileSync(smPath, sm, 'utf8');
   console.log(`[catalog-pages] sitemap.xml: +${indexable.length} url (noindex исключены: ${models.filter(Boolean).length - indexable.length})`);
 }

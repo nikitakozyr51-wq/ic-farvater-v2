@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "sourceCommit": "941c2deb909ec5a2ca46f094809fd47c0a83e328",
+  "defaults": {
+    "site-setting.footerTagline": "Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.",
+    "site-setting.footerNewsletterTitle": "Хотите запросить расчёт?",
+    "site-setting.footerNewsletterDesc": "Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.",
+    "site-setting.footerDisclaimer": "Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.",
+    "site-setting.address": "ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406",
+    "site-setting.cookieText": "Мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости."
+  },
+  "pages": {
+    "index.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>\r\n          <p class=\"footer__newsletter-desc\"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.<!-- /cms --></p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"pages/privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"pages/consent.html\">согласие на&nbsp;обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/about.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>\r\n          <p class=\"footer__newsletter-desc\"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.<!-- /cms --></p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\">согласие на&nbsp;обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/products.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\">Хотите запросить расчёт?</h3>\r\n          <p class=\"footer__newsletter-desc\">Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\">Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.</p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\">согласие на&nbsp;обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/product-detail.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\">Хотите запросить расчёт?</h3>\r\n          <p class=\"footer__newsletter-desc\">Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.</p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\">Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.</p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\">согласие на&nbsp;обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/contacts.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>\r\n          <p class=\"footer__newsletter-desc\"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.<!-- /cms --></p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\">согласие на&nbsp;обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/privacy-policy.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\">Хотите запросить расчёт?</h3>\r\n          <p class=\"footer__newsletter-desc\">Подберём компоненты из каталога и пришлём прайс со сроками поставки.</p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\">Отправляя форму, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.</p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\" aria-current=\"page\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\">согласие на обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    },
+    "pages/consent.html": {
+      "frozen": {
+        "NEWSLETTER": "<div class=\"footer__newsletter\">\r\n          <h3 class=\"footer__newsletter-title\">Хотите запросить расчёт?</h3>\r\n          <p class=\"footer__newsletter-desc\">Подберём компоненты из каталога и пришлём прайс со сроками поставки.</p>\r\n          <form class=\"footer__email-form\" action=\"#\">\r\n            <input type=\"email\" placeholder=\"email@example.com\" aria-label=\"Email для расчёта\" required>\r\n            <button type=\"submit\" aria-label=\"Отправить\">→</button>\r\n          </form>\r\n          <p class=\"footer__disclaimer\">Отправляя форму, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.</p>\r\n        </div>",
+        "BOTTOM": "<div class=\"footer__bottom\">\r\n        <div class=\"footer__copyright-group\">\r\n          <p class=\"footer__copyright\">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>\r\n          <p class=\"footer__copyright footer__copyright--tertiary\">ИНН 7801709112 · ОГРН 1227800016993</p>\r\n        </div>\r\n        <div class=\"footer__legal\">\r\n          <a href=\"privacy-policy.html\">политика конфиденциальности</a>\r\n          <a href=\"consent.html\" aria-current=\"page\">согласие на обработку персональных данных</a>\r\n        </div>\r\n      </div>"
+      }
+    }
+  }
+}

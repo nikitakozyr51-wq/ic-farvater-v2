@@ -6,12 +6,12 @@
  * где KEY = "<type>.<field>" или "<type>.<field>.<index>.<subfield>"
  *   (напр. site-setting.phone, homepage.heroTitle, homepage.razemyCards.0.name).
  *
- * ГАРАНТИЯ ДИЗАЙНА:
- *   - заменяет содержимое маркера ТОЛЬКО если в Strapi значение непустое,
- *     иначе оставляет текущий HTML (fallback);
- *   - значение экранируется под контекст (текст vs значение атрибута);
- *   - --check: прогон без записи + diff с оригиналом (должен быть пустой,
- *     когда Strapi = seed из текущего HTML).
+ * CONTENT CONTRACT:
+ *   - all required single documents/marker fields must be returned successfully;
+ *   - explicit null/empty values clear content; missing fields stop the build;
+ *   - editable text permits a small inline HTML subset and rejects executable markup;
+ *   - --check does not write HTML, snapshots or media;
+ *   - the complete sync runs in a temporary directory before promoting outputs.
  *
  * Режимы:
  *   node scripts/inject-html.js --check     # сравнить с данными Strapi, не писать
@@ -26,6 +26,8 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const { client } = require('./cms-client');
+const { inlineHtml, editableInline, escape: esc } = require('./editorial-text');
 
 const STRAPI_URL = (process.env.STRAPI_URL || 'https://cms.ic-farvater.ru').replace(/\/$/, '');
 const ROOT = process.env.FRONTEND_DIR || path.resolve(__dirname, '..');
@@ -44,21 +46,21 @@ const SINGLE_TYPES = [
 ];
 
 // HTML-файлы, в которых ищем маркеры.
-const HTML_FILES = ['index.html', 'pages/about.html', 'pages/contacts.html', 'pages/products.html', 'pages/privacy-policy.html', 'pages/consent.html'];
+const HTML_FILES = ['index.html', 'pages/about.html', 'pages/contacts.html', 'pages/products.html', 'pages/product-detail.html', 'pages/privacy-policy.html', 'pages/consent.html'];
 
 async function fetchSingle(api) {
-  const res = await fetch(`${STRAPI_URL}/api/${api}?populate=*`, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
-  if (res.status === 404) return null;          // тип ещё не создан — ок, пропускаем
-  if (!res.ok) throw new Error(`GET ${api} → ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const json = await res.json();
-  return json.data || null;
+  const value = await client({ baseUrl: STRAPI_URL, token: TOKEN }).json(api, 'populate=*');
+  if (!value.data || Array.isArray(value.data) || typeof value.data !== 'object') throw Error(`CMS ${api}: required single document missing`);
+  return value.data;
 }
 
 // Превратить объект Strapi в плоский словарь dotted-ключей.
 // media-поле → строка-путь (если скачано) или url; компоненты/массивы → рекурсивно с индексами.
 function flatten(obj, prefix, out) {
-  if (obj === null || obj === undefined) return;
+  if (obj === undefined) return;
+  if (obj === null) { out[prefix] = null; return; }
   if (Array.isArray(obj)) {
+    out[prefix] = obj;
     obj.forEach((v, i) => flatten(v, `${prefix}.${i}`, out));
     return;
   }
@@ -67,6 +69,10 @@ function flatten(obj, prefix, out) {
     if (typeof obj.url === 'string') {
       const absUrl = obj.url.startsWith('http') ? obj.url : STRAPI_URL + obj.url;
       out[prefix] = { __media: true, url: absUrl, hash: obj.hash || '', ext: obj.ext || '', name: obj.name || '' };
+      if (prefix === 'about-page.heroImage') Object.assign(out[prefix], {
+        alt: typeof obj.alternativeText === 'string' ? obj.alternativeText : '',
+        width: obj.width, height: obj.height,
+      });
       return;
     }
     for (const [k, v] of Object.entries(obj)) {
@@ -86,6 +92,8 @@ function escapeForContext(value, before) {
 }
 
 const { renderHomeBlocks } = require('./render-home-blocks');
+const { renderHomeServices } = require('./render-home-services');
+const { renderHomeHero } = require('./render-home-hero');
 
 const MARKER = /<!--\s*cms:([\w.-]+)\s*-->([\s\S]*?)<!--\s*\/cms\s*-->/g;
 
@@ -116,6 +124,7 @@ function buildDictFromMarkers() {
 
   // 1. собрать словарь значений
   let dict = {};
+  const singles = {};
   if (SELFTEST) {
     const r = buildDictFromMarkers();
     dict = r.dict;
@@ -128,9 +137,8 @@ function buildDictFromMarkers() {
     console.log(`SELFTEST: значений из маркеров: ${Object.keys(dict).length}`);
   } else {
     for (const st of SINGLE_TYPES) {
-      let data;
-      try { data = await fetchSingle(st.api); } catch (e) { console.warn(`  ! ${st.api}: ${e.message}`); continue; }
-      if (!data) { console.log(`  (тип ${st.api} ещё не создан — пропуск)`); continue; }
+      const data = await fetchSingle(st.api);
+      singles[st.prefix] = data;
       flatten(data, st.prefix, dict);
     }
     console.log(`Значений из Strapi: ${Object.keys(dict).length}`);
@@ -143,18 +151,13 @@ function buildDictFromMarkers() {
   if (!SELFTEST) {
     const cmsDir = path.join(ROOT, 'assets', 'images', 'cms');
     for (const [key, val] of Object.entries(dict)) {
+      if (['homepage.heroBackground','homepage.heroBackgroundMobile'].includes(key)) continue;
       if (!val || !val.__media) continue;
       const fname = ((val.hash || key.replace(/[^\w]+/g, '_')) + (val.ext || '')).replace(/^_+/, '');
       const dest = path.join(cmsDir, fname);
       mediaPaths[key] = `assets/images/cms/${fname}`;
       if (fs.existsSync(dest)) continue;             // уже скачано
-      try {
-        const res = await fetch(val.url);
-        if (!res.ok) { console.warn(`  ! media ${key} → ${res.status}`); delete mediaPaths[key]; continue; }
-        fs.mkdirSync(cmsDir, { recursive: true });
-        fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
-        console.log(`  ↓ media ${key} → ${mediaPaths[key]}`);
-      } catch (e) { console.warn(`  ! media ${key}: ${e.message}`); delete mediaPaths[key]; }
+      await client({ baseUrl: STRAPI_URL, token: TOKEN }).media(val.url, dest, { write: WRITE });
     }
   }
 
@@ -162,6 +165,19 @@ function buildDictFromMarkers() {
   let changedFiles = 0;
   const allMarkerKeys = new Set();
   const missingInStrapi = new Set();
+  const clearedParent = key => {
+    const parts = key.split('.');
+    while (parts.length > 1) {
+      parts.pop(); const parent = dict[parts.join('.')];
+      if (parent === null) return true;
+      if (Array.isArray(parent)) {
+        const index = Number(key.split('.')[parts.length]);
+        if (Number.isInteger(index) && index >= parent.length) return true;
+      }
+    }
+    return false;
+  };
+  const pending = [];
   for (const rel of HTML_FILES) {
     const fp = path.join(ROOT, rel);
     if (!fs.existsSync(fp)) continue;
@@ -171,12 +187,13 @@ function buildDictFromMarkers() {
     // 2a. ТЕКСТ — маркеры <!-- cms:KEY -->...<!-- /cms --> между тегами (только строковые значения)
     let next = orig.replace(MARKER, (full, key, current) => {
       allMarkerKeys.add(key);
-      const val = dict[key];
+      const val = dict[key] === undefined && clearedParent(key) ? null : dict[key];
       if (val === undefined) { missingInStrapi.add(key); return full; }
-      if (val === null || val === '' || typeof val !== 'string') return full;   // media/пусто → fallback
-      if (val === current) return full;               // не изменилось
+      if (val !== null && typeof val !== 'string' && typeof val !== 'number') throw Error(`CMS marker ${key}: expected editable text`);
+      const text = SELFTEST ? val : editableInline(val, current);
+      if (text === current) return full;
       replaced++;
-      return `<!-- cms:${key} -->${val}<!-- /cms -->`;
+      return `<!-- cms:${key} -->${text}<!-- /cms -->`;
     });
     // 2b. КАРТИНКИ — <img ... data-cms-src="KEY" ...>: подставить путь в src (или data-src для lazy).
     //     Значение атрибута чистое (без комментариев) — картинка не ломается. Пусто в Strapi → не трогаем.
@@ -184,6 +201,16 @@ function buildDictFromMarkers() {
       next = next.replace(/<img\b[^>]*?\bdata-cms-src="([\w.-]+)"[^>]*>/g, (tag, key) => {
         allMarkerKeys.add(key);
         const val = dict[key];
+        if (key === 'about-page.heroImage' && (val === null || (val?.__media && mediaPaths[key]))) {
+          // Keep the CMS slot when an editor clears the cover, so a later selection can fill it again.
+          const size = [val?.width,val?.height].every(n => Number.isSafeInteger(n) && n > 0)
+            ? ` width="${val.width}" height="${val.height}"` : '';
+          const newTag = val === null ? `<img data-cms-src="${key}" alt="" hidden>`
+            : `<img data-cms-src="${key}"${size} src="${esc(subdirPrefix+mediaPaths[key])}" alt="${esc(val.alt)}" fetchpriority="high" decoding="async">`;
+          if (newTag !== tag) replaced++;
+          return newTag;
+        }
+        if (val === null || clearedParent(key)) { replaced++; return ''; }
         if (!val || !val.__media || !mediaPaths[key]) { if (val === undefined) missingInStrapi.add(key); return tag; }
         const attr = /\sdata-src="/.test(tag) ? 'data-src' : 'src';
         const re = new RegExp(`(\\s${attr}=")[^"]*(")`);   // \s перед именем — чтобы не цеплять data-cms-src
@@ -196,14 +223,26 @@ function buildDictFromMarkers() {
     if (next !== orig) {
       changedFiles++;
       console.log(`  ${rel}: ${replaced} замен`);
-      if (WRITE) fs.writeFileSync(fp, next, 'utf8');
+      pending.push([fp, next]);
     } else {
       console.log(`  ${rel}: без изменений`);
     }
   }
 
+  if (!SELFTEST && missingInStrapi.size) throw Error(`CMS fields missing: ${[...missingInStrapi].join(', ')}`);
+  for (const [fp, next] of pending) if (WRITE) fs.writeFileSync(fp, next, 'utf8');
+  if (!SELFTEST && WRITE) {
+    const values = Object.fromEntries(Object.entries(dict).filter(([key]) => key.startsWith('site-setting.')));
+    const file = path.join(ROOT, 'content/site-settings.json');
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify({ version: 1, values }, null, 2) + '\n');
+  }
   // Конструктор главной (D4): dynamic zone homepage.blocks → секции между HOME:BLOCKS.
-  if (!SELFTEST) await renderHomeBlocks({ strapiUrl: STRAPI_URL, token: TOKEN, write: WRITE });
+  if (!SELFTEST) {
+    await renderHomeHero({ homepage: singles.homepage, api: client({baseUrl:STRAPI_URL,token:TOKEN}), write: WRITE });
+    const blocks = await renderHomeBlocks({ strapiUrl: STRAPI_URL, token: TOKEN, write: WRITE });
+    renderHomeServices({ homepage: singles.homepage, counter: blocks?.nextCounter, write: WRITE });
+  }
 
   console.log(`\nМаркеров в HTML: ${allMarkerKeys.size}`);
   if (SELFTEST) {

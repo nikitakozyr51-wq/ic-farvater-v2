@@ -1,0 +1,18 @@
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Меню сайта" data-lenis-prevent hidden>
+      <div class="mobile-menu__header">
+        <a href="{{HOME_URL}}" class="mobile-menu__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M5 5 17 17M17 5 5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="Главная навигация">
+        <form class="mobile-menu__search-form" role="search" action="{{CATALOG_URL}}"><input type="search" name="q" class="mobile-menu__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="mobile-menu__search-submit" aria-label="Найти"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5 16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></form>
+        <a class="mobile-menu__item" href="{{HOME_URL}}"><span>главная</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="{{CATALOG_URL}}"><span>продукция</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="{{ABOUT_URL}}"><span>о&nbsp;компании</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="{{SERVICES_URL}}"><span>услуги</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="{{CONTACTS_URL}}"><span>контакты</span><span aria-hidden="true">→</span></a>
+        {{MOBILE_NEWS_LINK}}
+        {{MOBILE_LAB_NAV}}
+      </nav>
+      <div class="mobile-menu__cta-wrap"><a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить кп <span aria-hidden="true">→</span></a></div>
+      <div class="mobile-menu__contact">{{MOBILE_CONTACTS}}</div>
+    </div>

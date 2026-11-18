@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "values": {
+    "site-setting.companyName": "ООО «АЙСИ ФАРВАТЕР»",
+    "site-setting.phone": "+7 (812) 209-34-65 +7 996 778-88-42",
+    "site-setting.address": "ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406",
+    "site-setting.workHours": "пн.–пт. 10:00–18:00",
+    "site-setting.schemaJsonLd": null,
+    "site-setting.yandexMapsEmbed": null,
+    "site-setting.footerTagline": "Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.",
+    "site-setting.footerNewsletterTitle": "Хотите запросить расчёт?",
+    "site-setting.footerNewsletterDesc": "Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.",
+    "site-setting.footerDisclaimer": "Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.",
+    "site-setting.cookieText": "Мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости.",
+    "site-setting.emails": [
+      {
+        "id": 1,
+        "email": "info@ic-farvater.ru",
+        "purpose": "Общие вопросы"
+      }
+    ],
+    "site-setting.emails.0.email": "info@ic-farvater.ru",
+    "site-setting.emails.0.purpose": "Общие вопросы",
+    "site-setting.phones": [
+      {
+        "order": 0,
+        "id": 1,
+        "label": "Городской",
+        "display": "+7 (812) 209-34-65",
+        "href": "tel:+78122093465"
+      },
+      {
+        "order": 1,
+        "id": 2,
+        "label": "Мобильный",
+        "display": "+7 (996) 778-88-42",
+        "href": "tel:+79967788842"
+      }
+    ],
+    "site-setting.phones.0.order": 0,
+    "site-setting.phones.0.label": "Городской",
+    "site-setting.phones.0.display": "+7 (812) 209-34-65",
+    "site-setting.phones.0.href": "tel:+78122093465",
+    "site-setting.phones.1.order": 1,
+    "site-setting.phones.1.label": "Мобильный",
+    "site-setting.phones.1.display": "+7 (996) 778-88-42",
+    "site-setting.phones.1.href": "tel:+79967788842"
+  }
+}

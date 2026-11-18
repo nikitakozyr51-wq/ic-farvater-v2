@@ -15,14 +15,17 @@ import { readFile, writeFile, stat, readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { renderSharedLayouts } from './shared-layout.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const log = (...a) => console.log('[build-prod]', ...a);
 
+log('Общая оболочка', JSON.stringify(renderSharedLayouts({ write: true })));
+
 const CRITICAL = ['css/reset.css', 'css/tokens.css', 'css/base.css', 'css/layout.css'];
-const CSS_NON_CRITICAL = ['css/components.css', 'css/inner-page.css', 'css/animations.css'];
+const CSS_NON_CRITICAL = ['css/components.css', 'css/inner-page.css', 'css/animations.css', 'css/editorial.css', 'css/navigation.css', 'css/home.css'];
 const JS_APP = [
-  'js/main.js', 'js/animations.js', 'js/nbsp.js', 'js/catalog-urls.js',
+  'js/main.js', 'js/animations.js', 'js/nbsp.js', 'js/editorial.js', 'js/site-navigation.js', 'js/catalog-urls.js', 'js/catalog-filters.js',
   'js/products.js', 'js/connectors-data.js', 'js/converters-data.js',
   'js/capacitors-data.js', 'js/categories-data.js', 'js/applications-data.js',
 ];
@@ -112,7 +115,7 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
       const { out, size } = await writeMin(f, code);
       log(`   ✓ ${f} → ${out.replace(ROOT + '\\', '').replace(ROOT + '/', '')} (${size} bytes)`);
     } catch (e) {
-      log(`   ✗ ${f}: ${e.message}`);
+      throw new Error(`JavaScript build failed: ${f}: ${e.message}`);
     }
   }
 
@@ -122,8 +125,8 @@ async function injectCriticalIntoHtml(htmlPath, criticalCss) {
   //    не двигается). HTML не кэшируется (no-cache) → новые ссылки подхватываются сразу.
   log('5. Версии ассетов в HTML по хэшу содержимого (?v=<md5-8>)');
   const VERSIONED = [
-    'css/components.min.css', 'css/inner-page.min.css', 'css/animations.min.css',
-    'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js', 'js/catalog-urls.min.js',
+    'css/components.min.css', 'css/inner-page.min.css', 'css/animations.min.css', 'css/editorial.min.css', 'css/navigation.min.css', 'css/home.min.css',
+    'js/main.min.js', 'js/animations.min.js', 'js/nbsp.min.js', 'js/editorial.min.js', 'js/site-navigation.min.js', 'js/catalog-urls.min.js', 'js/catalog-filters.min.js',
     'js/products.min.js', 'js/connectors-data.min.js', 'js/converters-data.min.js',
     'js/capacitors-data.min.js', 'js/categories-data.min.js', 'js/applications-data.min.js',
   ];

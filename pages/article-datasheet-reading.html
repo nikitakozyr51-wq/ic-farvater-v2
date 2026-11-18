@@ -1,0 +1,244 @@
+<!-- GENERATED:EDITORIAL:V1 -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Как читать даташит: typical, maximum и условия измерения — IC Фарватер</title>
+<meta name="description" content="Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.">
+<link rel="canonical" href="https://ic-farvater.ru/pages/article-datasheet-reading.html">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="IC Фарватер">
+<meta property="og:title" content="Как читать даташит: typical, maximum и условия измерения — IC Фарватер">
+<meta property="og:description" content="Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.">
+<meta property="og:url" content="https://ic-farvater.ru/pages/article-datasheet-reading.html">
+<meta property="og:image" content="https://ic-farvater.ru/assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Как читать даташит: typical, maximum и условия измерения — IC Фарватер">
+<meta name="twitter:description" content="Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.">
+<meta name="twitter:image" content="https://ic-farvater.ru/assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad.webp">
+  <meta name="theme-color" content="#F5F3EF">
+  <meta name="yandex-counter" content="109423767"><!-- Replace with 8-digit Yandex.Metrica ID once registered -->
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="../assets/favicon/site.webmanifest">
+
+  <link rel="preload" href="../assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Critical CSS (reset+tokens+base+layout) inline — генерируется через `npm run build` -->
+  <!-- BUILD:CRITICAL-CSS-START -->
+  <style id="critical-css">*,*:before,*:after{box-sizing:border-box;margin:0;padding:0}html{-moz-text-size-adjust:none;-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth;overflow-y:scroll;scrollbar-width:none}html::-webkit-scrollbar{width:0;display:none}body{min-height:100vh;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"liga" 1,"calt" 1;font-optical-sizing:auto;font-synthesis:none}img,picture,video,canvas,svg{display:block;max-width:100%}input,button,textarea,select{font:inherit;color:inherit}p,h1,h2,h3,h4,h5,h6{overflow-wrap:break-word}a{color:inherit;text-decoration:none}ul,ol{list-style:none}button{cursor:pointer;border:none;background:none}
+:root{--c-bg: #F5F3EF;--c-bg-alt: #E9E8EB;--c-text: #112F6E;--c-text-muted: #6B7A94;--c-border: #D7D3CB;--c-bg-dark: #112F6E;--c-text-on-dark: #F5F3EF;--c-muted-on-dark: #F5F3EFCC;--c-label-on-dark: #F5F3EFB3;--c-tertiary-on-dark: #F5F3EF99;--c-eyebrow-on-dark: #F5F3EF66;--c-border-on-dark: #F5F3EF26;--c-input-on-dark: #F5F3EF40;--c-accent: var(--c-text);--font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;--t-hero: clamp(36px, 4.7vw, 56px);--t-section: clamp(24px, 2.5vw, 30px);--t-sub: clamp(18px, 1.5vw, 24px);--t-list-row: clamp(18px, 1.7vw, 20px);--t-body: 16px;--t-body-mob: 15px;--t-card-name: 15px;--t-card-desc: 13px;--t-label: 13px;--t-disclaimer: 11px;--t-logo: 18px;--t-nav: 14px;--t-cta-sm: 13px;--t-cta-md: 14px;--t-hero-sub: clamp(14px, 1.4vw, 16px);--t-paragraph: 15px;--ls-hero: -1.5px;--ls-section: -.5px;--ls-sub: -.3px;--ls-label: .45px;--lh-hero: 1.1;--lh-section: 1.15;--lh-body: 1.55;--lh-row: 1.62;--s-1: 4px;--s-2: 8px;--s-3: 12px;--s-4: 16px;--s-5: 24px;--s-6: 32px;--s-7: 48px;--s-8: 64px;--s-9: 80px;--s-10: 96px;--s-11: 120px;--s-12: 160px;--section-y: clamp(48px, 7.5vw, 100px);--container-x: clamp(24px, 4.2vw, 60px);--container-max: 1320px;--gap-internal: var(--s-2);--gap-intra: var(--s-6);--gap-section: var(--s-9);--row-height: 75px;--row-height-spec: 52px;--badge-min: 36px;--header-h-desktop: 72px;--header-h-mobile: 60px;--hero-h-desktop: 720px;--hero-h-mobile: 480px;--bp-mobile-max: 767.98px;--bp-tablet: 768px;--bp-desktop: 1280px;--bp-wide: 1440px;--border-thin: 1px solid var(--c-border);--pill-py-sm: 10px;--pill-px-sm: 18px;--pill-py-md: 12px;--pill-px-md: 24px;--pill-py-lg: 14px;--pill-px-lg: 28px;--header-nav-gap: 30px;--header-right-gap: 16px;--section-gap: clamp(24px, 4.5vw, 60px);--grid-gap: clamp(16px, 1.8vw, 24px);--card-gap: clamp(12px, 1.2vw, 16px);--info-gap-d: 6px;--info-gap-m: 8px;--dur-instant: .15s;--dur-short: .25s;--dur-mid: .35s;--dur-long: .5s;--dur-xl: .7s;--ease-swiss: cubic-bezier(.16, 1, .3, 1);--ease-out: cubic-bezier(.25, .46, .45, .94);--ease-in-out: cubic-bezier(.4, 0, .2, 1)}
+@font-face{font-family:Inter;src:url(../assets/fonts/InterVariable.woff2) format("woff2-variations");font-weight:100 900;font-style:normal;font-display:swap}html{background:var(--c-text);overscroll-behavior:none}body{display:flex;flex-direction:column;min-height:100vh;overscroll-behavior:none;font-family:var(--font-primary);font-size:var(--t-body);color:var(--c-text);background:var(--c-bg);font-weight:400}main{flex:1 0 auto}.footer{flex-shrink:0}h1,h2,h3{font-weight:500;letter-spacing:var(--ls-section);line-height:var(--lh-section);color:var(--c-text)}h1{font-size:var(--t-hero);letter-spacing:var(--ls-hero);line-height:var(--lh-hero)}h2{font-size:var(--t-section)}h3{font-size:var(--t-sub);letter-spacing:var(--ls-sub)}p{line-height:var(--lh-body);color:var(--c-text-muted)}.container{width:min(100% - 2 * var(--container-x),var(--container-max));margin-inline:auto}.section{border-top:var(--border-thin)}.section--no-border{border-top:none}.section--products{padding-block:48px}.section--about,.section--promise{padding-block:56px}.section--services{padding-block:48px}@media(min-width:1024px){.section--products{padding-block:100px}.section--about{padding-block:60px}.section--promise{padding-block:110px}.section--services{padding-block:80px}}.is-mobile-only{display:none!important}.is-desktop-only{display:initial!important}@media(max-width:1023.98px){.is-mobile-only{display:initial!important}.is-desktop-only{display:none!important}}
+.grid-12{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s-5)}@media(max-width:767.98px){.grid-12{grid-template-columns:repeat(4,1fr);gap:var(--s-3)}}.cards-4-to-2{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-5)}@media(max-width:767.98px){.cards-4-to-2{grid-template-columns:repeat(2,1fr);gap:var(--s-4)}}.cards-3-to-1{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-5)}@media(max-width:767.98px){.cards-3-to-1{grid-template-columns:1fr;gap:var(--s-5)}}.split-2col{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-9);align-items:center}@media(max-width:767.98px){.split-2col{grid-template-columns:1fr;gap:var(--s-5);align-items:stretch}}.split-2col--image-right .split-2col__image{order:2}.split-2col--image-right .split-2col__text{order:1}@media(max-width:767.98px){.split-2col--image-right .split-2col__image{order:1}.split-2col--image-right .split-2col__text{order:2}}
+</style>
+  <!-- BUILD:CRITICAL-CSS-END -->
+
+  <link rel="stylesheet" href="../css/components.min.css?v=5b594d45">
+  <link rel="stylesheet" href="../css/inner-page.min.css?v=68b85b53">
+  <link rel="stylesheet" href="../css/animations.min.css?v=7c445570">
+  <link rel="stylesheet" href="../css/editorial.min.css?v=4986a31c">
+<link rel="stylesheet" href="../css/navigation.min.css?v=424e7eb5">
+</head>
+<body data-site-page="inner">
+
+  <!-- Page loader — main.js initPageLoader hides on window.load -->
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <span class="page-loader__logo">ic farvater</span>
+    <div class="page-loader__bar"></div>
+  </div>
+
+  <!-- Header — same as main page (Pencil el7NC == ISnHK, unified across all pages) -->
+  <header class="header" data-tone="light">
+    <svg class="header__ink-filter" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="ic-logo-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.2126 -.7152 -.0722 1 0"/>
+          <feComponentTransfer result="darkPixels">
+            <feFuncA type="discrete" tableValues="0 1"/>
+          </feComponentTransfer>
+          <feFlood flood-color="var(--c-bg)" result="lightInk"/>
+          <feComposite in="lightInk" in2="darkPixels" operator="in" result="inkOnDark"/>
+          <feFlood flood-color="var(--c-text)" result="darkInk"/>
+          <feMerge><feMergeNode in="darkInk"/><feMergeNode in="inkOnDark"/></feMerge>
+        </filter>
+      </defs>
+    </svg>
+    <div class="container header__inner">
+      <a href="../index.html" class="header__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+      <nav class="header__nav" aria-label="Главная навигация">
+        <a href="products.html" class="header__nav-link">каталог</a>
+        <a href="../index.html#uslugi" class="header__nav-link">услуги</a>
+        <a href="about.html" class="header__nav-link">о&nbsp;компании</a>
+        <a href="contacts.html" class="header__nav-link">контакты</a>
+        <a href="news.html" class="header__nav-link">новости</a>
+        <button class="header__nav-link header__lab-trigger" id="laboratoryTrigger" type="button" aria-expanded="false" aria-controls="laboratoryNavigation">лаборатория <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m2 4 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
+      </nav>
+      <div class="header__right">
+        <div class="header__search-wrap">
+          <button class="header__search" type="button" aria-label="Поиск по каталогу" aria-expanded="false" aria-controls="headerSearchForm"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <form class="header__search-form" id="headerSearchForm" role="search" action="products.html" hidden><input type="search" name="q" class="header__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="header__search-submit" aria-label="Найти">→</button><button type="button" class="header__search-close" aria-label="Закрыть поиск"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="overflow:visible"><path d="m0 0 12 12M12 0 0 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button></form>
+        </div>
+        <a href="#" class="header__cta" data-action="open-kp-drawer">запросить КП</a>
+        <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobileMenu"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 6H19M3 11H19M3 16H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="header__lab-panel" id="laboratoryNavigation" aria-labelledby="laboratoryTrigger" data-lenis-prevent hidden><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="laboratory-overview.html">О лаборатории</a><a href="laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="laboratory-research.html">Исследования</a><a href="laboratory-incoming.html">Входной контроль</a><a href="laboratory-functional.html">Функциональный и параметрический контроль</a><a href="laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="laboratory-ekb-cert.html">Сертификационные</a><a href="laboratory-ekb-qual.html">Квалификационные</a><a href="laboratory-ekb-periodic.html">Периодические</a><a href="laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="laboratory-rea-type.html">Типовые</a><a href="laboratory-rea-qual.html">Квалификационные</a><a href="laboratory-rea-periodic.html">Периодические</a><a href="laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></div>
+    <button class="header__backdrop" type="button" aria-label="Закрыть навигацию лаборатории" hidden></button>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Меню сайта" data-lenis-prevent hidden>
+      <div class="mobile-menu__header">
+        <a href="../index.html" class="mobile-menu__logo" aria-label="IC Фарватер — главная"><span class="brand-logo" aria-hidden="true"></span></a>
+        <button class="mobile-menu__close" type="button" aria-label="Закрыть меню"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M5 5 17 17M17 5 5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="Главная навигация">
+        <form class="mobile-menu__search-form" role="search" action="products.html"><input type="search" name="q" class="mobile-menu__search-input" placeholder="Поиск по продукции" aria-label="Поиск по продукции" autocomplete="off"><button type="submit" class="mobile-menu__search-submit" aria-label="Найти"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5 16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></form>
+        <a class="mobile-menu__item" href="../index.html"><span>главная</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="products.html"><span>продукция</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="about.html"><span>о&nbsp;компании</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="../index.html#uslugi"><span>услуги</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="contacts.html"><span>контакты</span><span aria-hidden="true">→</span></a>
+        <a class="mobile-menu__item" href="news.html"><span>новости</span><span aria-hidden="true">→</span></a>
+        <details class="mobile-menu__laboratory"><summary class="mobile-menu__item">лаборатория <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="container laboratory-navigation"><div class="laboratory-navigation__columns"><div class="laboratory-navigation__group"><h3>Лаборатория</h3><div><a href="laboratory-overview.html">О лаборатории</a><a href="laboratory-bearings.html">Испытания подшипников</a></div></div><div class="laboratory-navigation__group"><h3>Контроль ЭКБ</h3><div><a href="laboratory-research.html">Исследования</a><a href="laboratory-incoming.html">Входной контроль</a><a href="laboratory-functional.html">Функциональный и параметрический контроль</a><a href="laboratory-counterfeit.html">Выявление признаков контрафакта</a><a href="laboratory-failure.html">Анализ отказа</a></div></div><div class="laboratory-navigation__group"><h3>Испытания ЭКБ</h3><div><a href="laboratory-ekb-cert.html">Сертификационные</a><a href="laboratory-ekb-qual.html">Квалификационные</a><a href="laboratory-ekb-periodic.html">Периодические</a><a href="laboratory-ekb-accept.html">Приёмо-сдаточные</a></div></div><div class="laboratory-navigation__group"><h3>Испытания РЭА</h3><div><a href="laboratory-rea-type.html">Типовые</a><a href="laboratory-rea-qual.html">Квалификационные</a><a href="laboratory-rea-periodic.html">Периодические</a><a href="laboratory-rea-accept.html">Приёмо-сдаточные</a></div></div></div><div class="laboratory-navigation__impact"><p>По воздействию</p><a href="laboratory-climate.html">Климатические испытания <span aria-hidden="true">→</span></a><a href="laboratory-mechanical.html">Механические испытания <span aria-hidden="true">→</span></a></div></div></details>
+      </nav>
+      <div class="mobile-menu__cta-wrap"><a href="#" class="mobile-menu__cta" data-action="open-kp-drawer">запросить кп <span aria-hidden="true">→</span></a></div>
+      <div class="mobile-menu__contact"><div class="mobile-menu__field"><span class="mobile-menu__field-label">Телефон</span><div class="mobile-menu__field-value"><a href="tel:+79967788842">+7 996 778-88-42</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Email</span><div class="mobile-menu__field-value"><a href="mailto:info@ic-farvater.ru">info@ic-farvater.ru</a></div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">Адрес</span><div class="mobile-menu__field-value">ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406</div></div><div class="mobile-menu__field"><span class="mobile-menu__field-label">режим работы</span><div class="mobile-menu__field-value">пн.–пт. 10:00–18:00</div></div></div>
+    </div>
+
+  </header>
+
+  <main class="editorial-page" data-editorial-kind="article"><section class="editorial-intro"><div class="container editorial-intro__head"><h1>Как читать даташит: typical, maximum и условия измерения</h1><p>Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.</p></div><figure class="editorial-image editorial-image--cover" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad.webp 245w, ../assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_0f5b5d98c67eaf021194ae08b110e61ddf5747d3a05d6b99ea88c676a39f75f9_0be21a63ad.webp 1774w" sizes="(min-width:1024px) 100vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «Как читать даташит: typical, maximum и условия измерения»" fetchpriority="high" decoding="async"></picture></figure></section><div class="container editorial-body"><aside class="editorial-toc"><p>В этой статье</p><nav aria-label="Содержание статьи"><a href="#section-1">Убедитесь, что документ относится к вашей детали</a><a href="#section-2">Что означает typical</a><a href="#section-3">Не путайте рабочий режим с предельным воздействием</a><a href="#section-4">Читайте условия рядом с числом</a><a href="#section-5">Что записать в спецификацию</a></nav></aside><div class="editorial-reading"><section class="editorial-section"><div class="editorial-richtext" id="block-1"><p>В даташите важно не только число, но и то, что производитель этим числом обещает. Различайте типовые характеристики, гарантируемые пределы и предельно допустимые воздействия, чтобы не перенести лабораторный пример в проект без оснований.</p>
+</div></section>
+<section class="editorial-section"><h2 id="section-1">Убедитесь, что документ относится к вашей детали</h2>
+<div class="editorial-richtext" id="block-3"><p>Проверьте полное обозначение, корпус, температурное исполнение и редакцию документа. Сокращённое название семейства не гарантирует одинаковые характеристики всех вариантов. Это особенно заметно в линейках, где один документ объединяет несколько скоростных, температурных или выходных исполнений.</p>
+</div>
+<div class="editorial-richtext" id="block-4"><p>Практически полезно сохранить локальную копию использованного документа и дату проверки. Это не заменяет контроля актуальности, но позволяет позднее восстановить основания решения. Если поставщик предлагает другой суффикс, сравнение начинают с него, а не с обещания общей совместимости.</p>
+</div>
+<div class="editorial-richtext" id="block-5"><p>Перед чтением таблиц сформулируйте задачу. Какие параметры критичны для работы устройства, какие влияют на монтаж, а какие нужны только для закупочной идентификации? Такой список помогает читать документ последовательно и не потеряться среди десятков характеристик, не имеющих отношения к вашему режиму.</p>
+</div></section>
+<section class="editorial-section"><h2 id="section-2">Что означает typical</h2>
+<div class="editorial-richtext" id="block-7"><p>Типовое значение описывает характеристику в оговорённых условиях. Его нельзя автоматически считать гарантированным для каждого экземпляра во всём диапазоне температуры и питания. В таблице нужно отдельно смотреть минимальные и максимальные пределы, сноски и условия нормирования. Структуру таких таблиц подробно объясняет руководство TI по даташитам.</p>
+</div>
+<div class="editorial-richtext" id="block-8"><p>Если проекту нужен гарантируемый предел, а в документе есть только typical, оставьте это как незакрытый вопрос. Возможные дальнейшие действия — запрос данных изготовителя, изменение требований или собственная проверка в согласованном объёме. Произвольная прибавка процентов не превращает типовое значение в гарантию производителя.</p>
+</div>
+<div class="editorial-richtext" id="block-9"><p>С графиками поступайте так же. Они помогают понять зависимость и выбрать рабочие точки, но статус графика следует читать в самом документе. Для внутренней карточки достаточно пометки «типовая зависимость» с перечислением условий. Она предотвращает превращение приблизительного считывания кривой в точный закупочный критерий.</p>
+</div></section>
+<section class="editorial-section"><h2 id="section-3">Не путайте рабочий режим с предельным воздействием</h2>
+<div class="editorial-richtext" id="block-11"><p>Раздел absolute maximum ratings не является рекомендацией постоянно работать возле указанных границ. Для выбора режима служат рабочие условия и нормируемые характеристики. В отношении преобразователей Murata отдельно разграничивает предельные воздействия и нормальное функционирование. <a class="editorial-source-ref" href="#source-2">[2]</a></p>
+</div>
+<div class="editorial-richtext" id="block-12"><p>В спецификации удобно разделять три вопроса: при каких условиях устройство должно работать, какое кратковременное воздействие должно пережить и какое поведение допустимо после него. Это разные требования. Если записать их одним диапазоном напряжения, поставщик и разработчик могут прочитать задание по-разному.</p>
+</div>
+<div class="editorial-richtext" id="block-13"><p>Кроме значения проверяйте продолжительность и повторяемость воздействия. Для входного броска, температуры или импульсного тока одинаковые числа не означают одинаковую нагрузку. Если таких условий в документе нет, не достраивайте их по привычке: сформулируйте запрос на уточнение.</p>
+</div></section>
+<section class="editorial-section"><h2 id="section-4">Читайте условия рядом с числом</h2>
+<div class="editorial-richtext" id="block-15"><p>Частота, питание, нагрузка, температура и характер сигнала могут менять смысл характеристики. В даташите NXP MRFX1K80H параметры приведены для определённых испытательных режимов. Заголовочная мощность не должна отрываться от этих условий при сравнении устройств. <a class="editorial-source-ref" href="#source-3">[3]</a></p>
+</div>
+<div class="editorial-richtext" id="block-16"><p>Записывайте значение вместе с условиями измерения. Например, рядом с мощностью укажите питание, частоту и параметры сигнала. При сравнении компонентов эти условия должны совпадать либо учитываться отдельно.</p>
+</div>
+<div class="editorial-richtext" id="block-17"><p>Проверьте также метод измерения. Полоса прибора, оснастка и точки подключения могут быть частью определения результата. При сравнении образцов используйте совместимые методики. Если результаты получены по-разному, сначала выясните влияние этого различия, а затем делайте вывод о компонентах.</p>
+</div></section>
+<section class="editorial-section"><h2 id="section-5">Что записать в спецификацию</h2>
+<div class="editorial-richtext" id="block-19"><p>Итогом должен стать короткий перечень: что подходит, что не подходит и чего пока не хватает. Для каждого критичного требования укажите источник, условия и статус подтверждения. Такая запись полезнее полной копии даташита в закупочном файле.</p>
+</div>
+<div class="editorial-richtext" id="block-20"><p>Разделите документально подтверждённые параметры и собственные результаты испытаний. Проверка нескольких образцов даёт сведения о проверенных экземплярах и режимах; она не добавляет производителю новых гарантий. С другой стороны, отсутствие гарантируемого предела в таблице не делает компонент автоматически непригодным — оно определяет следующий инженерный вопрос.</p>
+</div>
+<div class="editorial-richtext" id="block-21"><p>Перед согласованием попросите другого участника проекта прочитать карточку без устных пояснений. Понятно ли, какая деталь выбрана, при каких условиях и что осталось проверить? Если да, даташит превратился в рабочее решение. Если нет, обычно нужно уточнить условия или убрать слишком сильную формулировку, а не добавить ещё рекламных характеристик.</p>
+</div></section><section class="editorial-section editorial-sources" id="sources"><h2>Источники</h2><p id="source-1">1. <a href="https://www.ti.com/lit/an/szza036b/szza036b.pdf" rel="noopener noreferrer">Texas Instruments — Understanding and Interpreting Standard-Logic Data Sheets</a></p><p id="source-2">2. <a href="https://www.murata.com/-/media/webrenewal/products/power/appnote/dcan-68.pdf" rel="noopener noreferrer">Murata — DC/DC Application Notes</a></p><p id="source-3">3. <a href="https://www.nxp.com/docs/en/data-sheet/MRFX1K80H.pdf" rel="noopener noreferrer">NXP — MRFX1K80H</a></p><p class="editorial-image-note">Изображения — редакционные иллюстрации. Конструкцию и параметры конкретного изделия проверяют по документации производителя.</p></section></div></div><section class="container editorial-related"><h2>Другие статьи</h2><div class="editorial-related__grid" data-animate="fade-up-stagger"><a href="article-arc70.html" class="editorial-related__card"><figure class="editorial-image" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a.webp 245w, ../assets/images/cms/editorial/ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_80d263952429ffc84927b1da84093078277ef9d91afa2a407c9b037f04803ba4_97576c634a.webp 1774w" sizes="(min-width:1440px) 200px, (min-width:1024px) 15vw, (min-width:768px) 45vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «СВЧ-конденсаторы ARC70: как выбирать замену по рабочему режиму»" loading="lazy" decoding="async"></picture></figure><span class="editorial-related__title">СВЧ-конденсаторы ARC70: как выбирать замену по рабочему режиму</span><span class="editorial-related__details">Подробнее</span><span class="editorial-related__arrow" aria-hidden="true">↗</span></a><a href="article-dcdc.html" class="editorial-related__card"><figure class="editorial-image" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2.webp 245w, ../assets/images/cms/editorial/ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_b181e8af34a720da2b325156683f7dafcd45c22264e50bd9de473b2f26642bb5_80877e3ed2.webp 1774w" sizes="(min-width:1440px) 200px, (min-width:1024px) 15vw, (min-width:768px) 45vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «Как выбрать DC/DC-преобразователь под реальные условия работы»" loading="lazy" decoding="async"></picture></figure><span class="editorial-related__title">Как выбрать DC/DC-преобразователь под реальные условия работы</span><span class="editorial-related__details">Подробнее</span><span class="editorial-related__arrow" aria-hidden="true">↗</span></a><a href="article-irtysh.html" class="editorial-related__card"><figure class="editorial-image" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf.webp 245w, ../assets/images/cms/editorial/ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_6e605427e6007cfc78651a7c82bc81dbabae48826271a7eed3e16cc3f2e7cee8_842cb162bf.webp 1774w" sizes="(min-width:1440px) 200px, (min-width:1024px) 15vw, (min-width:768px) 45vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «ИРТЫШ: как выбрать исполнение и подготовить проверку DC/DC-модуля»" loading="lazy" decoding="async"></picture></figure><span class="editorial-related__title">ИРТЫШ: как выбрать исполнение и подготовить проверку DC/DC-модуля</span><span class="editorial-related__details">Подробнее</span><span class="editorial-related__arrow" aria-hidden="true">↗</span></a><a href="article-ldmos.html" class="editorial-related__card"><figure class="editorial-image" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567.webp 245w, ../assets/images/cms/editorial/ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_f7f5c7983af630b1ccf2e64d0e9beb18930779d5598b036e521838a4e585a530_014afd5567.webp 1774w" sizes="(min-width:1440px) 200px, (min-width:1024px) 15vw, (min-width:768px) 45vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «LDMOS-транзисторы: что проверить в маркировке и даташите перед заменой»" loading="lazy" decoding="async"></picture></figure><span class="editorial-related__title">LDMOS-транзисторы: что проверить в маркировке и даташите перед заменой</span><span class="editorial-related__details">Подробнее</span><span class="editorial-related__arrow" aria-hidden="true">↗</span></a><a href="article-dcdc-thermal.html" class="editorial-related__card"><figure class="editorial-image" style="--image-fit:cover;--image-fit-mobile:cover;--image-position:50% 50%;--image-position-mobile:50% 50%"><picture><img src="../assets/images/cms/editorial/ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17.webp" srcset="../assets/images/cms/editorial/thumbnail_ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17.webp 245w, ../assets/images/cms/editorial/ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17_small.webp 480w, ../assets/images/cms/editorial/ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17_medium.webp 960w, ../assets/images/cms/editorial/ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17_large.webp 1440w, ../assets/images/cms/editorial/ic_pencil_7869abf3f92603775f7b1d8506e04df3859abca7d5244c5d132d6fd6ac62230b_c2e00d7f17.webp 1774w" sizes="(min-width:1440px) 200px, (min-width:1024px) 15vw, (min-width:768px) 45vw, calc(100vw - 48px)" width="1774" height="887" alt="Редакционная иллюстрация к статье «Тепловой режим DC/DC: что проверить до выбора модуля»" loading="lazy" decoding="async"></picture></figure><span class="editorial-related__title">Тепловой режим DC/DC: что проверить до выбора модуля</span><span class="editorial-related__details">Подробнее</span><span class="editorial-related__arrow" aria-hidden="true">↗</span></a></div><a class="btn-pill btn-pill--solid editorial-related__all" href="news.html">Все статьи</a></section></main>
+
+  <!-- Footer — unified main page footer (Pencil reuses Sk0bR component, no big wordmark) -->
+  <footer class="footer" data-header-theme="dark">
+    <div class="container">
+      <div class="footer__top" data-animate="fade-up-stagger">
+        <div class="footer__logo-block">
+          <span class="footer__logo" role="img" aria-label="IC Фарватер"></span>
+          <p class="footer__tagline"><!-- cms:site-setting.footerTagline -->Поставки ЭКБ от&nbsp;склада в&nbsp;Санкт-Петербурге. Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
+        </div>
+        <div class="footer__newsletter">
+          <h3 class="footer__newsletter-title"><!-- cms:site-setting.footerNewsletterTitle -->Хотите запросить расчёт?<!-- /cms --></h3>
+          <p class="footer__newsletter-desc"><!-- cms:site-setting.footerNewsletterDesc -->Подберём компоненты из&nbsp;каталога и&nbsp;пришлём прайс со&nbsp;сроками поставки.<!-- /cms --></p>
+          <form class="footer__email-form" action="#">
+            <input type="email" placeholder="email@example.com" aria-label="Email для расчёта" required>
+            <button type="submit" aria-label="Отправить">→</button>
+          </form>
+          <p class="footer__disclaimer"><!-- cms:site-setting.footerDisclaimer -->Отправляя форму, вы&nbsp;соглашаетесь с&nbsp;политикой конфиденциальности и&nbsp;обработкой персональных данных.<!-- /cms --></p>
+        </div>
+        <div class="footer__navs">
+          <div class="footer__nav-col footer__nav-col--products">
+            <p class="footer__nav-label">Каталог</p>
+            <ul class="footer__nav footer__nav--products">
+              <!-- CATS:FOOTERNAV:START -->
+              <li><a href="products.html#microchips">микросхемы</a></li>
+              <li><a href="products.html#razemy">разъёмы</a></li>
+              <li><a href="products.html#converters">преобразователи напряжения</a></li>
+              <li><a href="products.html#capacitors">СВЧ-конденсаторы</a></li>
+              <li><a href="products.html#transistors">СВЧ-транзисторы</a></li>
+              <li><a href="products.html#pcb">печатные платы</a></li>
+              <li><a href="products.html#rantsy">реактивные ранцы</a></li>
+              <li><a href="products.html#snow">снегоуборочная техника</a></li>
+<!-- CATS:FOOTERNAV:END -->
+            </ul>
+          </div>
+          <div class="footer__nav-col footer__nav-col--site">
+            <p class="footer__nav-label">Компания</p>
+            <ul class="footer__nav footer__nav--site">
+              <li><a href="../index.html">главная</a></li>
+              <li><a href="about.html">о&nbsp;компании</a></li>
+              <li><a href="../index.html#uslugi">услуги</a></li>
+              <li><a href="contacts.html">контакты</a></li>
+              <li><a href="about.html#faq">вопросы-ответы</a></li>
+              <li><a href="laboratory-overview.html">лаборатория</a></li>
+              <li><a href="news.html">новости</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__contact">
+          <p class="footer__label">Контакты</p>
+          <address class="footer__address"><!-- cms:site-setting.address -->ул. Беринга, д. 1-А, оф. 46-Н<br>г. Санкт-Петербург, 199406<!-- /cms --></address>
+          <div class="footer__phones">
+            <a href="tel:+78122093465" class="footer__phone">+7 (812) 209-34-65</a>
+            <a href="tel:+79967788842" class="footer__phone">+7 (996) 778-88-42</a>
+          </div>
+          <a href="mailto:info@ic-farvater.ru" class="footer__email">info@ic-farvater.ru</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <div class="footer__copyright-group">
+          <p class="footer__copyright">© 2026 ООО «АЙСИ ФАРВАТЕР»</p>
+          <p class="footer__copyright footer__copyright--tertiary">ИНН 7801709112 · ОГРН 1227800016993</p>
+        </div>
+        <div class="footer__legal">
+          <a href="privacy-policy.html">политика конфиденциальности</a>
+          <a href="consent.html">согласие на&nbsp;обработку персональных данных</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cookie banner — Pencil rMkUS mobile / ZHi2k desktop -->
+  <div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="Использование cookie">
+    <div class="container cookie-banner__inner">
+      <div class="cookie-banner__text">
+        <p class="cookie-banner__title"><!-- cms:site-setting.cookieText -->Мы&nbsp;используем cookie для&nbsp;корректной работы сайта и&nbsp;анализа посещаемости.<!-- /cms --></p>
+        <a href="privacy-policy.html" class="cookie-banner__link">подробнее в&nbsp;политике конфиденциальности →</a>
+      </div>
+      <div class="cookie-banner__actions">
+        <button class="cookie-banner__btn cookie-banner__btn--reject" type="button" data-cookie-action="reject">отклонить</button>
+        <button class="cookie-banner__btn cookie-banner__btn--accept" type="button" data-cookie-action="accept">принять</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/vendor/lenis.min.js" defer></script>
+  <script src="../js/vendor/gsap.min.js" defer></script>
+  <script src="../js/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="../js/main.min.js?v=00517ed8" defer></script>
+  <script src="../js/animations.min.js?v=910d0426" defer></script>
+  <script src="../js/nbsp.min.js?v=a2583633" defer></script>
+  <script src="../js/editorial.min.js?v=db74d700" defer></script>
+<script src="../js/site-navigation.min.js?v=16f23b81" defer></script>
+</body>
+</html>
