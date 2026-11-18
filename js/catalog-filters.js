@@ -107,7 +107,9 @@
   const view=toolbar.querySelector('.catalog__view-toggle'), mobile=window.matchMedia('(max-width:1023.98px)');
   const resultHeader=node('div','catalog-results-header');resultHeader.hidden=true;
   const resultHeading=node('h2','catalog-results-header__heading');
-  const resultName=node('span',''),resultCount=node('span','catalog-results-header__count');resultHeading.append(resultName,resultCount);resultHeader.append(resultHeading);
+  const resultName=document.createTextNode(''), resultLastWord=document.createTextNode('');
+  const resultTail=node('span','catalog-results-header__heading-tail'), resultCount=node('span','catalog-results-header__count');
+  resultTail.append(resultLastWord,'\u202f',resultCount);resultHeading.append(resultName,resultTail);resultHeader.append(resultHeading);
   document.querySelector('#catalogList').prepend(resultHeader);
   const overlay = node('div','catalog-filters'); overlay.id='catalogFiltersDialog'; overlay.hidden=true;
   overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true'); overlay.setAttribute('aria-labelledby','catalogFiltersTitle'); overlay.setAttribute('tabindex','-1');
@@ -197,7 +199,10 @@
    const active=count(state); summary.hidden=active<2&&!selected.types.length&&!selected.apps.length;summaryLabel.textContent=`Выбрано ${active} ${active%10===1&&active%100!==11?'значение':active%10>=2&&active%10<=4&&(active%100<12||active%100>14)?'значения':'значений'}`;
    const hasResults=document.body.classList.contains('is-catalog-results');resultHeader.hidden=!mobile.matches||!hasResults;
    if(mobile.matches&&hasResults)resultHeader.append(view);else toolbar.insertBefore(view,lane);
-   const result=getResult();resultName.textContent=result.label||catName(state);resultCount.textContent=`(${result.count||0})`;
+   const result=getResult(), label=result.label||catName(state);
+   const split=label.lastIndexOf(' ')+1;
+   resultName.data=label.slice(0,split);resultLastWord.data=label.slice(split);
+   resultCount.textContent=`(${result.count||0})`;
   }
   window.matchMedia('(min-width:1024px)').addEventListener('change',event=>{
    const activeHref=document.activeElement?.closest('#catalogListGrid a')?.getAttribute('href');
