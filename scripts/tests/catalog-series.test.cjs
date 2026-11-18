@@ -26,6 +26,23 @@ const categories = [
 const routed = categories.flatMap(([category, data]) =>
   Array.from(vm.runInContext(data, context), series => ({ category, series, file: urls.seriesFile(category, series) })));
 
+test('Catalog series cards open the list of variants inside the catalog', () => {
+  const getItems = read('js/main.js').match(/^  function getItems\(cat\) \{[\s\S]*?^  \}/m)[0];
+  const catalogContext = vm.createContext({
+    CMS_CATS: null,
+    state: { seriesType: 'all' },
+    normalizeType: value => value,
+    shortDesc: () => '',
+  });
+  for (const [, variable] of categories) catalogContext[variable] = vm.runInContext(variable, context);
+  vm.runInContext(getItems, catalogContext);
+  for (const [category, variable] of categories) {
+    const cards = catalogContext.getItems(category);
+    assert.equal(cards.length, catalogContext[variable].length);
+    for (const card of cards) assert.equal(card.href, `#${category}/${card.id}`);
+  }
+});
+
 test('Series URLs are stable and require an enabled series with orderable items', () => {
   for (const [category, slug, , file] of pilots) {
     const series = { slug, group: 'main', items: [{}] };
