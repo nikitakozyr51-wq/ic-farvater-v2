@@ -234,7 +234,7 @@
         "title": null,
         "description": "Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -470,7 +470,7 @@
         "title": null,
         "description": "Расчёт потерь, путь отвода тепла и измерения в корпусе устройства при выборе DC/DC-модуля.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -706,7 +706,7 @@
         "title": null,
         "description": "Порядок проверки аналога разъёма: допустимые изменения, документация, образец и согласование замены.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -942,7 +942,7 @@
         "title": null,
         "description": "Какие схемы, размеры, комплектующие и критерии приёмки нужны изготовителю кабельной сборки.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -1182,7 +1182,7 @@
         "title": null,
         "description": "Какие сведения связывают протокол с проверенными образцами и обосновывают решение о приёмке.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -1430,7 +1430,7 @@
         "title": null,
         "description": "Как связать артикул, партию и упаковку с документами, результатами контроля и перемещениями компонентов.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -1672,7 +1672,7 @@
         "title": null,
         "description": "Как сопоставить ёмкость, частотные характеристики, нагрузку и монтаж при выборе замены ARC70.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -1919,7 +1919,7 @@
         "title": null,
         "description": "Входная сеть, нагрузка, фильтр и охлаждение: что проверить при выборе DC/DC-преобразователя.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -2155,7 +2155,7 @@
         "title": null,
         "description": "Как определить исполнение ИРТЫШ по полному коду и проверить модуль с внешними цепями в составе устройства.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -2402,7 +2402,7 @@
         "title": null,
         "description": "Частота, питание, линейность и охлаждение: параметры, по которым сравнивают LDMOS-транзисторы перед заменой.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -2663,7 +2663,7 @@
         "title": null,
         "description": "Сопряжение, монтаж, контакты и рабочие условия: проверка конкретного исполнения перед заменой ЕТ-2РМГ.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -2924,7 +2924,7 @@
         "title": null,
         "description": "Как сопоставить обозначение соединителя ЕТ в спецификации, предложении поставщика и документации изготовителя.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -3185,7 +3185,7 @@
         "title": null,
         "description": "Что проверить у российского соединителя D-Sub, чтобы согласовать его применение в существующем узле.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -3446,7 +3446,7 @@
         "title": null,
         "description": "Как согласовать документацию, состав сборки, образец и контроль для изготовления повторных партий.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -3711,7 +3711,7 @@
         "title": null,
         "description": "Как составить программу входного контроля, связать образцы с поставкой и оформить решение о приёмке.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -3971,7 +3971,7 @@
         "title": null,
         "description": "Как определить применимые требования, согласовать методы испытаний ЭКБ и проверить полученный протокол.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -4231,7 +4231,7 @@
         "title": null,
         "description": "Материал, стек, допуски и покрытие: что согласовать с изготовителем СВЧ-платы до выпуска первой партии.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     },
@@ -4496,7 +4496,7 @@
         "title": null,
         "description": "Пять распространённых неоднозначностей в закупочной спецификации: исполнение, артикул, замены, хранение и приёмка.",
         "canonical": null,
-        "noindex": true,
+        "noindex": false,
         "ogImage": null
       }
     }
