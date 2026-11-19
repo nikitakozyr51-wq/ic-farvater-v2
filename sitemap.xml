@@ -25,6 +25,7 @@
   <url><loc>https://ic-farvater.ru/pages/article-incoming-control.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/article-incoming-protocol.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/article-irtysh.html</loc></url>
+  <url><loc>https://ic-farvater.ru/pages/article-kak-vybrat-postavshchika-ekb.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/article-ldmos.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/article-lot-traceability.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/article-pcb-materials.html</loc></url>
@@ -1680,6 +1681,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url><loc>https://ic-farvater.ru/pages/news-2.html</loc></url>
   <url><loc>https://ic-farvater.ru/pages/news.html</loc></url>
   <url>
     <loc>https://ic-farvater.ru/pages/pcb.html</loc>

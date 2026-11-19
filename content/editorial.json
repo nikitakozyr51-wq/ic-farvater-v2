@@ -97,6 +97,13 @@
         },
         "mobileImage": null
       },
+      "seo": {
+        "title": null,
+        "description": "Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
+      },
       "content": [
         {
           "anchorKey": null,
@@ -229,14 +236,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как различать типовые значения, гарантируемые пределы и предельно допустимые воздействия в документации производителя.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:dcdc-thermal",
@@ -332,6 +332,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Расчёт потерь, путь отвода тепла и измерения в корпусе устройства при выборе DC/DC-модуля.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -465,14 +472,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Расчёт потерь, путь отвода тепла и измерения в корпусе устройства при выборе DC/DC-модуля.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:analog-approval",
@@ -568,6 +568,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Порядок проверки аналога разъёма: допустимые изменения, документация, образец и согласование замены.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -701,14 +708,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Порядок проверки аналога разъёма: допустимые изменения, документация, образец и согласование замены.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:cable-specification",
@@ -804,6 +804,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Какие схемы, размеры, комплектующие и критерии приёмки нужны изготовителю кабельной сборки.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -937,14 +944,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Какие схемы, размеры, комплектующие и критерии приёмки нужны изготовителю кабельной сборки.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:incoming-protocol",
@@ -1032,6 +1032,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Какие сведения связывают протокол с проверенными образцами и обосновывают решение о приёмке.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -1177,14 +1184,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Какие сведения связывают протокол с проверенными образцами и обосновывают решение о приёмке.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:lot-traceability",
@@ -1280,6 +1280,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как связать артикул, партию и упаковку с документами, результатами контроля и перемещениями компонентов.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -1425,14 +1432,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как связать артикул, партию и упаковку с документами, результатами контроля и перемещениями компонентов.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:arc70",
@@ -1528,6 +1528,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как сопоставить ёмкость, частотные характеристики, нагрузку и монтаж при выборе замены ARC70.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -1667,14 +1674,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как сопоставить ёмкость, частотные характеристики, нагрузку и монтаж при выборе замены ARC70.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:dcdc",
@@ -1775,6 +1775,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Входная сеть, нагрузка, фильтр и охлаждение: что проверить при выборе DC/DC-преобразователя.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -1914,14 +1921,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Входная сеть, нагрузка, фильтр и охлаждение: что проверить при выборе DC/DC-преобразователя.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:irtysh",
@@ -2017,6 +2017,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как определить исполнение ИРТЫШ по полному коду и проверить модуль с внешними цепями в составе устройства.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -2150,14 +2157,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как определить исполнение ИРТЫШ по полному коду и проверить модуль с внешними цепями в составе устройства.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:ldmos",
@@ -2258,6 +2258,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Частота, питание, линейность и охлаждение: параметры, по которым сравнивают LDMOS-транзисторы перед заменой.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -2397,14 +2404,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Частота, питание, линейность и охлаждение: параметры, по которым сравнивают LDMOS-транзисторы перед заменой.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:et-2rmg-analogi-2026",
@@ -2500,6 +2500,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Сопряжение, монтаж, контакты и рабочие условия: проверка конкретного исполнения перед заменой ЕТ-2РМГ.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -2658,14 +2665,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Сопряжение, монтаж, контакты и рабочие условия: проверка конкретного исполнения перед заменой ЕТ-2РМГ.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:et-connector-marking-habr-2026",
@@ -2761,6 +2761,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как сопоставить обозначение соединителя ЕТ в спецификации, предложении поставщика и документации изготовителя.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -2919,14 +2926,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как сопоставить обозначение соединителя ЕТ в спецификации, предложении поставщика и документации изготовителя.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:habr-dsub-importozameshenie-2026",
@@ -3022,6 +3022,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Что проверить у российского соединителя D-Sub, чтобы согласовать его применение в существующем узле.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -3180,14 +3187,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Что проверить у российского соединителя D-Sub, чтобы согласовать его применение в существующем узле.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:vc-cable-assemblies-2026-05",
@@ -3283,6 +3283,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как согласовать документацию, состав сборки, образец и контроль для изготовления повторных партий.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -3441,14 +3448,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как согласовать документацию, состав сборки, образец и контроль для изготовления повторных партий.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:incoming-control",
@@ -3549,6 +3549,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как составить программу входного контроля, связать образцы с поставкой и оформить решение о приёмке.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -3706,14 +3713,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как составить программу входного контроля, связать образцы с поставкой и оформить решение о приёмке.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:gost-testing",
@@ -3809,6 +3809,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Как определить применимые требования, согласовать методы испытаний ЭКБ и проверить полученный протокол.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -3966,14 +3973,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Как определить применимые требования, согласовать методы испытаний ЭКБ и проверить полученный протокол.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:pcb-materials",
@@ -4069,6 +4069,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": null,
+        "description": "Материал, стек, допуски и покрытие: что согласовать с изготовителем СВЧ-платы до выпуска первой партии.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -4226,14 +4233,7 @@
           "lead": false,
           "__component": "editorial.text"
         }
-      ],
-      "seo": {
-        "title": null,
-        "description": "Материал, стек, допуски и покрытие: что согласовать с изготовителем СВЧ-платы до выпуска первой партии.",
-        "canonical": null,
-        "noindex": false,
-        "ogImage": null
-      }
+      ]
     },
     {
       "externalKey": "ic-article:tz-errors",
@@ -4334,6 +4334,13 @@
           }
         },
         "mobileImage": null
+      },
+      "seo": {
+        "title": "Поставка ЭКБ по спецификации и запрос КП",
+        "description": "Что указать в спецификации для оптовой поставки ЭКБ. Пример строки для Excel и проверка КП по артикулам, срокам, документам и заменам.",
+        "canonical": null,
+        "noindex": false,
+        "ogImage": null
       },
       "content": [
         {
@@ -4491,14 +4498,358 @@
           "lead": false,
           "__component": "editorial.text"
         }
+      ]
+    },
+    {
+      "externalKey": "ic-article:kak-vybrat-postavshchika-ekb",
+      "slug": "kak-vybrat-postavshchika-ekb",
+      "title": "Как выбрать поставщика ЭКБ для серийного производства",
+      "description": "Для серийной закупки сравните три условия коммерческих предложений: точное исполнение, количество к дате запуска и документы для приёмки. Если в КП обещают всю партию, попросите расписать отгрузки по датам. Так видно, какое предложение позволяет запустить сборку вовремя и чем закрыть следующий этап.",
+      "order": 18,
+      "category": "Компоненты",
+      "sources": [
+        {
+          "order": 0,
+          "title": "Texas Instruments — список авторизованных дистрибьюторов",
+          "url": "https://www.ti.com/en-us/support/faqs/purchasing-online/authorized-distributors"
+        },
+        {
+          "order": 1,
+          "title": "Texas Instruments — коды отгрузки и партии",
+          "url": "https://www.ti.com/en-us/quality-reliability/faqs"
+        },
+        {
+          "order": 2,
+          "title": "Analog Devices — жизненный цикл продукции",
+          "url": "https://www.analog.com/en/support/product-life-cycle-information.html"
+        },
+        {
+          "order": 3,
+          "title": "ЭКБ ТЕСТ — артикул ET-F24C-05VP300R23",
+          "url": "https://ekb-test.ru/proizvodstvo-preobrazovatelej-napryazheniya/modulnye-preobrazovateli-irtysh/modulnyj-preobrazovatel-dc-dc-irtysh-5-v-300-vt-et-f24c-05vp300r23/"
+        }
       ],
+      "relatedArticles": [
+        {
+          "externalKey": "ic-article:tz-errors"
+        },
+        {
+          "externalKey": "ic-article:lot-traceability"
+        },
+        {
+          "externalKey": "ic-article:analog-approval"
+        }
+      ],
+      "cover": {
+        "alt": "Круглый кабельный разъём с металлическим корпусом и чёрной контактной вставкой",
+        "caption": null,
+        "credit": null,
+        "context": "editorial",
+        "desktopFit": "cover",
+        "mobileFit": "cover",
+        "focalX": 50,
+        "focalY": 50,
+        "mobileFocalX": 50,
+        "mobileFocalY": 50,
+        "image": {
+          "url": "assets/images/cms/editorial/ic_farvater_supplier_connector_cover_e571dac5e1.webp",
+          "width": 1774,
+          "height": 887,
+          "alternativeText": "Круглый кабельный разъём с металлическим корпусом и чёрной контактной вставкой",
+          "caption": "",
+          "formats": {
+            "large": {
+              "url": "assets/images/cms/editorial/large_ic_farvater_supplier_connector_cover_e571dac5e1.webp",
+              "width": 1000,
+              "height": 500,
+              "alternativeText": "",
+              "caption": "",
+              "formats": {}
+            },
+            "small": {
+              "url": "assets/images/cms/editorial/small_ic_farvater_supplier_connector_cover_e571dac5e1.webp",
+              "width": 500,
+              "height": 250,
+              "alternativeText": "",
+              "caption": "",
+              "formats": {}
+            },
+            "medium": {
+              "url": "assets/images/cms/editorial/medium_ic_farvater_supplier_connector_cover_e571dac5e1.webp",
+              "width": 750,
+              "height": 375,
+              "alternativeText": "",
+              "caption": "",
+              "formats": {}
+            },
+            "thumbnail": {
+              "url": "assets/images/cms/editorial/thumbnail_ic_farvater_supplier_connector_cover_e571dac5e1.webp",
+              "width": 245,
+              "height": 122,
+              "alternativeText": "",
+              "caption": "",
+              "formats": {}
+            }
+          }
+        },
+        "mobileImage": null
+      },
       "seo": {
-        "title": "Поставка ЭКБ по спецификации и запрос КП",
-        "description": "Что указать в спецификации для оптовой поставки ЭКБ. Пример строки для Excel и проверка КП по артикулам, срокам, документам и заменам.",
+        "title": "Как выбрать поставщика ЭКБ для серийного производства",
+        "description": "Как сравнить два КП на оптовую поставку ЭКБ, проверить артикул и документы партии, согласовать дату первой отгрузки и получить срок на остаток.",
         "canonical": null,
         "noindex": false,
         "ogImage": null
-      }
+      },
+      "content": [
+        {
+          "anchorKey": "sravnenie-kp",
+          "text": "Что запросить для сравнения предложений",
+          "level": "h2",
+          "showInContents": true,
+          "__component": "editorial.heading"
+        },
+        {
+          "anchorKey": null,
+          "caption": null,
+          "columns": [
+            {
+              "key": "column-1",
+              "title": "Что сверить"
+            },
+            {
+              "key": "column-2",
+              "title": "Что должно быть в ответе поставщика"
+            },
+            {
+              "key": "column-3",
+              "title": "Что делать, если данных мало"
+            }
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Артикул**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Полное обозначение с суффиксом, производитель и, где важно, упаковочное исполнение."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Запросить ссылку на карточку производителя или раздел даташита с правилами заказа."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Наличие и срок**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Подтверждённое к отгрузке количество, дата каждой партии и срок действия предложения."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Уточнить, сколько штук есть сейчас, сколько требуется дозаказать и к какой дате поставщик подтвердит остаток."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Происхождение партии**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Какие сведения о производителе и партии передадут, как связать их с упаковкой и отгрузочными документами."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Запросить пример этикетки или перечень подтверждений и согласовать, что достаточно для вашей приёмки."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Документы и приёмка**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Список документов по данной позиции, действия при расхождении и сроки ответа на рекламацию."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Уточнить, что приложат к первой и следующим поставкам."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Повторные поставки**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Возможность повторного заказа, сроки пополнения и порядок уведомления при изменении изделия или снятии с производства."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Разделить подтверждённую поставку по текущему КП и прогноз следующих партий."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Сумма к оплате**"
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Цена за штуку, стоимость доставки, условия оплаты и указание, включён ли НДС."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Пересчитать предложения на одинаковое количество и сопоставимые условия поставки."
+                }
+              ]
+            }
+          ],
+          "__component": "editorial.table"
+        },
+        {
+          "anchorKey": "proishozhdenie-partii",
+          "text": "Как проверить происхождение и маркировку партии",
+          "level": "h2",
+          "showInContents": true,
+          "__component": "editorial.heading"
+        },
+        {
+          "anchorKey": null,
+          "body": "Если в КП указан статус авторизованного поставщика, сверяйте его у изготовителя соответствующего бренда. У Texas Instruments, например, есть отдельный список авторизованных дистрибьюторов. TI также объясняет, где у её изделий искать код отгрузки и код партии. Для приёмки заранее согласуйте, по какой маркировке на упаковке и в документах ваша служба сможет идентифицировать партию. [1] · [2]",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": null,
+          "body": "Согласуйте заранее, можно ли отгружать изделия из нескольких партий, требуется ли заводская упаковка и что должно быть отражено в документах на каждую отгрузку. Для компонентов, чувствительных к влаге, условия упаковки и хранения уточняют по документации изготовителя и требованиям вашего производства. Подробная схема сверки маркировки и документов есть в материале о партии ЭКБ. [Как сохранить прослеживаемость партии](/pages/article-lot-traceability.html)",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": "povtornye-zakupki",
+          "text": "Как оценить предложение для повторных закупок",
+          "level": "h2",
+          "showInContents": true,
+          "__component": "editorial.heading"
+        },
+        {
+          "anchorKey": null,
+          "body": "Если закупка разбита на этапы, зафиксируйте объём и срок каждой отгрузки. Спросите, кто уведомит вас об изменении исполнения или снятии изделия с производства. Например, Analog Devices публикует уведомления об изменениях (PCN) и прекращении выпуска (PDN). В PDN указываются затронутые модели, последний срок заказа и последний срок отгрузки. Сверьте, относится ли уведомление к полному коду вашей позиции. [3]",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": null,
+          "body": "Если предложен аналог, вынесите его отдельной строкой. Попросите приложить документацию, перечислить отличия от исходного исполнения и дождитесь решения ответственного за изделие. Для разъёма сверяют также ответную часть и чертёж. [Как согласовать аналог разъёма](/pages/article-analog-approval.html)",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": "primer-dvuh-kp",
+          "text": "Пример сравнения двух предложений",
+          "level": "h2",
+          "showInContents": true,
+          "__component": "editorial.heading"
+        },
+        {
+          "anchorKey": null,
+          "body": "Допустим, для запуска сборки нужны 30 модулей ИРТЫШ на второй неделе и ещё 70 на шестой. В утверждённой спецификации указан ET-F24C-05VP300R23. Этот артикул есть в каталоге ЭКБ ТЕСТ. Количества и сроки ниже условные. [4]",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": null,
+          "caption": null,
+          "columns": [
+            {
+              "key": "column-1",
+              "title": "Ответ"
+            },
+            {
+              "key": "column-2",
+              "title": "Что известно"
+            },
+            {
+              "key": "column-3",
+              "title": "Что уточнить до заказа"
+            }
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Поставщик А** предлагает 100 штук через две недели. В КП указан только ET-F24C."
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Количество и срок указаны. Точный артикул не подтверждён."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Запросить полный код, подтвердить количество именно по нему и согласовать документы на партию."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "columnKey": "column-1",
+                  "value": "**Поставщик Б** указал точный артикул и предложил 30 штук через две недели, остальные 70 под заказ."
+                },
+                {
+                  "columnKey": "column-2",
+                  "value": "Первую поставку можно сопоставить с планом запуска. Даты второй поставки пока нет."
+                },
+                {
+                  "columnKey": "column-3",
+                  "value": "Подтвердить дату поступления первых 30 на ваш склад. Запросить дату поставки остальных 70 и документы для обеих отгрузок."
+                }
+              ]
+            }
+          ],
+          "__component": "editorial.table"
+        },
+        {
+          "anchorKey": null,
+          "body": "Задайте А один прямой вопрос: «Подтвердите, пожалуйста, что все 100 штук в предложении — ET-F24C-05VP300R23». У Б запросите конкретную дату для оставшихся 70 и срок резерва первой партии. Если Б подтверждает первую отгрузку, а вторую пока не может, закупка у него закрывает лишь первый этап. Сравнивать стоимость всей партии имеет смысл после подтверждения исполнения и графика.",
+          "lead": false,
+          "__component": "editorial.text"
+        },
+        {
+          "anchorKey": "zapros-optovogo-kp",
+          "text": "Что отправить для расчёта оптовой партии",
+          "level": "h2",
+          "showInContents": true,
+          "__component": "editorial.heading"
+        },
+        {
+          "anchorKey": null,
+          "body": "Укажите полный артикул и производителя, количество по каждой позиции, желаемую дату и город поставки, требования к документам и порядок согласования аналогов. Если партия нужна частями, напишите количество к каждой дате. Для нескольких позиций заполните таблицу по шаблону. На странице шаблона нажмите «Запросить КП» и прикрепите файл. [Шаблон спецификации для запроса КП](/pages/article-tz-errors.html#zapros-kp-po-specifikacii)",
+          "lead": false,
+          "__component": "editorial.text"
+        }
+      ]
     }
   ],
   "laboratoryPages": [
