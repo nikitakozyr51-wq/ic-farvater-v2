@@ -4,8 +4,9 @@
  * Отправляет письма через SMTP (PHPMailer). Все секреты — в env vars Dokploy.
  *
  * Принимает multipart/form-data POST со следующими полями:
- *   kind        — "kp" | "contact" | "laboratory"
- *   name        — required
+ *   kind        — "kp" | "contact" | "laboratory" | "component-assist"
+ *   name        — required except component-assist
+ *   page_url    — required for component-assist
  *   email       — required
  *   phone       — optional
  *   message     — contact/laboratory form required
@@ -89,18 +90,25 @@ if (!empty($_POST['honeypot'] ?? '')) {
 }
 
 /* ─── Сбор данных ─── */
-$kind     = trim($_POST['kind']     ?? 'contact');
-$name     = trim($_POST['name']     ?? '');
-$email    = trim($_POST['email']    ?? '');
-$phone    = trim($_POST['phone']    ?? '');
-$message  = trim($_POST['message']  ?? '');
-$comment  = trim($_POST['comment']  ?? '');
-$product  = trim($_POST['product']  ?? '');
-$category = trim($_POST['category'] ?? '');
-$consent  = $_POST['consent']       ?? '';
+$postText = static function (string $key, string $default = ''): string {
+    $value = $_POST[$key] ?? $default;
+    return is_string($value) ? trim($value) : $default;
+};
+$kind     = $postText('kind', 'contact');
+$name     = $postText('name');
+$email    = $postText('email');
+$phone    = $postText('phone');
+$message  = $postText('message');
+$comment  = $postText('comment');
+$product  = $postText('product');
+$category = $postText('category');
+$consent  = $_POST['consent'] ?? '';
+$isComponentAssist = $kind === 'component-assist';
+$pageUrl = $postText('page_url');
+$recipient = $isComponentAssist ? 'sale@ic-farvater.ru' : $MAIL_TO;
 
 /* ─── Валидация ─── */
-if (!$name || !$email) {
+if ((!$isComponentAssist && !$name) || !$email) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Заполните обязательные поля']);
     exit;
@@ -110,9 +118,19 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['ok' => false, 'error' => 'Некорректный email']);
     exit;
 }
-if (!$consent) {
+if ($isComponentAssist ? $consent !== '1' : !$consent) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Необходимо согласие на обработку данных']);
+    exit;
+}
+if ($isComponentAssist && (
+    strlen($pageUrl) > 2048 ||
+    !filter_var($pageUrl, FILTER_VALIDATE_URL) ||
+    !str_starts_with($pageUrl, $ALLOWED_ORIGIN . '/') ||
+    !in_array(parse_url($pageUrl, PHP_URL_PATH), ['/', '/index.html', '/pages/products.html'], true)
+)) {
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Некорректный адрес страницы']);
     exit;
 }
 if (in_array($kind, ['contact', 'laboratory'], true) && !$message) {
@@ -171,25 +189,31 @@ $bodyText  = ($kind === 'kp' ? $comment : $message);
 $bodyLabel = ($kind === 'kp' ? 'Комментарий' : 'Сообщение');
 $subject = match ($kind) {
     'kp' => 'Новый запрос КП с сайта IC Фарватер',
+    'component-assist' => 'Заявка с поп-апа — подбор компонентов',
     'laboratory' => 'Заявка на лабораторные испытания с сайта IC Фарватер',
     default => 'Новая заявка с сайта IC Фарватер',
 };
 $leadId = bin2hex(random_bytes(16));
 
 $lines = [
-    "Новая заявка с сайта ic-farvater.ru ({$kind})",
+    $isComponentAssist ? "Заявка с поп-апа" : "Новая заявка с сайта ic-farvater.ru ({$kind})",
     "ID заявки: {$leadId}",
     str_repeat('-', 40),
 ];
-if ($category) $lines[] = "Раздел:   $category";
-if ($product)  $lines[] = "Товар:    $product";
-$lines[] = "Имя:      $name";
-$lines[] = "Email:    $email";
-$lines[] = "Телефон:  " . ($phone ?: 'не указан');
-$lines[] = 'Вложений: ' . (count($attachments) ?: 'нет');
-$lines[] = '';
-$lines[] = "$bodyLabel:";
-$lines[] = $bodyText ?: '(пусто)';
+if ($isComponentAssist) {
+    $lines[] = "Email:    $email";
+    $lines[] = "Страница: $pageUrl";
+} else {
+    if ($category) $lines[] = "Раздел:   $category";
+    if ($product)  $lines[] = "Товар:    $product";
+    $lines[] = "Имя:      $name";
+    $lines[] = "Email:    $email";
+    $lines[] = "Телефон:  " . ($phone ?: 'не указан');
+    $lines[] = 'Вложений: ' . (count($attachments) ?: 'нет');
+    $lines[] = '';
+    $lines[] = "$bodyLabel:";
+    $lines[] = $bodyText ?: '(пусто)';
+}
 $lines[] = '';
 $lines[] = str_repeat('-', 40);
 $lines[] = 'Дата: ' . date('d.m.Y H:i:s') . ' (МСК)';
@@ -216,9 +240,9 @@ try {
     $mail->Encoding   = 'base64';
 
     $mail->setFrom($SMTP_FROM, $SMTP_FROM_NAME);
-    $mail->addAddress($MAIL_TO);
-    if ($MAIL_CC) $mail->addCC($MAIL_CC);
-    $mail->addReplyTo($email, $name);
+    $mail->addAddress($recipient);
+    if (!$isComponentAssist && $MAIL_CC) $mail->addCC($MAIL_CC);
+    $mail->addReplyTo($email, $isComponentAssist ? '' : $name);
 
     $mail->Subject = $subject;
     $mail->Body    = $bodyPlain;
@@ -234,6 +258,6 @@ try {
     http_response_code(500);
     echo json_encode([
         'ok' => false,
-        'error' => 'Ошибка отправки. Напишите нам напрямую: ' . $MAIL_TO,
+        'error' => 'Ошибка отправки. Напишите нам напрямую: ' . $recipient,
     ]);
 }
