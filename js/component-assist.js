@@ -144,7 +144,7 @@
     trackTimer('shown');
     window.ICDialogs.open({
       element: dialog,
-      focus: dialog.querySelector('.component-assist__close'),
+      focus: dialog,
       onClose: () => { dialog.hidden = true; },
     });
   }
@@ -153,6 +153,7 @@
     const layer = document.createElement('div');
     layer.className = 'component-assist';
     layer.hidden = true;
+    layer.tabIndex = -1;
     layer.setAttribute('role', 'dialog');
     layer.setAttribute('aria-modal', 'true');
     layer.setAttribute('aria-labelledby', 'componentAssistTitle');
